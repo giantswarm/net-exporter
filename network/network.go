@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	Namespace = "network"
+	namespace = "network"
 )
 
 type Config struct {
@@ -76,7 +76,7 @@ func NewCollector(config Config) (*NetworkCollector, error) {
 		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.ServiceName must not be empty", config)
 	}
 
-	networkCollector := NetworkCollector{
+	networkCollector := &NetworkCollector{
 		dialer:           config.Dialer,
 		kubernetesClient: config.KubernetesClient,
 		logger:           config.Logger,
@@ -90,32 +90,32 @@ func NewCollector(config Config) (*NetworkCollector, error) {
 		errorCount: map[string]float64{},
 
 		total: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, "", "check_total"),
+			prometheus.BuildFQName(namespace, "", "check_total"),
 			"Total number of network checks.",
 			[]string{"host"},
 			nil,
 		),
 		errorTotal: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, "", "check_error_total"),
+			prometheus.BuildFQName(namespace, "", "check_error_total"),
 			"Total number of network check errors.",
 			[]string{"host"},
 			nil,
 		),
 		latency: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, "", "check_seconds"),
+			prometheus.BuildFQName(namespace, "", "check_seconds"),
 			"Time taken to successfully check network.",
 			[]string{"host"},
 			nil,
 		),
 		kubernetesErrorTotal: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, "", "kubernetes_error_total"),
+			prometheus.BuildFQName(namespace, "", "kubernetes_error_total"),
 			"Total number of errors reaching Kubernetes API.",
 			nil,
 			nil,
 		),
 	}
 
-	return &networkCollector, nil
+	return networkCollector, nil
 }
 
 func (c *NetworkCollector) Describe(ch chan<- *prometheus.Desc) {

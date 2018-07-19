@@ -12,6 +12,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
+	"github.com/giantswarm/net-exporter/dns"
 	"github.com/giantswarm/net-exporter/network"
 )
 
@@ -44,6 +45,23 @@ func main() {
 		}
 	}
 
+	var dnsCollector prometheus.Collector
+	{
+		c := dns.Config{
+			Logger: logger,
+
+			Hosts: []string{
+				"kubernetes.default.svc.cluster.local",
+				"giantswarm.io",
+			},
+		}
+
+		dnsCollector, err = dns.NewCollector(c)
+		if err != nil {
+			panic(fmt.Sprintf("%#v\n", err))
+		}
+	}
+
 	var networkCollector prometheus.Collector
 	{
 		c := network.Config{
@@ -69,6 +87,7 @@ func main() {
 	{
 		c := exporterkit.Config{
 			Collectors: []prometheus.Collector{
+				dnsCollector,
 				networkCollector,
 			},
 			Logger: logger,
