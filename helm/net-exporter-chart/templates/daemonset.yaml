@@ -1,0 +1,41 @@
+kind: DaemonSet
+apiVersion: extensions/v1beta1
+metadata:
+  name: net-exporter
+  namespace: monitoring
+  labels:
+    app: net-exporter
+spec:
+  template:
+    metadata:
+      labels:
+        app: net-exporter
+      annotations:
+        releasetime: {{ $.Release.Time }}
+    spec:
+      containers:
+      - name: net-exporter
+        image: quay.io/giantswarm/net-exporter:[[ .SHA ]]
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 5
+        resources:
+          requests:
+            cpu: 20m
+            memory: 20Mi
+          limits:
+            cpu: 20m
+            memory: 20Mi
+      serviceAccountName: net-exporter
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
