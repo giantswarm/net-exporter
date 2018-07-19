@@ -163,9 +163,8 @@ func (c *NetworkCollector) Collect(ch chan<- prometheus.Metric) {
 
 				c.errorCountMutex.Lock()
 				c.errorCount[host]++
-				c.errorCountMutex.Unlock()
-
 				ch <- prometheus.MustNewConstMetric(c.errorTotal, prometheus.CounterValue, c.errorCount[host], host)
+				c.errorCountMutex.Unlock()
 
 				return
 			}
@@ -173,7 +172,9 @@ func (c *NetworkCollector) Collect(ch chan<- prometheus.Metric) {
 
 			elapsed := time.Since(start)
 
+			c.countMutex.Lock()
 			ch <- prometheus.MustNewConstMetric(c.total, prometheus.CounterValue, c.count[host], host)
+			c.countMutex.Unlock()
 			ch <- prometheus.MustNewConstMetric(c.latency, prometheus.GaugeValue, elapsed.Seconds(), host)
 		}(host)
 	}
