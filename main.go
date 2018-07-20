@@ -2,18 +2,13 @@ package main
 
 import (
 	"fmt"
-	"net"
 	"os"
-	"time"
 
 	"github.com/giantswarm/exporterkit"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
 
 	"github.com/giantswarm/net-exporter/dns"
-	"github.com/giantswarm/net-exporter/network"
 )
 
 func main() {
@@ -31,19 +26,19 @@ func main() {
 		}
 	}
 
-	var kubernetesClient kubernetes.Interface
-	{
-		var config *rest.Config
-		config, err = rest.InClusterConfig()
-		if err != nil {
-			panic(fmt.Sprintf("%#v\n", err))
-		}
-
-		kubernetesClient, err = kubernetes.NewForConfig(config)
-		if err != nil {
-			panic(fmt.Sprintf("%#v\n", err))
-		}
-	}
+	// var kubernetesClient kubernetes.Interface
+	// {
+	// 	var config *rest.Config
+	// 	config, err = rest.InClusterConfig()
+	// 	if err != nil {
+	// 		panic(fmt.Sprintf("%#v\n", err))
+	// 	}
+	//
+	// 	kubernetesClient, err = kubernetes.NewForConfig(config)
+	// 	if err != nil {
+	// 		panic(fmt.Sprintf("%#v\n", err))
+	// 	}
+	// }
 
 	var dnsCollector prometheus.Collector
 	{
@@ -62,33 +57,33 @@ func main() {
 		}
 	}
 
-	var networkCollector prometheus.Collector
-	{
-		c := network.Config{
-			Dialer: &net.Dialer{
-				Timeout: 5 * time.Second,
-			},
-			KubernetesClient: kubernetesClient,
-			Logger:           logger,
-
-			Host:        "net-exporter:8000",
-			Namespace:   "monitoring",
-			Port:        "8000",
-			ServiceName: "net-exporter",
-		}
-
-		networkCollector, err = network.NewCollector(c)
-		if err != nil {
-			panic(fmt.Sprintf("%#v\n", err))
-		}
-	}
+	// var networkCollector prometheus.Collector
+	// {
+	// 	c := network.Config{
+	// 		Dialer: &net.Dialer{
+	// 			Timeout: 5 * time.Second,
+	// 		},
+	// 		KubernetesClient: kubernetesClient,
+	// 		Logger:           logger,
+	//
+	// 		Host:        "net-exporter:8000",
+	// 		Namespace:   "monitoring",
+	// 		Port:        "8000",
+	// 		ServiceName: "net-exporter",
+	// 	}
+	//
+	// 	networkCollector, err = network.NewCollector(c)
+	// 	if err != nil {
+	// 		panic(fmt.Sprintf("%#v\n", err))
+	// 	}
+	// }
 
 	var exporter *exporterkit.Exporter
 	{
 		c := exporterkit.Config{
 			Collectors: []prometheus.Collector{
 				dnsCollector,
-				networkCollector,
+				// networkCollector,
 			},
 			Logger: logger,
 		}
