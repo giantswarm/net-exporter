@@ -3,7 +3,6 @@ package dns
 import (
 	"fmt"
 	"net"
-	"sync"
 	"time"
 
 	"github.com/giantswarm/exporterkit"
@@ -27,15 +26,15 @@ type DNSCollector struct {
 
 	hosts []string
 
-	count      map[string]float64
-	errorCount map[string]float64
+	// Internals for calculating error count.
+	errorCountDesc *prometheus.Desc
+	errorCount     map[string]float64
 
-	countMutex      sync.Mutex
-	errorCountMutex sync.Mutex
-
-	total      *prometheus.Desc
-	errorTotal *prometheus.Desc
-	latency    *prometheus.Desc
+	// Internals for calculating histograms.
+	latencyHistogramsDesc *prometheus.Desc
+	latencyCount          map[string]uint64
+	latencySum            map[string]float64
+	latencyBuckets        map[string]map[float64]uint64
 }
 
 func NewCollector(config Config) (*DNSCollector, error) {
@@ -47,78 +46,79 @@ func NewCollector(config Config) (*DNSCollector, error) {
 		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.Host must not be empty", config)
 	}
 
+	latencyBuckets := map[string]map[float64]uint64{}
+	for _, host := range config.Hosts {
+		latencyBuckets[host] = map[float64]uint64{
+			0.01: 0,
+			0.1:  0,
+			0.5:  0,
+			1:    0,
+			5:    0,
+			10:   0,
+		}
+	}
+
 	dnsCollector := &DNSCollector{
 		logger: config.Logger,
 
 		hosts: config.Hosts,
 
-		count:      map[string]float64{},
-		errorCount: map[string]float64{},
-
-		total: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "check_total"),
-			"Total number of DNS resolutions.",
-			[]string{"host"},
-			nil,
-		),
-		errorTotal: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "check_error_total"),
+		errorCountDesc: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "resolution_error_count"),
 			"Total number of DNS resolution errors.",
 			[]string{"host"},
 			nil,
 		),
-		latency: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "check_seconds"),
-			"Time taken to resolve DNS.",
+		errorCount: map[string]float64{},
+
+		latencyHistogramsDesc: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "resolution_seconds"),
+			"A histogram of the DNS resolution durations.",
 			[]string{"host"},
 			nil,
 		),
+		latencyCount:   map[string]uint64{},
+		latencySum:     map[string]float64{},
+		latencyBuckets: latencyBuckets,
 	}
 
 	return dnsCollector, nil
 }
 
 func (c *DNSCollector) Describe(ch chan<- *prometheus.Desc) {
-	ch <- c.total
-	ch <- c.errorTotal
-	ch <- c.latency
+	ch <- c.errorCountDesc
+	ch <- c.latencyHistogramsDesc
 }
 
 func (c *DNSCollector) Collect(ch chan<- prometheus.Metric) {
-	var wg sync.WaitGroup
 
 	for _, host := range c.hosts {
-		wg.Add(1)
+		start := time.Now()
 
-		go func(host string) {
-			defer wg.Done()
+		_, err := net.LookupHost(host)
+		if err != nil {
+			c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "stack", fmt.Sprintf("%#v", err))
+			c.errorCount[host]++
+			ch <- prometheus.MustNewConstMetric(c.errorCountDesc, prometheus.CounterValue, c.errorCount[host], host)
+		}
 
-			start := time.Now()
+		elapsed := float64(time.Since(start).Seconds())
 
-			c.countMutex.Lock()
-			c.count[host]++
-			c.countMutex.Unlock()
+		c.latencyCount[host]++
+		c.latencySum[host] += elapsed
 
-			_, err := net.LookupHost(host)
-			if err != nil {
-				c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "stack", fmt.Sprintf("%#v", err))
-
-				c.errorCountMutex.Lock()
-				c.errorCount[host]++
-				ch <- prometheus.MustNewConstMetric(c.errorTotal, prometheus.CounterValue, c.errorCount[host], host)
-				c.errorCountMutex.Unlock()
-
-				return
+		for bucket, _ := range c.latencyBuckets[host] {
+			if elapsed <= bucket {
+				c.latencyBuckets[host][bucket]++
 			}
+		}
 
-			elapsed := time.Since(start)
-
-			c.countMutex.Lock()
-			ch <- prometheus.MustNewConstMetric(c.total, prometheus.CounterValue, c.count[host], host)
-			c.countMutex.Unlock()
-			ch <- prometheus.MustNewConstMetric(c.latency, prometheus.GaugeValue, elapsed.Seconds(), host)
-		}(host)
+		ch <- prometheus.MustNewConstHistogram(
+			c.latencyHistogramsDesc,
+			c.latencyCount[host],
+			c.latencySum[host],
+			c.latencyBuckets[host],
+			host,
+		)
 	}
-
-	wg.Wait()
 }
