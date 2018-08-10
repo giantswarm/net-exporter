@@ -26,10 +26,10 @@ type Exporter struct {
 // New creates a new Exporter, given a Config.
 func New(config Config) (*Exporter, error) {
 	if config.Collectors == nil {
-		return nil, microerror.Maskf(InvalidConfigError, "%T.Collectors must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Collectors must not be empty", config)
 	}
 	if config.Logger == nil {
-		return nil, microerror.Maskf(InvalidConfigError, "%T.Logger must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
 	exporter := Exporter{

@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/giantswarm/exporterkit"
+	"github.com/giantswarm/exporterkit/histogramvec"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
@@ -16,6 +16,10 @@ import (
 
 const (
 	namespace = "network"
+
+	bucketStart  = 0.001
+	bucketFactor = 2
+	numBuckets   = 15
 )
 
 type Config struct {
@@ -39,41 +43,47 @@ type NetworkCollector struct {
 	port        string
 	serviceName string
 
-	count                map[string]float64
-	errorCount           map[string]float64
-	kubernetesErrorCount float64
+	latencyHistogramVec  *histogramvec.HistogramVec
+	latencyHistogramDesc *prometheus.Desc
 
-	countMutex      sync.Mutex
-	errorCountMutex sync.Mutex
-
-	total                *prometheus.Desc
-	errorTotal           *prometheus.Desc
-	latency              *prometheus.Desc
-	kubernetesErrorTotal *prometheus.Desc
+	errorTotal     float64
+	errorTotalDesc *prometheus.Desc
 }
 
 func NewCollector(config Config) (*NetworkCollector, error) {
 	if config.Dialer == nil {
-		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.Dialer must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Dialer must not be empty", config)
 	}
 	if config.KubernetesClient == nil {
-		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.KubernetesClient must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.KubernetesClient must not be empty", config)
 	}
 	if config.Logger == nil {
-		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.Logger must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
 	if config.Host == "" {
-		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.Host must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", config)
 	}
 	if config.Namespace == "" {
-		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.Namespace must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Namespace must not be empty", config)
 	}
 	if config.Port == "" {
-		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.Port must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Port must not be empty", config)
 	}
 	if config.ServiceName == "" {
-		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.ServiceName must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.ServiceName must not be empty", config)
+	}
+
+	var err error
+	var latencyHistogramVec *histogramvec.HistogramVec
+	{
+		c := histogramvec.Config{
+			BucketLimits: prometheus.ExponentialBuckets(bucketStart, bucketFactor, numBuckets),
+		}
+		latencyHistogramVec, err = histogramvec.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	}
 
 	networkCollector := &NetworkCollector{
@@ -86,30 +96,17 @@ func NewCollector(config Config) (*NetworkCollector, error) {
 		port:        config.Port,
 		serviceName: config.ServiceName,
 
-		count:      map[string]float64{},
-		errorCount: map[string]float64{},
+		latencyHistogramVec: latencyHistogramVec,
+		latencyHistogramDesc: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "latency_seconds"),
+			"Histogram of latency of network dials.",
+			[]string{"host"},
+			nil,
+		),
 
-		total: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "check_total"),
-			"Total number of network checks.",
-			[]string{"host"},
-			nil,
-		),
-		errorTotal: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "check_error_total"),
-			"Total number of network check errors.",
-			[]string{"host"},
-			nil,
-		),
-		latency: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "check_seconds"),
-			"Time taken to successfully check network.",
-			[]string{"host"},
-			nil,
-		),
-		kubernetesErrorTotal: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "kubernetes_error_total"),
-			"Total number of errors reaching Kubernetes API.",
+		errorTotalDesc: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "error_total"),
+			"Total number of network dial errors.",
 			nil,
 			nil,
 		),
@@ -119,10 +116,8 @@ func NewCollector(config Config) (*NetworkCollector, error) {
 }
 
 func (c *NetworkCollector) Describe(ch chan<- *prometheus.Desc) {
-	ch <- c.total
-	ch <- c.errorTotal
-	ch <- c.latency
-	ch <- c.kubernetesErrorTotal
+	ch <- c.latencyHistogramDesc
+	ch <- c.errorTotalDesc
 }
 
 func (c *NetworkCollector) Collect(ch chan<- prometheus.Metric) {
@@ -131,10 +126,7 @@ func (c *NetworkCollector) Collect(ch chan<- prometheus.Metric) {
 	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.serviceName, metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not get endpoints", "stack", fmt.Sprintf("%#v", err))
-		c.kubernetesErrorCount++
-		ch <- prometheus.MustNewConstMetric(c.kubernetesErrorTotal, prometheus.CounterValue, c.kubernetesErrorCount)
-
-		return
+		c.errorTotal++
 	}
 
 	for _, endpointSubset := range endpoints.Subsets {
@@ -153,31 +145,30 @@ func (c *NetworkCollector) Collect(ch chan<- prometheus.Metric) {
 
 			start := time.Now()
 
-			c.countMutex.Lock()
-			c.count[host]++
-			c.countMutex.Unlock()
-
 			conn, err := c.dialer.Dial("tcp", host)
 			if err != nil {
 				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", fmt.Sprintf("%#v", err))
-
-				c.errorCountMutex.Lock()
-				c.errorCount[host]++
-				ch <- prometheus.MustNewConstMetric(c.errorTotal, prometheus.CounterValue, c.errorCount[host], host)
-				c.errorCountMutex.Unlock()
-
+				c.errorTotal++
 				return
 			}
 			defer conn.Close()
 
 			elapsed := time.Since(start)
 
-			c.countMutex.Lock()
-			ch <- prometheus.MustNewConstMetric(c.total, prometheus.CounterValue, c.count[host], host)
-			c.countMutex.Unlock()
-			ch <- prometheus.MustNewConstMetric(c.latency, prometheus.GaugeValue, elapsed.Seconds(), host)
+			c.latencyHistogramVec.Add(host, elapsed.Seconds())
 		}(host)
 	}
 
 	wg.Wait()
+
+	c.latencyHistogramVec.Ensure(hosts)
+
+	ch <- prometheus.MustNewConstMetric(c.errorTotalDesc, prometheus.CounterValue, c.errorTotal)
+	for host, histogram := range c.latencyHistogramVec.Histograms() {
+		ch <- prometheus.MustNewConstHistogram(
+			c.latencyHistogramDesc,
+			histogram.Count(), histogram.Sum(), histogram.Buckets(),
+			host,
+		)
+	}
 }
