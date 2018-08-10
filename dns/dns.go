@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/giantswarm/exporterkit"
+	"github.com/giantswarm/exporterkit/histogramvec"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
@@ -14,6 +14,10 @@ import (
 
 const (
 	namespace = "dns"
+
+	bucketStart  = 0.001
+	bucketFactor = 2
+	numBuckets   = 15
 )
 
 type Config struct {
@@ -27,24 +31,32 @@ type DNSCollector struct {
 
 	hosts []string
 
-	count      map[string]float64
-	errorCount map[string]float64
+	latencyHistogramVec  *histogramvec.HistogramVec
+	latencyHistogramDesc *prometheus.Desc
 
-	countMutex      sync.Mutex
-	errorCountMutex sync.Mutex
-
-	total      *prometheus.Desc
-	errorTotal *prometheus.Desc
-	latency    *prometheus.Desc
+	errorTotal     float64
+	errorTotalDesc *prometheus.Desc
 }
 
 func NewCollector(config Config) (*DNSCollector, error) {
 	if config.Logger == nil {
-		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.Logger must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
 	if len(config.Hosts) == 0 {
-		return nil, microerror.Maskf(exporterkit.InvalidConfigError, "%T.Host must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", config)
+	}
+
+	var err error
+	var latencyHistogramVec *histogramvec.HistogramVec
+	{
+		c := histogramvec.Config{
+			BucketLimits: prometheus.ExponentialBuckets(bucketStart, bucketFactor, numBuckets),
+		}
+		latencyHistogramVec, err = histogramvec.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	}
 
 	dnsCollector := &DNSCollector{
@@ -52,25 +64,18 @@ func NewCollector(config Config) (*DNSCollector, error) {
 
 		hosts: config.Hosts,
 
-		count:      map[string]float64{},
-		errorCount: map[string]float64{},
+		latencyHistogramVec: latencyHistogramVec,
+		latencyHistogramDesc: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "latency_seconds"),
+			"Histogram of latency of DNS resolutions.",
+			[]string{"host"},
+			nil,
+		),
 
-		total: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "check_total"),
-			"Total number of DNS resolutions.",
-			[]string{"host"},
+		errorTotalDesc: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "error_total"),
+			"Total of DNS resolution errors.",
 			nil,
-		),
-		errorTotal: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "check_error_total"),
-			"Total number of DNS resolution errors.",
-			[]string{"host"},
-			nil,
-		),
-		latency: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "check_seconds"),
-			"Time taken to resolve DNS.",
-			[]string{"host"},
 			nil,
 		),
 	}
@@ -79,9 +84,8 @@ func NewCollector(config Config) (*DNSCollector, error) {
 }
 
 func (c *DNSCollector) Describe(ch chan<- *prometheus.Desc) {
-	ch <- c.total
-	ch <- c.errorTotal
-	ch <- c.latency
+	ch <- c.latencyHistogramDesc
+	ch <- c.errorTotalDesc
 }
 
 func (c *DNSCollector) Collect(ch chan<- prometheus.Metric) {
@@ -95,30 +99,29 @@ func (c *DNSCollector) Collect(ch chan<- prometheus.Metric) {
 
 			start := time.Now()
 
-			c.countMutex.Lock()
-			c.count[host]++
-			c.countMutex.Unlock()
-
 			_, err := net.LookupHost(host)
 			if err != nil {
 				c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "stack", fmt.Sprintf("%#v", err))
-
-				c.errorCountMutex.Lock()
-				c.errorCount[host]++
-				ch <- prometheus.MustNewConstMetric(c.errorTotal, prometheus.CounterValue, c.errorCount[host], host)
-				c.errorCountMutex.Unlock()
-
+				c.errorTotal++
 				return
 			}
 
 			elapsed := time.Since(start)
 
-			c.countMutex.Lock()
-			ch <- prometheus.MustNewConstMetric(c.total, prometheus.CounterValue, c.count[host], host)
-			c.countMutex.Unlock()
-			ch <- prometheus.MustNewConstMetric(c.latency, prometheus.GaugeValue, elapsed.Seconds(), host)
+			c.latencyHistogramVec.Add(host, elapsed.Seconds())
 		}(host)
 	}
 
 	wg.Wait()
+
+	c.latencyHistogramVec.Ensure(c.hosts)
+
+	ch <- prometheus.MustNewConstMetric(c.errorTotalDesc, prometheus.CounterValue, c.errorTotal)
+	for host, histogram := range c.latencyHistogramVec.Histograms() {
+		ch <- prometheus.MustNewConstHistogram(
+			c.latencyHistogramDesc,
+			histogram.Count(), histogram.Sum(), histogram.Buckets(),
+			host,
+		)
+	}
 }
