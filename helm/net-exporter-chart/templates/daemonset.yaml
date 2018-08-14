@@ -2,7 +2,7 @@ kind: DaemonSet
 apiVersion: extensions/v1beta1
 metadata:
   name: net-exporter
-  namespace: monitoring
+  namespace: {{ .Values.namespace }}
   labels:
     app: net-exporter
 spec:
