@@ -2,7 +2,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: net-exporter
-  namespace: monitoring
+  namespace: {{ .Values.namespace }}
   labels:
     app: net-exporter
 rules:
@@ -19,13 +19,13 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: net-exporter
-  namespace: monitoring
+  namespace: {{ .Values.namespace }}
   labels:
     app: net-exporter
 subjects:
 - kind: ServiceAccount
   name: net-exporter
-  namespace: monitoring
+  namespace: {{ .Values.namespace }}
 roleRef:
   kind: Role
   name: net-exporter
