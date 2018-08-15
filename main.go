@@ -56,7 +56,7 @@ func main() {
 			},
 		}
 
-		dnsCollector, err = dns.NewCollector(c)
+		dnsCollector, err = dns.New(c)
 		if err != nil {
 			panic(fmt.Sprintf("%#v\n", err))
 		}
@@ -77,7 +77,7 @@ func main() {
 			ServiceName: "net-exporter",
 		}
 
-		networkCollector, err = network.NewCollector(c)
+		networkCollector, err = network.New(c)
 		if err != nil {
 			panic(fmt.Sprintf("%#v\n", err))
 		}
