@@ -22,6 +22,7 @@ const (
 	numBuckets   = 15
 )
 
+// Config provides the necessary configuration for creating a Collector.
 type Config struct {
 	Dialer           *net.Dialer
 	KubernetesClient kubernetes.Interface
@@ -33,7 +34,8 @@ type Config struct {
 	ServiceName string
 }
 
-type NetworkCollector struct {
+// Collector implements the Collector interface, exposing network latency information.
+type Collector struct {
 	dialer           *net.Dialer
 	kubernetesClient kubernetes.Interface
 	logger           micrologger.Logger
@@ -50,7 +52,8 @@ type NetworkCollector struct {
 	errorTotalDesc *prometheus.Desc
 }
 
-func NewCollector(config Config) (*NetworkCollector, error) {
+// New creates a Collector, given a Config.
+func New(config Config) (*Collector, error) {
 	if config.Dialer == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Dialer must not be empty", config)
 	}
@@ -86,7 +89,7 @@ func NewCollector(config Config) (*NetworkCollector, error) {
 		}
 	}
 
-	networkCollector := &NetworkCollector{
+	collector := &Collector{
 		dialer:           config.Dialer,
 		kubernetesClient: config.KubernetesClient,
 		logger:           config.Logger,
@@ -112,15 +115,17 @@ func NewCollector(config Config) (*NetworkCollector, error) {
 		),
 	}
 
-	return networkCollector, nil
+	return collector, nil
 }
 
-func (c *NetworkCollector) Describe(ch chan<- *prometheus.Desc) {
+// Describe implements the Describe method of the Collector interface.
+func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.latencyHistogramDesc
 	ch <- c.errorTotalDesc
 }
 
-func (c *NetworkCollector) Collect(ch chan<- prometheus.Metric) {
+// Collect implements the Collect method of the Collector interface.
+func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	hosts := []string{c.host}
 
 	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.serviceName, metav1.GetOptions{})

@@ -20,13 +20,15 @@ const (
 	numBuckets   = 15
 )
 
+// Config provides the necessary configuration for creating a Collector.
 type Config struct {
 	Logger micrologger.Logger
 
 	Hosts []string
 }
 
-type DNSCollector struct {
+// Collector implements the Collector interface, exposing DNS latency information.
+type Collector struct {
 	logger micrologger.Logger
 
 	hosts []string
@@ -38,7 +40,8 @@ type DNSCollector struct {
 	errorTotalDesc *prometheus.Desc
 }
 
-func NewCollector(config Config) (*DNSCollector, error) {
+// New creates a Collector, given a Config.
+func New(config Config) (*Collector, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
@@ -59,7 +62,7 @@ func NewCollector(config Config) (*DNSCollector, error) {
 		}
 	}
 
-	dnsCollector := &DNSCollector{
+	collector := &Collector{
 		logger: config.Logger,
 
 		hosts: config.Hosts,
@@ -80,15 +83,17 @@ func NewCollector(config Config) (*DNSCollector, error) {
 		),
 	}
 
-	return dnsCollector, nil
+	return collector, nil
 }
 
-func (c *DNSCollector) Describe(ch chan<- *prometheus.Desc) {
+// Describe implements the Describe method of the Collector interface.
+func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.latencyHistogramDesc
 	ch <- c.errorTotalDesc
 }
 
-func (c *DNSCollector) Collect(ch chan<- prometheus.Metric) {
+// Collect implements the Collect method of the Collector interface.
+func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	var wg sync.WaitGroup
 
 	for _, host := range c.hosts {
