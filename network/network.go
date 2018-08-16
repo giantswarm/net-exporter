@@ -28,10 +28,9 @@ type Config struct {
 	KubernetesClient kubernetes.Interface
 	Logger           micrologger.Logger
 
-	Host        string
-	Namespace   string
-	Port        string
-	ServiceName string
+	Namespace string
+	Port      string
+	Service   string
 }
 
 // Collector implements the Collector interface, exposing network latency information.
@@ -40,10 +39,9 @@ type Collector struct {
 	kubernetesClient kubernetes.Interface
 	logger           micrologger.Logger
 
-	host        string
-	namespace   string
-	port        string
-	serviceName string
+	namespace string
+	port      string
+	service   string
 
 	latencyHistogramVec  *histogramvec.HistogramVec
 	latencyHistogramDesc *prometheus.Desc
@@ -64,17 +62,14 @@ func New(config Config) (*Collector, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
-	if config.Host == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", config)
-	}
 	if config.Namespace == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Namespace must not be empty", config)
 	}
 	if config.Port == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Port must not be empty", config)
 	}
-	if config.ServiceName == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.ServiceName must not be empty", config)
+	if config.Service == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Service must not be empty", config)
 	}
 
 	var err error
@@ -94,10 +89,9 @@ func New(config Config) (*Collector, error) {
 		kubernetesClient: config.KubernetesClient,
 		logger:           config.Logger,
 
-		host:        config.Host,
-		namespace:   config.Namespace,
-		port:        config.Port,
-		serviceName: config.ServiceName,
+		namespace: config.Namespace,
+		port:      config.Port,
+		service:   config.Service,
 
 		latencyHistogramVec: latencyHistogramVec,
 		latencyHistogramDesc: prometheus.NewDesc(
@@ -126,9 +120,11 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-	hosts := []string{c.host}
+	serviceHost := fmt.Sprintf("%s:%s", c.service, c.port)
 
-	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.serviceName, metav1.GetOptions{})
+	hosts := []string{serviceHost}
+
+	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not get endpoints", "stack", fmt.Sprintf("%#v", err))
 		c.errorTotal++

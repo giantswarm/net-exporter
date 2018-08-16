@@ -18,6 +18,8 @@ spec:
       containers:
       - name: net-exporter
         image: quay.io/giantswarm/net-exporter:[[ .SHA ]]
+        args:
+        - "-namespace={{ .Values.namespace }}"
         livenessProbe:
           httpGet:
             path: /healthz

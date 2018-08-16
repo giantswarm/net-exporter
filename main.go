@@ -1,9 +1,11 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/giantswarm/exporterkit"
@@ -16,10 +18,26 @@ import (
 	"github.com/giantswarm/net-exporter/network"
 )
 
+var (
+	hosts     string
+	namespace string
+	port      string
+	service   string
+)
+
+func init() {
+	flag.StringVar(&hosts, "hosts", "giantswarm.io,kubernetes.default.svc.cluster.local", "DNS hosts to resolve")
+	flag.StringVar(&namespace, "namespace", "monitoring", "Namespace of net-exporter service")
+	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
+	flag.StringVar(&service, "service", "net-exporter", "Name of net-exporter service")
+}
+
 func main() {
 	if len(os.Args) > 1 && (os.Args[1] == "version" || os.Args[1] == "--help") {
 		return
 	}
+
+	flag.Parse()
 
 	var err error
 
@@ -47,13 +65,12 @@ func main() {
 
 	var dnsCollector prometheus.Collector
 	{
+		splitHosts := strings.Split(hosts, ",")
+
 		c := dns.Config{
 			Logger: logger,
 
-			Hosts: []string{
-				"kubernetes.default.svc.cluster.local",
-				"giantswarm.io",
-			},
+			Hosts: splitHosts,
 		}
 
 		dnsCollector, err = dns.New(c)
@@ -71,10 +88,9 @@ func main() {
 			KubernetesClient: kubernetesClient,
 			Logger:           logger,
 
-			Host:        "net-exporter:8000",
-			Namespace:   "monitoring",
-			Port:        "8000",
-			ServiceName: "net-exporter",
+			Namespace: namespace,
+			Port:      port,
+			Service:   service,
 		}
 
 		networkCollector, err = network.New(c)
