@@ -8,6 +8,9 @@ metadata:
 spec:
   updateStrategy:
     type: RollingUpdate
+  selector:
+    matchLabels:
+      app: net-exporter
   template:
     metadata:
       labels:
