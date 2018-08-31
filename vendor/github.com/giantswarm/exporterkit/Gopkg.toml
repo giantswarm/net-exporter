@@ -31,11 +31,15 @@
 
 [[constraint]]
   branch = "master"
+  name = "github.com/giantswarm/microkit"
+
+[[constraint]]
+  branch = "master"
   name = "github.com/giantswarm/micrologger"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/prometheus/client_golang"
-  version = "0.8.0"
 
 [prune]
   go-tests = true
