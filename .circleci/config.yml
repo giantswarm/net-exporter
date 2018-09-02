@@ -67,6 +67,10 @@ jobs:
 
     - run: ./architect deploy
 
+    - run: |
+        sed -i 's/version:.*/version: 1.0.0-'"${CIRCLE_SHA1}"'/' helm/cert-exporter-chart/Chart.yaml
+        ./architect publish
+
 workflows:
   version: 2
   build_e2e:
