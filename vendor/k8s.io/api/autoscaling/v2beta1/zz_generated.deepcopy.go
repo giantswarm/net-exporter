@@ -386,6 +386,16 @@ func (in *ObjectMetricSource) DeepCopyInto(out *ObjectMetricSource) {
 	*out = *in
 	out.Target = in.Target
 	out.TargetValue = in.TargetValue.DeepCopy()
+	if in.Selector != nil {
+		in, out := &in.Selector, &out.Selector
+		*out = new(v1.LabelSelector)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.AverageValue != nil {
+		in, out := &in.AverageValue, &out.AverageValue
+		x := (*in).DeepCopy()
+		*out = &x
+	}
 	return
 }
 
@@ -404,6 +414,16 @@ func (in *ObjectMetricStatus) DeepCopyInto(out *ObjectMetricStatus) {
 	*out = *in
 	out.Target = in.Target
 	out.CurrentValue = in.CurrentValue.DeepCopy()
+	if in.Selector != nil {
+		in, out := &in.Selector, &out.Selector
+		*out = new(v1.LabelSelector)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.AverageValue != nil {
+		in, out := &in.AverageValue, &out.AverageValue
+		x := (*in).DeepCopy()
+		*out = &x
+	}
 	return
 }
 
@@ -421,6 +441,11 @@ func (in *ObjectMetricStatus) DeepCopy() *ObjectMetricStatus {
 func (in *PodsMetricSource) DeepCopyInto(out *PodsMetricSource) {
 	*out = *in
 	out.TargetAverageValue = in.TargetAverageValue.DeepCopy()
+	if in.Selector != nil {
+		in, out := &in.Selector, &out.Selector
+		*out = new(v1.LabelSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	return
 }
 
@@ -438,6 +463,11 @@ func (in *PodsMetricSource) DeepCopy() *PodsMetricSource {
 func (in *PodsMetricStatus) DeepCopyInto(out *PodsMetricStatus) {
 	*out = *in
 	out.CurrentAverageValue = in.CurrentAverageValue.DeepCopy()
+	if in.Selector != nil {
+		in, out := &in.Selector, &out.Selector
+		*out = new(v1.LabelSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	return
 }
 
