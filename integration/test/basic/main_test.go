@@ -61,9 +61,10 @@ func init() {
 
 	{
 		c := framework.HostConfig{
-			Logger:     l,
-			ClusterID:  "na",
-			VaultToken: "na",
+			Logger: l,
+
+			ClusterID:  "n/a",
+			VaultToken: "n/a",
 		}
 		h, err = framework.NewHost(c)
 		if err != nil {
@@ -73,9 +74,10 @@ func init() {
 
 	{
 		c := helmclient.Config{
-			Logger:          l,
-			K8sClient:       h.K8sClient(),
-			RestConfig:      h.RestConfig(),
+			Logger:     l,
+			K8sClient:  h.K8sClient(),
+			RestConfig: h.RestConfig(),
+
 			TillerNamespace: "giantswarm",
 		}
 		helmClient, err = helmclient.New(c)
