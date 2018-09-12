@@ -68,7 +68,7 @@ type Interface interface {
 	// - Install chart.
 	// - Check chart is deployed.
 	// - Check key resources are correct.
-	// - Run helm release tests.
+	// - Run helm release tests if configured.
 	//
 	Test(ctx context.Context) error
 }

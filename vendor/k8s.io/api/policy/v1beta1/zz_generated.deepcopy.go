@@ -394,24 +394,6 @@ func (in *PodSecurityPolicySpec) DeepCopyInto(out *PodSecurityPolicySpec) {
 		*out = make([]AllowedFlexVolume, len(*in))
 		copy(*out, *in)
 	}
-<<<<<<< HEAD
-=======
-	if in.AllowedUnsafeSysctls != nil {
-		in, out := &in.AllowedUnsafeSysctls, &out.AllowedUnsafeSysctls
-		*out = make([]string, len(*in))
-		copy(*out, *in)
-	}
-	if in.ForbiddenSysctls != nil {
-		in, out := &in.ForbiddenSysctls, &out.ForbiddenSysctls
-		*out = make([]string, len(*in))
-		copy(*out, *in)
-	}
-	if in.AllowedProcMountTypes != nil {
-		in, out := &in.AllowedProcMountTypes, &out.AllowedProcMountTypes
-		*out = make([]corev1.ProcMountType, len(*in))
-		copy(*out, *in)
-	}
->>>>>>> master
 	return
 }
 
