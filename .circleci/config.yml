@@ -45,6 +45,8 @@ jobs:
           ./architect version
 
     - run: ./architect build
+    - store_test_results:
+        path: /tmp/results
 
     - persist_to_workspace:
         root: .
