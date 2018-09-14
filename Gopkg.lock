@@ -60,7 +60,7 @@
     "digestset",
     "reference"
   ]
-  revision = "a5c2fdc5b87bb6a142cf89f7406ffe25374affb5"
+  revision = "b089e91688254eb5aef187f188c8ee0ebe4e4675"
 
 [[projects]]
   name = "github.com/docker/docker"
@@ -157,7 +157,6 @@
   packages = [
     "pkg/framework",
     "pkg/framework/filelogger",
-    "pkg/framework/resource",
     "pkg/harness"
   ]
   revision = "b8f538cd46acde7bd3570348948080de2b07b8ae"
@@ -169,13 +168,7 @@
     "chart",
     "chart/env"
   ]
-  revision = "d69cd345fbb3e1b1c7f092cf009d0c92806ce2bb"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/giantswarm/e2etests"
-  packages = ["managedservices"]
-  revision = "bc2f34dab1e20f4be9cfdf04bb1881d47f0daffe"
+  revision = "649469c2d54fba4bf86b3e9bca96bd47435461ae"
 
 [[projects]]
   branch = "master"
@@ -197,7 +190,7 @@
   branch = "master"
   name = "github.com/giantswarm/helmclient"
   packages = ["."]
-  revision = "e34390752975ad2db4b52bad7487440223184073"
+  revision = "1bc4dcdb7e3c4b3d8900dd31c3dac2aa64d318c4"
 
 [[projects]]
   branch = "master"
@@ -653,7 +646,7 @@
   branch = "master"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  revision = "36d5787dc5356b711fe8f3040271aaf51c35955b"
+  revision = "5a2fd4cab2d6d4a18e70c34937662526cd0c4bd1"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -1169,6 +1162,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7a766ee966305d18b7e890bc68324636da6d3dcb34b13547316e72342ee53dd0"
+  inputs-digest = "f0cc671759ea6b385e8c78954ad7e6b2b0ba2861c58587fedbbf6caf509abab7"
   solver-name = "gps-cdcl"
   solver-version = 1

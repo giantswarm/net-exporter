@@ -9,16 +9,16 @@ import (
 	"github.com/giantswarm/e2esetup/chart/env"
 )
 
-func Setup(ctx context.Context, m *testing.M, config Config) error {
+func Setup(ctx context.Context, m *testing.M, config Config) (int, error) {
 	var v int
 	var err error
 	var errors []error
 
 	if config.HelmClient == nil {
-		return microerror.Maskf(invalidConfigError, "%T.HelmClient must not be empty", config)
+		return v, microerror.Maskf(invalidConfigError, "%T.HelmClient must not be empty", config)
 	}
 	if config.Host == nil {
-		return microerror.Maskf(invalidConfigError, "%T.Host must not be empty", config)
+		return v, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", config)
 	}
 
 	err = config.Host.CreateNamespace("giantswarm")
@@ -51,8 +51,8 @@ func Setup(ctx context.Context, m *testing.M, config Config) error {
 	}
 
 	if len(errors) > 0 {
-		return microerror.Mask(errors[0])
+		return v, microerror.Mask(errors[0])
 	}
 
-	return nil
+	return v, nil
 }

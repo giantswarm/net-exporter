@@ -26,6 +26,8 @@
 
 
 
+
+
 required = [
   "github.com/Azure/go-autorest/autorest",
   "github.com/docker/distribution/reference",
@@ -49,10 +51,6 @@ required = [
 [[constraint]]
   branch = "master"
   name = "github.com/giantswarm/e2esetup"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/giantswarm/e2etests"
 
 [[constraint]]
   branch = "master"

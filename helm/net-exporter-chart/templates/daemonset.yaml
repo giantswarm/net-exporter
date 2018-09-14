@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: net-exporter
-        image: quay.io/giantswarm/net-exporter:[[ .SHA ]]
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         args:
         - "-namespace={{ .Values.namespace }}"
         livenessProbe:
