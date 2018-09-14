@@ -1,2 +1,9 @@
 net-exporter
 
+# don't apply earlier restrictions under vendor
+!vendor/**
+
+.e2e-harness/
+
+integration/test/**/*-e2e
+
