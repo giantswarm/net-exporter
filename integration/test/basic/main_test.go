@@ -95,7 +95,7 @@ func init() {
 			ChartConfig: managedservices.ChartConfig{
 				ChannelName:     fmt.Sprintf("%s-%s", env.CircleSHA(), testName),
 				ChartName:       chartName,
-				ChartValues:     fmt.Sprintf("{ \"image\": { \"tag\": \"%s\" } }", env.CircleSHA()),
+				ChartValues:     fmt.Sprintf("{ \"image\": { \"tag\": \"%s\" }, \"namespace\": \"%s\" }", env.CircleSHA(), metav1.NamespaceSystem),
 				Namespace:       metav1.NamespaceSystem,
 				RunReleaseTests: false,
 			},
