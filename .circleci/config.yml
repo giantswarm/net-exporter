@@ -52,6 +52,7 @@ jobs:
         root: .
         paths:
         - ./architect
+        - ./net-exporter
 
   e2eTestBasic:
     environment:
