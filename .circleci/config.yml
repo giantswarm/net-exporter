@@ -52,7 +52,6 @@ jobs:
         root: .
         paths:
         - ./architect
-        - ./net-exporter
 
   e2eTestBasic:
     environment:
@@ -69,14 +68,6 @@ jobs:
         at: .
 
     - run: ./architect deploy
-
-  publish_to_stable:
-    machine: true
-    steps:
-    - checkout
-
-    - attach_workspace:
-        at: .
 
     - run:
         name: Publish to stable
@@ -102,10 +93,3 @@ workflows:
               only: master
           requires:
           - e2eTestBasic
-
-      - publish_to_stable:
-          filters:
-            branches:
-              only: master
-          requires:
-          - deploy
