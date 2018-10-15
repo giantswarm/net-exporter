@@ -45,6 +45,11 @@ jobs:
           ./architect version
 
     - run: ./architect build
+
+    - run:
+        name: Publish chart to CNR using a temporary channel for feature branch deploys
+        command: ./architect publish --pipeline=false --channels=wip-${CIRCLE_SHA1}
+
     - store_test_results:
         path: /tmp/results
 
