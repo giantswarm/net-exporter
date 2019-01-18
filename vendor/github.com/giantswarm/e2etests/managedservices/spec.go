@@ -54,11 +54,12 @@ type DaemonSet struct {
 
 // Deployment is a deployment to be tested.
 type Deployment struct {
-	Name        string
-	Namespace   string
-	Labels      map[string]string
-	MatchLabels map[string]string
-	Replicas    int
+	Name             string
+	Namespace        string
+	DeploymentLabels map[string]string
+	MatchLabels      map[string]string
+	PodLabels        map[string]string
+	Replicas         int
 }
 
 type Interface interface {
