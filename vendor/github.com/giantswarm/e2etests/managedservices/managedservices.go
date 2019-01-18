@@ -63,7 +63,7 @@ func New(config Config) (*ManagedServices, error) {
 
 	var resource *frameworkresource.Resource
 	{
-		c := frameworkresource.ResourceConfig{
+		c := frameworkresource.Config{
 			ApprClient: config.ApprClient,
 			HelmClient: config.HelmClient,
 			Logger:     config.Logger,
@@ -96,7 +96,7 @@ func (ms *ManagedServices) Test(ctx context.Context) error {
 	{
 		ms.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("installing chart %#q", ms.chartConfig.ChartName))
 
-		err = ms.resource.InstallResource(ms.chartConfig.ChartName, ms.chartConfig.ChartValues, ms.chartConfig.ChannelName)
+		err = ms.resource.Install(ms.chartConfig.ChartName, ms.chartConfig.ChartValues, ms.chartConfig.ChannelName)
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -146,7 +146,7 @@ func (ms *ManagedServices) Test(ctx context.Context) error {
 		if ms.chartConfig.RunReleaseTests {
 			ms.logger.LogCtx(ctx, "level", "debug", "message", "running release tests")
 
-			err = ms.helmClient.RunReleaseTest(ms.chartConfig.ChartName)
+			err = ms.helmClient.RunReleaseTest(ctx, ms.chartConfig.ChartName)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -200,7 +200,7 @@ func (ms *ManagedServices) checkDeployment(expectedDeployment Deployment) error 
 		return microerror.Maskf(invalidReplicasError, "expected %d replicas got: %d", expectedDeployment.Replicas, *ds.Spec.Replicas)
 	}
 
-	err = ms.checkLabels("deployment labels", expectedDeployment.Labels, ds.ObjectMeta.Labels)
+	err = ms.checkLabels("deployment labels", expectedDeployment.DeploymentLabels, ds.ObjectMeta.Labels)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -210,7 +210,7 @@ func (ms *ManagedServices) checkDeployment(expectedDeployment Deployment) error 
 		return microerror.Mask(err)
 	}
 
-	err = ms.checkLabels("deployment pod labels", expectedDeployment.Labels, ds.Spec.Template.ObjectMeta.Labels)
+	err = ms.checkLabels("deployment pod labels", expectedDeployment.PodLabels, ds.Spec.Template.ObjectMeta.Labels)
 	if err != nil {
 		return microerror.Mask(err)
 	}
