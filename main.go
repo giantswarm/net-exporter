@@ -83,7 +83,7 @@ func main() {
 	{
 		c := network.Config{
 			Dialer: &net.Dialer{
-				Timeout: 5 * time.Second,
+				Timeout: 10 * time.Second,
 			},
 			KubernetesClient: kubernetesClient,
 			Logger:           logger,
