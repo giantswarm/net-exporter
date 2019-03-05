@@ -141,12 +141,12 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	for _, host := range hosts {
 		wg.Add(1)
 
-		go func(host string) {
+		go func(dialer *net.Dialer, host string) {
 			defer wg.Done()
 
 			start := time.Now()
 
-			conn, err := c.dialer.Dial("tcp", host)
+			conn, err := dialer.Dial("tcp", host)
 			if err != nil {
 				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", fmt.Sprintf("%#v", err))
 				c.errorTotal++
@@ -157,7 +157,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			elapsed := time.Since(start)
 
 			c.latencyHistogramVec.Add(host, elapsed.Seconds())
-		}(host)
+		}(c.dialer, host)
 	}
 
 	wg.Wait()
