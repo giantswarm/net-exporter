@@ -146,7 +146,10 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 			start := time.Now()
 
-			conn, err := c.dialer.Dial("tcp", host)
+			d := &net.Dialer{
+				Timeout: 5 * time.Second,
+			}
+			conn, err := d.Dial("tcp", host)
 			if err != nil {
 				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", fmt.Sprintf("%#v", err))
 				c.errorTotal++
