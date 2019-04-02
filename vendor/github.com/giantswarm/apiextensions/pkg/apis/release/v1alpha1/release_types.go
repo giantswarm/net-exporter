@@ -179,7 +179,6 @@ var releaseCRDValidation = &apiextensionsv1beta1.CustomResourceValidation{
 //	              type: object
 //	              required:
 //	                - phase
-//	                - release
 //	              properties:
 //	                disabledDate:
 //	                  type: string
@@ -193,12 +192,6 @@ var releaseCRDValidation = &apiextensionsv1beta1.CustomResourceValidation{
 //	                  - enabled
 //	                  - disabled
 //	                  - eol
-//	                release:
-//	                  type: object
-//	                  properties:
-//	                    name:
-//	                      type: string
-//	                      minLength: 3
 //	  subresources:
 //	    status: {}
 //
@@ -236,6 +229,7 @@ func NewReleaseTypeMeta() metav1.TypeMeta {
 }
 
 // +genclient
+// +genclient:nonNamespaced
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // Release CRs might look something like the following.
@@ -261,7 +255,7 @@ func NewReleaseTypeMeta() metav1.TypeMeta {
 //	      version: "0.5.0"
 //	    - name: "cluster-operator"
 //	      version: "0.10.0"
-//	  parentVersion: "6.2.1"
+//	  parentVersion: "6.0.1"
 //	  version: "6.1.0"
 //	status:
 //	  cycle:

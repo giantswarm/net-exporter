@@ -3,6 +3,8 @@
 package histogram
 
 import (
+	"sync"
+
 	"github.com/giantswarm/microerror"
 )
 
@@ -22,6 +24,8 @@ type Histogram struct {
 	// buckets is a map of upper bounds to cumulative counts of entries,
 	// excluding the +Inf bucket.
 	buckets map[float64]uint64
+	// mutex controls access to the buckets map, to allow for safe concurrent access.
+	mutex sync.Mutex
 }
 
 func New(config Config) (*Histogram, error) {
@@ -43,6 +47,9 @@ func New(config Config) (*Histogram, error) {
 
 // Add saves an entry to the Histogram.
 func (h *Histogram) Add(x float64) {
+	h.mutex.Lock()
+	defer h.mutex.Unlock()
+
 	h.count++
 	h.sum += x
 
@@ -63,7 +70,16 @@ func (h *Histogram) Sum() float64 {
 	return h.sum
 }
 
-// Buckets returns the current buckets with their counts.
+// Buckets returns a copy of the current buckets with their counts.
 func (h *Histogram) Buckets() map[float64]uint64 {
-	return h.buckets
+	h.mutex.Lock()
+	defer h.mutex.Unlock()
+
+	bucketsCopy := map[float64]uint64{}
+
+	for value, count := range h.buckets {
+		bucketsCopy[value] = count
+	}
+
+	return bucketsCopy
 }
