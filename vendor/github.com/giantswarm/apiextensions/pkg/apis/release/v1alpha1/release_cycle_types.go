@@ -1,7 +1,6 @@
 package v1alpha1
 
 import (
-	"github.com/giantswarm/to"
 	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -16,6 +15,10 @@ const (
 )
 
 type ReleaseCyclePhase string
+
+func (r ReleaseCyclePhase) String() string {
+	return string(r)
+}
 
 var releaseCycleValidation = &apiextensionsv1beta1.CustomResourceValidation{
 	// See http://json-schema.org/learn.
@@ -40,19 +43,9 @@ var releaseCycleValidation = &apiextensionsv1beta1.CustomResourceValidation{
 							{Raw: []byte(`"eol"`)},
 						},
 					},
-					"release": {
-						Type: "object",
-						Properties: map[string]apiextensionsv1beta1.JSONSchemaProps{
-							"name": {
-								Type:      "string",
-								MinLength: to.Int64P(3),
-							},
-						},
-					},
 				},
 				Required: []string{
 					"phase",
-					"release",
 				},
 			},
 			"status": {
@@ -85,7 +78,6 @@ var releaseCycleValidation = &apiextensionsv1beta1.CustomResourceValidation{
 //	          type: object
 //	          required:
 //	            - phase
-//	            - release
 //	          properties:
 //	            disabledDate:
 //	              type: string
@@ -99,12 +91,6 @@ var releaseCycleValidation = &apiextensionsv1beta1.CustomResourceValidation{
 //	                - enabled
 //	                - disabled
 //	                - eol
-//	            release:
-//	              type: object
-//	              properties:
-//	                name:
-//	                  type: string
-//	                  minLength: 3
 //	        status:
 //	          type: object
 //
@@ -142,6 +128,7 @@ func NewReleaseCycleTypeMeta() metav1.TypeMeta {
 }
 
 // +genclient
+// +genclient:nonNamespaced
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // ReleaseCycle CRs might look something like the following.
@@ -157,8 +144,6 @@ func NewReleaseCycleTypeMeta() metav1.TypeMeta {
 //	  disabledDate: 2019-01-12
 //	  enabledDate: 2019-01-08
 //	  phase: "enabled"
-//	  release:
-//	    name: "aws.v6.1.0"
 //
 type ReleaseCycle struct {
 	metav1.TypeMeta   `json:",inline" yaml:",inline"`
@@ -175,13 +160,6 @@ type ReleaseCycleSpec struct {
 	// Phase is the release phase. It can be one of: "upcoming", "enabled",
 	// "disabled", "eol".
 	Phase ReleaseCyclePhase `json:"phase" yaml:"phase"`
-	// Release contains information about Release CR referenced by this ReleaseCycle CR.
-	Release ReleaseCycleSpecRelease `json:"release" yaml:"release"`
-}
-
-type ReleaseCycleSpecRelease struct {
-	// Name is the name of the Release CR referenced by this ReleaseCycle CR
-	Name string `json:"name" yaml:"name"`
 }
 
 type ReleaseCycleStatus struct {
