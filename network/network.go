@@ -120,9 +120,16 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-	serviceHost := fmt.Sprintf("%s:%s", c.service, c.port)
+	hosts := []string{}
 
-	hosts := []string{serviceHost}
+	service, err := c.kubernetesClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
+	if err != nil {
+		c.logger.Log("level", "error", "message", "could not get service", "stack", fmt.Sprintf("%#v", err))
+		c.errorTotal++
+		return
+	}
+
+	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
 
 	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
