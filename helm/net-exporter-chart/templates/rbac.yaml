@@ -9,6 +9,7 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - services
   - endpoints
   resourceNames:
   - net-exporter
