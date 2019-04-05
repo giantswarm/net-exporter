@@ -36,8 +36,8 @@ type Collector struct {
 	latencyHistogramVec  *histogramvec.HistogramVec
 	latencyHistogramDesc *prometheus.Desc
 
-	errorTotal     float64
-	errorTotalDesc *prometheus.Desc
+	errorCount        prometheus.Counter
+	resolveErrorCount *prometheus.CounterVec
 }
 
 // New creates a Collector, given a Config.
@@ -75,11 +75,16 @@ func New(config Config) (*Collector, error) {
 			nil,
 		),
 
-		errorTotalDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "error_total"),
-			"Total of DNS resolution errors.",
-			nil,
-			nil,
+		errorCount: prometheus.NewCounter(prometheus.CounterOpts{
+			Name: prometheus.BuildFQName(namespace, "", "error_total"),
+			Help: "Total number of internal errors.",
+		}),
+		resolveErrorCount: prometheus.NewCounterVec(
+			prometheus.CounterOpts{
+				Name: prometheus.BuildFQName(namespace, "", "resolve_error_total"),
+				Help: "Total number of errors resolving hosts.",
+			},
+			[]string{"host"},
 		),
 	}
 
@@ -89,7 +94,6 @@ func New(config Config) (*Collector, error) {
 // Describe implements the Describe method of the Collector interface.
 func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.latencyHistogramDesc
-	ch <- c.errorTotalDesc
 }
 
 // Collect implements the Collect method of the Collector interface.
@@ -107,7 +111,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			_, err := net.LookupHost(host)
 			if err != nil {
 				c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "stack", fmt.Sprintf("%#v", err))
-				c.errorTotal++
+				c.resolveErrorCount.WithLabelValues(host).Inc()
 				return
 			}
 
@@ -121,7 +125,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	c.latencyHistogramVec.Ensure(c.hosts)
 
-	ch <- prometheus.MustNewConstMetric(c.errorTotalDesc, prometheus.CounterValue, c.errorTotal)
 	for host, histogram := range c.latencyHistogramVec.Histograms() {
 		ch <- prometheus.MustNewConstHistogram(
 			c.latencyHistogramDesc,
