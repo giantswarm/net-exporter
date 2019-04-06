@@ -108,7 +108,7 @@ func New(config Config) (*Collector, error) {
 		dialErrorCount: prometheus.NewCounterVec(
 			prometheus.CounterOpts{
 				Name: prometheus.BuildFQName(namespace, "", "dial_error_total"),
-				Help: "Total number of errors dialing other hosts.",
+				Help: "Total number of errors dialing hosts.",
 			},
 			[]string{"host"},
 		),
