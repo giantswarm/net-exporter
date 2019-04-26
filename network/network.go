@@ -46,8 +46,8 @@ type Collector struct {
 	latencyHistogramVec  *histogramvec.HistogramVec
 	latencyHistogramDesc *prometheus.Desc
 
-	errorTotal     float64
-	errorTotalDesc *prometheus.Desc
+	errorCount     prometheus.Counter
+	dialErrorCount *prometheus.CounterVec
 }
 
 // New creates a Collector, given a Config.
@@ -101,11 +101,16 @@ func New(config Config) (*Collector, error) {
 			nil,
 		),
 
-		errorTotalDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "error_total"),
-			"Total number of network dial errors.",
-			nil,
-			nil,
+		errorCount: prometheus.NewCounter(prometheus.CounterOpts{
+			Name: prometheus.BuildFQName(namespace, "", "error_total"),
+			Help: "Total number of internal errors.",
+		}),
+		dialErrorCount: prometheus.NewCounterVec(
+			prometheus.CounterOpts{
+				Name: prometheus.BuildFQName(namespace, "", "dial_error_total"),
+				Help: "Total number of errors dialing hosts.",
+			},
+			[]string{"host"},
 		),
 	}
 
@@ -115,7 +120,6 @@ func New(config Config) (*Collector, error) {
 // Describe implements the Describe method of the Collector interface.
 func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.latencyHistogramDesc
-	ch <- c.errorTotalDesc
 }
 
 // Collect implements the Collect method of the Collector interface.
@@ -125,7 +129,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	service, err := c.kubernetesClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not get service", "stack", fmt.Sprintf("%#v", err))
-		c.errorTotal++
+		c.errorCount.Inc()
 		return
 	}
 
@@ -134,7 +138,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not get endpoints", "stack", fmt.Sprintf("%#v", err))
-		c.errorTotal++
+		c.errorCount.Inc()
 	}
 
 	for _, endpointSubset := range endpoints.Subsets {
@@ -156,7 +160,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			conn, err := c.dialer.Dial("tcp", host)
 			if err != nil {
 				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", fmt.Sprintf("%#v", err))
-				c.errorTotal++
+				c.dialErrorCount.WithLabelValues(host).Inc()
 				return
 			}
 			defer conn.Close()
@@ -171,7 +175,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	c.latencyHistogramVec.Ensure(hosts)
 
-	ch <- prometheus.MustNewConstMetric(c.errorTotalDesc, prometheus.CounterValue, c.errorTotal)
 	for host, histogram := range c.latencyHistogramVec.Histograms() {
 		ch <- prometheus.MustNewConstHistogram(
 			c.latencyHistogramDesc,
