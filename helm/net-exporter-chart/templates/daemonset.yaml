@@ -36,6 +36,8 @@ spec:
             scheme: HTTP
           initialDelaySeconds: 5
         resources:
+          # cpu limits removed so that throttling doesn't cause any unwanted
+          # side-effects to measurements.
           requests:
             memory: 50Mi
           limits:
