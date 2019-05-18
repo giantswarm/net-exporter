@@ -43,6 +43,9 @@ spec:
           limits:
             memory: 50Mi
       serviceAccountName: net-exporter
+      securityContext:
+        runAsUser: {{ .Values.userID }}
+        runAsGroup: {{ .Values.groupID }}
       tolerations:
         - key: node-role.kubernetes.io/master
           effect: NoSchedule
