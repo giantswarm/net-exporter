@@ -62,6 +62,21 @@ func New(config Config) (*Collector, error) {
 		}
 	}
 
+	errorCount := prometheus.NewCounter(prometheus.CounterOpts{
+		Name: prometheus.BuildFQName(namespace, "", "error_total"),
+		Help: "Total number of internal errors.",
+	})
+	resolveErrorCount := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: prometheus.BuildFQName(namespace, "", "resolve_error_total"),
+			Help: "Total number of errors resolving hosts.",
+		},
+		[]string{"host"},
+	)
+
+	prometheus.MustRegister(errorCount)
+	prometheus.MustRegister(resolveErrorCount)
+
 	collector := &Collector{
 		logger: config.Logger,
 
@@ -75,17 +90,8 @@ func New(config Config) (*Collector, error) {
 			nil,
 		),
 
-		errorCount: prometheus.NewCounter(prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, "", "error_total"),
-			Help: "Total number of internal errors.",
-		}),
-		resolveErrorCount: prometheus.NewCounterVec(
-			prometheus.CounterOpts{
-				Name: prometheus.BuildFQName(namespace, "", "resolve_error_total"),
-				Help: "Total number of errors resolving hosts.",
-			},
-			[]string{"host"},
-		),
+		errorCount:        errorCount,
+		resolveErrorCount: resolveErrorCount,
 	}
 
 	return collector, nil
