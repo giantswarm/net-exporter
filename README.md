@@ -38,10 +38,12 @@ network | Exposes network latency statistics. Performs dials to the other net-ex
 
 Name | Description
 -----|------------
-`dns_latency_seconds_bucket` | A Prometheus Histogram of DNS resolution latency. See also `dns_latency_seconds_coun`t and `dns_latency_seconds_sum`.
-`dns_error_total` | The total number of errors encountered testing DNS resolution.
+`dns_latency_seconds_bucket` | A Prometheus Histogram of DNS resolution latency. See also `dns_latency_seconds_count` and `dns_latency_seconds_sum`.
+`dns_resolve_error_total` | The total number of errors encountered resolving DNS.
+`dns_error_total` | The total number of internal errors encountered testing DNS resolution.
 `network_latency_seconds_bucket` | A Prometheus Histogram of network latency. See also `network_latency_seconds_count` and `network_latency_seconds_sum`.
-`network_error_total` | The total number of errors encountered testing network latency.
+`network_dial_error_total` | The total number of errors encountered dialing other hosts.
+`network_error_total` | The total number of internal errors encountered testing network latency.
 
 For example (some labels ommited for clarity):
 ```
