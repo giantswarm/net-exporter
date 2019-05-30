@@ -84,6 +84,21 @@ func New(config Config) (*Collector, error) {
 		}
 	}
 
+	errorCount := prometheus.NewCounter(prometheus.CounterOpts{
+		Name: prometheus.BuildFQName(namespace, "", "error_total"),
+		Help: "Total number of internal errors.",
+	})
+	dialErrorCount := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: prometheus.BuildFQName(namespace, "", "dial_error_total"),
+			Help: "Total number of errors dialing hosts.",
+		},
+		[]string{"host"},
+	)
+
+	prometheus.MustRegister(errorCount)
+	prometheus.MustRegister(dialErrorCount)
+
 	collector := &Collector{
 		dialer:           config.Dialer,
 		kubernetesClient: config.KubernetesClient,
@@ -101,17 +116,8 @@ func New(config Config) (*Collector, error) {
 			nil,
 		),
 
-		errorCount: prometheus.NewCounter(prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, "", "error_total"),
-			Help: "Total number of internal errors.",
-		}),
-		dialErrorCount: prometheus.NewCounterVec(
-			prometheus.CounterOpts{
-				Name: prometheus.BuildFQName(namespace, "", "dial_error_total"),
-				Help: "Total number of errors dialing hosts.",
-			},
-			[]string{"host"},
-		),
+		errorCount:     errorCount,
+		dialErrorCount: dialErrorCount,
 	}
 
 	return collector, nil
