@@ -134,7 +134,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	service, err := c.kubernetesClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get service", "stack", fmt.Sprintf("%#v", err))
+		c.logger.Log("level", "error", "message", "could not get service", "stack", microerror.Stack(err))
 		c.errorCount.Inc()
 		return
 	}
@@ -143,7 +143,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get endpoints", "stack", fmt.Sprintf("%#v", err))
+		c.logger.Log("level", "error", "message", "could not get endpoints", "stack", microerror.Stack(err))
 		c.errorCount.Inc()
 	}
 
@@ -165,7 +165,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 			conn, err := c.dialer.Dial("tcp", host)
 			if err != nil {
-				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", fmt.Sprintf("%#v", err))
+				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", microerror.Stack(err))
 				c.dialErrorCount.WithLabelValues(host).Inc()
 				return
 			}

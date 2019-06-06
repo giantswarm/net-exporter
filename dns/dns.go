@@ -1,7 +1,6 @@
 package dns
 
 import (
-	"fmt"
 	"net"
 	"sync"
 	"time"
@@ -116,7 +115,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 			_, err := net.LookupHost(host)
 			if err != nil {
-				c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "stack", fmt.Sprintf("%#v", err))
+				c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "stack", microerror.Stack(err))
 				c.resolveErrorCount.WithLabelValues(host).Inc()
 				return
 			}
