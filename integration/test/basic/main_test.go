@@ -14,6 +14,7 @@ import (
 	"github.com/giantswarm/e2esetup/chart/env"
 	"github.com/giantswarm/e2etests/managedservices"
 	"github.com/giantswarm/helmclient"
+	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/afero"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
