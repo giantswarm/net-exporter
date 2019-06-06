@@ -72,9 +72,10 @@ func (e *Exporter) Run() {
 	var newServer server.Server
 	{
 		c := server.Config{
-			Logger:        e.logger,
-			Endpoints:     []server.Endpoint{healthzEndpoint},
-			ListenAddress: e.address,
+			EnableDebugServer: true,
+			Endpoints:         []server.Endpoint{healthzEndpoint},
+			ListenAddress:     e.address,
+			Logger:            e.logger,
 		}
 
 		newServer, err = server.New(c)

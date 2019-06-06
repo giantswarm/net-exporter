@@ -38,14 +38,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:dc43c3034dff1eec3b2f0d1a499e241df1afb88e7c25138ba16a818c7246ba94"
+  digest = "1:ae978037ecf0a99551443cd0138943efb5f0549c5ea890251c6ead61dccfe25b"
   name = "github.com/giantswarm/microkit"
   packages = [
     "server",
     "tls",
   ]
   pruneopts = "UT"
-  revision = "21181e2cc3c8f5ce7aa32dfdd38aa11643a0a5bf"
+  revision = "ae70e65c60f81ba9442376702b7666b261a1895a"
 
 [[projects]]
   branch = "master"
@@ -179,8 +179,7 @@
   version = "v1.2.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:a9a2ce85044aca7cc828cd18dcaea6345eaacef2615fbd213effeca9c4ac9b71"
+  digest = "1:0de31727c88e9f4a4ae70c28b6caa27f39b25788daf2dc4f7406013421228144"
   name = "github.com/prometheus/client_golang"
   packages = [
     "prometheus",
@@ -188,7 +187,8 @@
     "prometheus/promhttp",
   ]
   pruneopts = "UT"
-  revision = "16f375c74db6ccf880e1cd9c6c6087a6d58e5d12"
+  revision = "50c4339db732beb2165735d2cde0bff78eb3c5a5"
+  version = "v0.9.3"
 
 [[projects]]
   branch = "master"
