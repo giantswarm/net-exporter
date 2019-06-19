@@ -1,5 +1,5 @@
 name: net-exporter
-namespace: monitoring
+namespace: kube-system
 
 userID: 1000
 groupID: 1000
@@ -10,4 +10,4 @@ giantswarmcidr: 137.117.188.104/32
 image:
   registry: quay.io
   repository: giantswarm/net-exporter
-  tag: [[ .SHA ]]
+  tag: latest
