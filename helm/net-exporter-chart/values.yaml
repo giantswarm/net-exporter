@@ -4,6 +4,9 @@ namespace: monitoring
 userID: 1000
 groupID: 1000
 
+port: 8000
+giantswarmcidr: 137.117.188.104/32
+
 image:
   registry: quay.io
   repository: giantswarm/net-exporter
