@@ -23,7 +23,7 @@ spec:
     - ipBlock:
         cidr: 192.168.0.0/16
     - ipBlock:
-        cidr: {{ .Values.giantswarmcidr }}
+        cidr: {{ .Values.giantswarmioIP }}/32
   policyTypes:
   - Ingress
   - Egress

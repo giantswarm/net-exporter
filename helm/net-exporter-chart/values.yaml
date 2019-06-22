@@ -5,7 +5,10 @@ userID: 1000
 groupID: 1000
 
 port: 8000
-giantswarmcidr: 137.117.188.104/32
+# giantswarm.io IP address.
+# It is used in network policy to allow net-exporter verify 
+# external connectivity.
+giantswarmioIP: 137.117.188.104
 
 image:
   registry: quay.io
