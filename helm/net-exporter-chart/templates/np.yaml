@@ -18,6 +18,9 @@ spec:
     - podSelector:
         matchLabels:
           app: net-exporter
+    - podSelector:
+        matchLabels:
+          app: prometheus
     {{ range $index, $workerSubnet := .Values.configmap.workerSubnets }}
     - ipBlock:
         cidr: {{ $workerSubnet }}
