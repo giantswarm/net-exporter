@@ -9,21 +9,45 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: {{ .Values.name }}
+      k8s-app: {{ .Values.name }}
   ingress:
   - ports:
     - port: {{ .Values.port }}
       protocol: TCP
+    from:
+    - podSelector:
+        matchLabels:
+          app: net-exporter
+    {{ range $index, $workerSubnet := .Values.configmap.workerSubnets }}
+    - ipBlock:
+        cidr: {{ $workerSubnet }}
+    {{ end }}
   egress:
-  - to:
+  - ports:
+    - port: {{ .Values.port }}
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: {{ .Values.name }}
+  - ports:
+    - port: {{ .Values.dns.port }}
+      protocol: UDP
+    - port: {{ .Values.dns.port }}
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          k8s-app: {{ .Values.dns.label }}
+  - ports:
+    - port: 443
+      protocol: TCP
+    to:
+    {{ $privateSubnets := list "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/16" }}
+    {{ range $index, $privateSubnet := $privateSubnets }}
     - ipBlock:
-        cidr: 10.0.0.0/8
-    - ipBlock:
-        cidr: 172.16.0.0/12
-    - ipBlock:
-        cidr: 192.168.0.0/16
-    - ipBlock:
-        cidr: {{ .Values.giantswarmioIP }}/32
+        cidr: {{ $privateSubnet }}
+    {{ end }}
   policyTypes:
   - Ingress
   - Egress
