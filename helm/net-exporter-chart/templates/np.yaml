@@ -9,7 +9,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      k8s-app: {{ .Values.name }}
+      app: {{ .Values.name }}
   ingress:
   - ports:
     - port: {{ .Values.port }}
@@ -17,7 +17,7 @@ spec:
     from:
     - podSelector:
         matchLabels:
-          app: net-exporter
+          app: {{ .Values.name }}
     - podSelector:
         matchLabels:
           app: prometheus
