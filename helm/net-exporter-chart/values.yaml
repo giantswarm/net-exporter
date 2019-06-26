@@ -15,6 +15,6 @@ image:
   repository: giantswarm/net-exporter
   tag: [[ .SHA ]]
 
-# Control-plane worker subnets used to generate network policies
+# Control-plane subnets used to generate network policies
 # for managed applications.
-controlPlaneWorkerSubnets: {{ range $index, $element := .Values.Installation.V1.GiantSwarm.ClusterOperator.ControlPlaneWorkerSubnets }}{{ if $index}} {{end}}{{$element}}{{end}}
+controlPlaneSubnets: []
