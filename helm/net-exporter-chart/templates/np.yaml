@@ -21,7 +21,7 @@ spec:
     - podSelector:
         matchLabels:
           app: prometheus
-    {{ range $index, $workerSubnet := .Values.configmap.workerSubnets }}
+    {{ range $index, $workerSubnet := .Values.controlPlaneWorkerSubnets }}
     - ipBlock:
         cidr: {{ $workerSubnet }}
     {{ end }}
