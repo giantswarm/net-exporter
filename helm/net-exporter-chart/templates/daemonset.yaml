@@ -39,9 +39,9 @@ spec:
           # cpu limits removed so that throttling doesn't cause any unwanted
           # side-effects to measurements.
           requests:
-            memory: 50Mi
+            memory: 75Mi
           limits:
-            memory: 50Mi
+            memory: 75Mi
       serviceAccountName: net-exporter
       securityContext:
         runAsUser: {{ .Values.userID }}
