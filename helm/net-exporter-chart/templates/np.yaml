@@ -47,8 +47,14 @@ spec:
     - podSelector:
         matchLabels:
           k8s-app: {{ .Values.dns.label }}
+      namespaceSelector:
+        matchLabels:
+          name: kube-system
   - ports:
     - port: 443
+      protocol: TCP
+    # legacy part kept for compatibility
+    - port: 6443
       protocol: TCP
     to:
     {{ $privateSubnets := list "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/16" }}
