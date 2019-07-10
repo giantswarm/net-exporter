@@ -18,13 +18,13 @@ spec:
       annotations:
         releasetime: {{ $.Release.Time }}
     spec:
-      containers:
-      - initContainers:
-        name: label-kube-system-namespace
+      initContainers:
+      - name: label-kube-system-namespace
         image: quay.io/giantswarm/namespace-labeler
         securityContext:
           runAsUser: 1000
-          runAsGroup: 1000
+          runAsGroup: 1000 
+      containers:
       - name: net-exporter
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         args:
