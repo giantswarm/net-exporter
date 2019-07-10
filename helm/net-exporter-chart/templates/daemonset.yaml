@@ -49,3 +49,6 @@ spec:
       tolerations:
         - key: node-role.kubernetes.io/master
           effect: NoSchedule
+        - key: NodeWithImpairedVolumes
+          value: "true"
+          effect: NoSchedule
