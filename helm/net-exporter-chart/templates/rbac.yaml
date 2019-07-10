@@ -16,6 +16,15 @@ rules:
   verbs:
   - get
 - apiGroups:
+  - ""
+  resources:
+  - namespaces
+  resourceNames:
+  - kube-system
+  verbs:
+  - get
+  - update
+- apiGroups:
   - extensions
   resources:
   - podsecuritypolicies

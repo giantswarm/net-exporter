@@ -1,5 +1,5 @@
 name: net-exporter
-namespace: monitoring
+namespace: kube-system
 
 userID: 1000
 groupID: 1000
@@ -13,8 +13,4 @@ dns:
 image:
   registry: quay.io
   repository: giantswarm/net-exporter
-  tag: [[ .SHA ]]
-
-# Control-plane subnets used to generate network policies
-# for managed applications.
-controlPlaneSubnets: []
+  tag: 94908b529377286ac98d8e1c19e50c56bdadf75d
