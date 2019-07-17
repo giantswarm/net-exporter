@@ -263,6 +263,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:d18bc8f0f6f14725b39b452cc4469f7193aab510252c1a84fb4e7aa9a489ac6d"
+  name = "github.com/giantswarm/operatorkit"
+  packages = ["client/k8srestconfig"]
+  pruneopts = "UT"
+  revision = "a2a6a2f14115f32c611ee0373bc4e637c3a6da63"
+
+[[projects]]
+  branch = "master"
   digest = "1:f0a5bcad44c3c4cc5a254aa34b2415fd63028e71a13f6368805cd9ec7c62044d"
   name = "github.com/giantswarm/to"
   packages = ["."]
@@ -1073,6 +1081,7 @@
     "github.com/giantswarm/helmclient",
     "github.com/giantswarm/microerror",
     "github.com/giantswarm/micrologger",
+    "github.com/giantswarm/operatorkit/client/k8srestconfig",
     "github.com/prometheus/client_golang/prometheus",
     "github.com/spf13/afero",
     "k8s.io/api/core/v1",
