@@ -4,7 +4,14 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
+	"k8s.io/client-go/kubernetes"
 )
+
+type Clients interface {
+	// K8sClient returns a properly configured control plane client for the
+	// Kubernetes API.
+	K8sClient() kubernetes.Interface
+}
 
 // ChartConfig is the chart to test.
 type ChartConfig struct {
