@@ -53,8 +53,5 @@ spec:
         runAsUser: {{ .Values.userID }}
         runAsGroup: {{ .Values.groupID }}
       tolerations:
-        - key: node-role.kubernetes.io/master
-          effect: NoSchedule
-        - key: NodeWithImpairedVolumes
-          value: "true"
-          effect: NoSchedule
+      # Tolerate all taints for observability
+      - operator: "Exists"
