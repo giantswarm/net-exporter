@@ -10,6 +10,7 @@ import (
 
 	"github.com/giantswarm/exporterkit"
 	"github.com/giantswarm/micrologger"
+	"github.com/giantswarm/operatorkit/client/k8srestconfig"
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -49,15 +50,23 @@ func main() {
 		}
 	}
 
-	var kubernetesClient kubernetes.Interface
+	var restConfig *rest.Config
 	{
-		var config *rest.Config
-		config, err = rest.InClusterConfig()
+		c := k8srestconfig.Config{
+			Logger: logger,
+
+			InCluster: true,
+		}
+
+		restConfig, err = k8srestconfig.New(c)
 		if err != nil {
 			panic(fmt.Sprintf("%#v\n", err))
 		}
+	}
 
-		kubernetesClient, err = kubernetes.NewForConfig(config)
+	var kubernetesClient kubernetes.Interface
+	{
+		kubernetesClient, err = kubernetes.NewForConfig(restConfig)
 		if err != nil {
 			panic(fmt.Sprintf("%#v\n", err))
 		}
