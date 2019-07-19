@@ -13,7 +13,7 @@ dns:
 image:
   registry: quay.io
   repository: giantswarm/net-exporter
-  tag: [[ .SHA ]]
+  tag: latest
 
 # Control-plane subnets used to generate network policies
 # for managed applications.
