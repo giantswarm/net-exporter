@@ -1,11 +1,12 @@
 package chart
 
 import (
-	"github.com/giantswarm/e2e-harness/pkg/framework"
 	"github.com/giantswarm/helmclient"
+
+	"github.com/giantswarm/e2esetup/k8s"
 )
 
 type Config struct {
 	HelmClient *helmclient.Client
-	Host       *framework.Host
+	Setup      *k8s.Setup
 }
