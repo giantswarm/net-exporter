@@ -153,7 +153,7 @@
   revision = "68471af22cb9ed4b31a091e520cd3411327bf0cf"
 
 [[projects]]
-  branch = "drop-e2e-harness"
+  branch = "master"
   digest = "1:6cedd1399e6003036b0a9dc3c5fd9da2ff89355f60e321f29a5a068ed2d3a5e8"
   name = "github.com/giantswarm/e2esetup"
   packages = [
@@ -162,7 +162,7 @@
     "k8s",
   ]
   pruneopts = "UT"
-  revision = "59a67b077ca414d0c2684998bf823e0cb20ce79e"
+  revision = "e195ce6c06e18d3b7655729487475f3b7dae014d"
 
 [[projects]]
   branch = "master"
@@ -254,9 +254,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:7f108bbeae041753de0a3d8b4bc8d13d4d1c7884129523ece1495104f5591742"
+  digest = "1:335836400c1dfa10bf175caf9b32d3b6b7f4fb69a160dcf8ffbdaff34ec0d74c"
   name = "github.com/giantswarm/operatorkit"
-  packages = ["client/k8scrdclient"]
+  packages = [
+    "client/k8scrdclient",
+    "client/k8srestconfig",
+  ]
   pruneopts = "UT"
   revision = "a2a6a2f14115f32c611ee0373bc4e637c3a6da63"
 
@@ -269,12 +272,11 @@
   revision = "38e6500015bed1853163a441801d399a2f1a638d"
 
 [[projects]]
-  digest = "1:9db6e7ab54d909d92bebfec495fd679bd3af1a6ba0b22d7da72edb23347dddb9"
+  digest = "1:83a37f3bd4ccd13469775ef771e943e6c7cfaba6926decff6c83135e56512f08"
   name = "github.com/go-kit/kit"
   packages = [
     "endpoint",
     "log",
-    "transport",
     "transport/http",
   ]
   pruneopts = "UT"
@@ -1018,6 +1020,7 @@
     "github.com/giantswarm/helmclient",
     "github.com/giantswarm/microerror",
     "github.com/giantswarm/micrologger",
+    "github.com/giantswarm/operatorkit/client/k8srestconfig",
     "github.com/prometheus/client_golang/prometheus",
     "github.com/spf13/afero",
     "k8s.io/api/core/v1",

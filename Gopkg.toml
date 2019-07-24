@@ -49,7 +49,7 @@ required = [
   name = "github.com/giantswarm/e2e-harness"
 
 [[constraint]]
-  branch = "drop-e2e-harness"
+  branch = "master"
   name = "github.com/giantswarm/e2esetup"
 
 [[constraint]]
@@ -89,3 +89,7 @@ required = [
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/giantswarm/operatorkit"
