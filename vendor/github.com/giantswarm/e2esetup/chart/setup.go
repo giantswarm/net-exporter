@@ -17,11 +17,11 @@ func Setup(ctx context.Context, m *testing.M, config Config) (int, error) {
 	if config.HelmClient == nil {
 		return v, microerror.Maskf(invalidConfigError, "%T.HelmClient must not be empty", config)
 	}
-	if config.Host == nil {
-		return v, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", config)
+	if config.Setup == nil {
+		return v, microerror.Maskf(invalidConfigError, "%T.Setup must not be empty", config)
 	}
 
-	err = config.Host.CreateNamespace("giantswarm")
+	err = config.Setup.EnsureNamespaceCreated(ctx, "giantswarm")
 	if err != nil {
 		errors = append(errors, err)
 		v = 1
@@ -45,8 +45,6 @@ func Setup(ctx context.Context, m *testing.M, config Config) (int, error) {
 				errors = append(errors, err)
 				v = 1
 			}
-			// TODO there should be error handling for the framework teardown.
-			config.Host.Teardown()
 		}
 	}
 

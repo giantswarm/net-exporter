@@ -26,8 +26,6 @@
 
 
 
-
-
 required = [
   "github.com/Azure/go-autorest/autorest",
   "github.com/docker/distribution/reference",
@@ -35,6 +33,8 @@ required = [
   "k8s.io/apimachinery/pkg/apis/meta/v1",
   "k8s.io/apiserver/pkg/endpoints/request"
 ]
+
+
 
 [[constraint]]
   name = "github.com/Azure/go-autorest"
@@ -49,7 +49,7 @@ required = [
   name = "github.com/giantswarm/e2e-harness"
 
 [[constraint]]
-  branch = "master"
+  branch = "drop-e2e-harness"
   name = "github.com/giantswarm/e2esetup"
 
 [[constraint]]
@@ -83,6 +83,8 @@ required = [
 [[constraint]]
   name = "k8s.io/client-go"
   version = "kubernetes-1.13.2"
+
+
 
 [prune]
   go-tests = true

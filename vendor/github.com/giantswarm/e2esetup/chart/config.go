@@ -2,9 +2,11 @@ package chart
 
 import (
 	"github.com/giantswarm/helmclient"
+
+	"github.com/giantswarm/e2esetup/k8s"
 )
 
 type Config struct {
 	HelmClient *helmclient.Client
-	Host       LegacyFramework
+	Setup      *k8s.Setup
 }
