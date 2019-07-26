@@ -109,7 +109,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:19764e4bbb47e985aa107887f39ce5dd37163547e20871146e9e88562b7e89fe"
+  digest = "1:f0aff88350586f72f11c7dcda7648efc356ab2a7b079e3a52f9a0a3d70211165"
   name = "github.com/giantswarm/apiextensions"
   packages = [
     "pkg/apis/application/v1alpha1",
@@ -126,7 +126,7 @@
     "pkg/clientset/versioned/typed/release/v1alpha1",
   ]
   pruneopts = "UT"
-  revision = "25717cc3fd4a2971a491e79ed4cac4e26f11a903"
+  revision = "66d1dbb49135c1b1f6fff597be901844a0c558c0"
 
 [[projects]]
   branch = "master"
@@ -197,11 +197,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:09167937b71fc5b5509c4fe66cfbb7d9725998a7a72b7c988fdc068e041446cf"
+  digest = "1:1b17fb21c2560686bbe1565f28fceadfae067ab4fc7d0faf286cd29e8dce4a75"
   name = "github.com/giantswarm/helmclient"
   packages = ["."]
   pruneopts = "UT"
-  revision = "194739f9cc7e4c910fd66955001469ca9d516201"
+  revision = "a1e26a8bac2175c8adbd06e0c1506033a0135c91"
 
 [[projects]]
   branch = "master"
@@ -272,11 +272,12 @@
   revision = "38e6500015bed1853163a441801d399a2f1a638d"
 
 [[projects]]
-  digest = "1:83a37f3bd4ccd13469775ef771e943e6c7cfaba6926decff6c83135e56512f08"
+  digest = "1:9db6e7ab54d909d92bebfec495fd679bd3af1a6ba0b22d7da72edb23347dddb9"
   name = "github.com/go-kit/kit"
   packages = [
     "endpoint",
     "log",
+    "transport",
     "transport/http",
   ]
   pruneopts = "UT"
@@ -655,14 +656,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:31d44814b45607afa77c6e8ef20ea8bacc1d1053fe084440c874f311732e7ec3"
+  digest = "1:28e4b13761852e4baab7c932e31ebb24e5444d4f1bca7076eeee46e59e2ab5c9"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "fae7ac547cb717d141c433a2a173315e216b64c4"
+  revision = "94b544f455efde7a614f75a3e43a2a65bce93113"
 
 [[projects]]
   digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
@@ -722,7 +723,7 @@
   revision = "c506a9f9061087022822e8da603a52fc387115a8"
 
 [[projects]]
-  digest = "1:931727c62baa7a9958acac5d712ae9cc0ea3ff86a664b560febf4f4b0677ee28"
+  digest = "1:947ff528f3399903d07eb33f09cd6e8d423a147798023dcecc1ec2066c15afbb"
   name = "google.golang.org/grpc"
   packages = [
     ".",
@@ -761,8 +762,8 @@
     "tap",
   ]
   pruneopts = "UT"
-  revision = "1d89a3c832915b2314551c1d2a506874d62e53f7"
-  version = "v1.22.0"
+  revision = "045159ad57f3781d409358e3ade910a018c16b30"
+  version = "v1.22.1"
 
 [[projects]]
   digest = "1:2d1fbdc6777e5408cabeb02bf336305e724b925ff4546ded0fa8715a7267922a"

@@ -196,7 +196,7 @@ func (c *Client) EnsureTillerInstalledWithValues(ctx context.Context, values []s
 
 	{
 		o := func() error {
-			pod, err = getPod(c.k8sClient, tillerLabelSelector, c.tillerNamespace)
+			pod, err = getPod(c.k8sClient, c.tillerNamespace)
 			if IsNotFound(err) {
 				// Fall through as we need to install Tiller.
 				installTiller = true
