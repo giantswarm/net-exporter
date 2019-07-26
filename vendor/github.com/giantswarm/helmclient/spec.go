@@ -15,12 +15,13 @@ const (
 	// runReleaseTestTimeout is the timeout in seconds when running tests.
 	runReleaseTestTimout = 300
 
-	defaultTillerImage     = "quay.io/giantswarm/tiller:v2.12.0"
-	defaultTillerNamespace = "kube-system"
-	roleBindingNamePrefix  = "tiller"
-	tillerLabelSelector    = "app=helm,name=tiller"
-	tillerPodName          = "tiller-giantswarm"
-	tillerPort             = 44134
+	defaultTillerImage      = "quay.io/giantswarm/tiller:v2.12.0"
+	defaultTillerNamespace  = "kube-system"
+	roleBindingNamePrefix   = "tiller"
+	runningPodFieldSelector = "status.phase=Running"
+	tillerLabelSelector     = "app=helm,name=tiller"
+	tillerPodName           = "tiller-giantswarm"
+	tillerPort              = 44134
 )
 
 // Interface describes the methods provided by the helm client.
