@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"github.com/giantswarm/apiextensions/pkg/clientset/versioned"
+	"github.com/giantswarm/e2esetup/chart/env"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
@@ -31,7 +32,7 @@ func NewClients(config ClientsConfig) (*Clients, error) {
 	}
 
 	if config.KubeConfigPath == "" {
-		config.KubeConfigPath = e2eHarnessDefaultKubeconfig
+		config.KubeConfigPath = env.KubeConfigPath()
 	}
 
 	var err error
