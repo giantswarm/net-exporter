@@ -138,7 +138,7 @@ func main() {
 	}
 
 	if nstatExporter {
-		c := nic.Config{
+		c := nstat.Config{
 			Logger: logger,
 		}
 
@@ -147,7 +147,7 @@ func main() {
 			panic(fmt.Sprintf("%#v\n", err))
 		}
 
-		collectors = append(nstatCollector)
+		collectors = append(collectors, nstatCollector)
 	}
 
 	var exporter *exporterkit.Exporter
