@@ -49,7 +49,7 @@ func New(config Config) (*Collector, error) {
 	collector.metrics = make(map[string]*prometheus.Desc)
 	for label, _ := range nicStats {
 		fqName := prometheus.BuildFQName(nic_metric_namespace, "", label)
-		collector.metrics[label] = prometheus.NewDesc(fqName, fmt.Sprintf("Generated description for metric %#q", label), []string{"hostname", "iface"}, nil)
+		collector.metrics[label] = prometheus.NewDesc(fqName, fmt.Sprintf("Generated description for metric %#q", label), []string{"iface"}, nil)
 	}
 
 	return collector, nil

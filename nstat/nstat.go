@@ -48,7 +48,7 @@ func New(config Config) (*Collector, error) {
 	collector.metrics = make(map[string]*prometheus.Desc)
 	for label, _ := range metrics {
 		fqName := prometheus.BuildFQName(nstat_metric_namespace, "", label)
-		collector.metrics[label] = prometheus.NewDesc(fqName, fmt.Sprintf("Generated description for metric %#q", label), []string{"hostname"}, nil)
+		collector.metrics[label] = prometheus.NewDesc(fqName, fmt.Sprintf("Generated description for metric %#q", label), []string{}, nil)
 	}
 
 	return collector, nil
