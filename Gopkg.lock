@@ -46,6 +46,25 @@
   version = "v2.20.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:125f098c5294814b5d9ce2194f03a435c35a6208f029e61681bed9a893d68133"
+  name = "github.com/alecthomas/template"
+  packages = [
+    ".",
+    "parse",
+  ]
+  pruneopts = "UT"
+  revision = "fb15b899a75114aa79cc930e33c46b577cc664b1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:272de46b796b453a750d723a6ba064c2c1e1b579d9f1228dfab743f4dae3191d"
+  name = "github.com/alecthomas/units"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "c3de453c63f4bdb4dadffab9805ec00426c505f7"
+
+[[projects]]
   digest = "1:d6afaeed1502aa28e80a4ed0981d570ad91b2579193404256ce672ed0a609e0d"
   name = "github.com/beorn7/perks"
   packages = ["quantile"]
@@ -126,7 +145,7 @@
     "pkg/clientset/versioned/typed/release/v1alpha1",
   ]
   pruneopts = "UT"
-  revision = "60518c8c0e8902a8919127ee4c3fb2c8f7929422"
+  revision = "6d6990ab19fc21766e67aec28d8ab62aede51a6a"
 
 [[projects]]
   branch = "master"
@@ -154,7 +173,7 @@
     "k8s",
   ]
   pruneopts = "UT"
-  revision = "b8e860764772b300c3cb0785153990d429c479a7"
+  revision = "caafd137019e3f696af020878d5155417495fa42"
 
 [[projects]]
   branch = "master"
@@ -189,11 +208,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:dd59aa16cc8a12ac31e47fe9a171607eaef03a31931b8757616a434098fe7f1e"
+  digest = "1:2cd674c429a514b951af9d61fb638ec1c431ce1a660f145bf6b6d467b7f903c2"
   name = "github.com/giantswarm/helmclient"
   packages = ["."]
   pruneopts = "UT"
-  revision = "a09427f555371ae004e22401af6ed55c43fe4851"
+  revision = "c17ff0598a86814a5d103c84b8efafd1a5339a1d"
 
 [[projects]]
   branch = "master"
@@ -440,6 +459,14 @@
   revision = "08cceb5d0b5331634b9826762a8fd53b29b86ad8"
 
 [[projects]]
+  digest = "1:31e761d97c76151dde79e9d28964a812c46efc5baee4085b86f68f0c654450de"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
+  version = "v1.0.2"
+
+[[projects]]
   branch = "master"
   digest = "1:a64e323dc06b73892e5bb5d040ced475c4645d456038333883f58934abbf6f72"
   name = "github.com/kr/logfmt"
@@ -537,14 +564,15 @@
   name = "github.com/prometheus/client_model"
   packages = ["go"]
   pruneopts = "UT"
-  revision = "fd36f4220a901265f90734c3183c5f0c91daa0b8"
+  revision = "14fe0d1b01d4d5fc031dd4bec1823bd3ebbe8016"
 
 [[projects]]
-  digest = "1:8dcedf2e8f06c7f94e48267dea0bc0be261fa97b377f3ae3e87843a92a549481"
+  digest = "1:6d7fb387ff84614fe40d35cd30f5b34dd7384bf075efef4823213a8cc5113007"
   name = "github.com/prometheus/common"
   packages = [
     "expfmt",
     "internal/bitbucket.org/ww/goautoneg",
+    "log",
     "model",
   ]
   pruneopts = "UT"
@@ -561,6 +589,22 @@
   pruneopts = "UT"
   revision = "3f98efb27840a48a7a2898ec80be07674d19f9c8"
   version = "v0.0.3"
+
+[[projects]]
+  branch = "master"
+  digest = "1:7e65e2f577d27cc6cddeb85b9773b8b0ee510627dcd488bfec47dfe53c1b587f"
+  name = "github.com/safchain/ethtool"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "42ed695e3de80b9d695f280295fd7994639f209d"
+
+[[projects]]
+  digest = "1:04457f9f6f3ffc5fea48e71d62f2ca256637dee0a04d710288e27e05c8b41976"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
+  version = "v1.4.2"
 
 [[projects]]
   digest = "1:bb495ec276ab82d3dd08504bbc0594a65de8c3b22c6f2aaa92d05b73fbf3a82e"
@@ -619,7 +663,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:eae689808191546269bf951e1e66e0b6bc468be58a0498c0f037feeef2c67bab"
+  digest = "1:37cf5c1105f46a9e4c5e6f0a2c9bcfc08e78462be487c2538cc3dccb73c36993"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -632,7 +676,7 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "ca1201d0de80cfde86cb01aea620983605dfe99b"
+  revision = "74dc4d7220e7acc4e100824340f3e66577424772"
 
 [[projects]]
   branch = "master"
@@ -647,14 +691,16 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:00d73f8175ba939718fdfc3d3ecab52270c6d801a1930fbca62100f9a4d8f4c1"
+  digest = "1:df329daafebdc42557f88ab6681fd525b03f76d6fc912865a36cbf5b90976feb"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
+    "windows/registry",
+    "windows/svc/eventlog",
   ]
   pruneopts = "UT"
-  revision = "51ab0e2deafac1f46c46ad59cf0921be2f180c3d"
+  revision = "fde4db37ae7ad8191b03d30d27f258b5291ae4e3"
 
 [[projects]]
   digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
@@ -714,7 +760,7 @@
   revision = "fa694d86fc64c7654a660f8908de4e879866748d"
 
 [[projects]]
-  digest = "1:947ff528f3399903d07eb33f09cd6e8d423a147798023dcecc1ec2066c15afbb"
+  digest = "1:48eafc052e46b4ebbc7882553873cf6198203e528627cefc94dcaf8553addd19"
   name = "google.golang.org/grpc"
   packages = [
     ".",
@@ -753,8 +799,16 @@
     "tap",
   ]
   pruneopts = "UT"
-  revision = "045159ad57f3781d409358e3ade910a018c16b30"
-  version = "v1.22.1"
+  revision = "6eaf6f47437a6b4e2153a190160ef39a92c7eceb"
+  version = "v1.23.0"
+
+[[projects]]
+  digest = "1:c06d9e11d955af78ac3bbb26bd02e01d2f61f689e1a3bce2ef6fb683ef8a7f2d"
+  name = "gopkg.in/alecthomas/kingpin.v2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "947dcec5ba9c011838740e680966fd7087a71d0d"
+  version = "v2.2.6"
 
 [[projects]]
   digest = "1:2d1fbdc6777e5408cabeb02bf336305e724b925ff4546ded0fa8715a7267922a"
@@ -1013,6 +1067,8 @@
     "github.com/giantswarm/micrologger",
     "github.com/giantswarm/operatorkit/client/k8srestconfig",
     "github.com/prometheus/client_golang/prometheus",
+    "github.com/prometheus/common/log",
+    "github.com/safchain/ethtool",
     "github.com/spf13/afero",
     "k8s.io/api/core/v1",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
