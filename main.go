@@ -32,8 +32,8 @@ var (
 )
 
 func init() {
-	flag.BoolVar(&nicExporter, "nic-exporter-enabled", false, "nic exporter state")
-	flag.BoolVar(&nstatExporter, "nstat-exporter-enabled", false, "nstat exporter state")
+	flag.BoolVar(&nicExporter, "nic-exporter-enabled", false, "nic exporter state (default value 'false')")
+	flag.BoolVar(&nstatExporter, "nstat-exporter-enabled", false, "nstat exporter state (default value 'false')")
 	flag.StringVar(&hosts, "hosts", "giantswarm.io,kubernetes.default.svc.cluster.local", "DNS hosts to resolve")
 	flag.StringVar(&iface, "iface", "eth0", "Interface name to retrieve stats from")
 	flag.StringVar(&namespace, "namespace", "monitoring", "Namespace of net-exporter service")
