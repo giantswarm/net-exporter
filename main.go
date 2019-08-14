@@ -17,17 +17,25 @@ import (
 
 	"github.com/giantswarm/net-exporter/dns"
 	"github.com/giantswarm/net-exporter/network"
+	"github.com/giantswarm/net-exporter/nic"
+	"github.com/giantswarm/net-exporter/nstat"
 )
 
 var (
-	hosts     string
-	namespace string
-	port      string
-	service   string
+	nicExporter   bool
+	nstatExporter bool
+	hosts         string
+	iface         string
+	namespace     string
+	port          string
+	service       string
 )
 
 func init() {
+	flag.BoolVar(&nicExporter, "nic-exporter-enabled", false, "nic exporter state")
+	flag.BoolVar(&nstatExporter, "nstat-exporter-enabled", false, "nstat exporter state")
 	flag.StringVar(&hosts, "hosts", "giantswarm.io,kubernetes.default.svc.cluster.local", "DNS hosts to resolve")
+	flag.StringVar(&iface, "iface", "eth0", "Interface name to retrieve stats from")
 	flag.StringVar(&namespace, "namespace", "monitoring", "Namespace of net-exporter service")
 	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
 	flag.StringVar(&service, "service", "net-exporter", "Name of net-exporter service")
@@ -72,6 +80,8 @@ func main() {
 		}
 	}
 
+	var collectors []prometheus.Collector
+
 	var dnsCollector prometheus.Collector
 	{
 		splitHosts := strings.Split(hosts, ",")
@@ -86,6 +96,8 @@ func main() {
 		if err != nil {
 			panic(fmt.Sprintf("%#v\n", err))
 		}
+
+		collectors = append(collectors, dnsCollector)
 	}
 
 	var networkCollector prometheus.Collector
@@ -106,16 +118,43 @@ func main() {
 		if err != nil {
 			panic(fmt.Sprintf("%#v\n", err))
 		}
+
+		collectors = append(collectors, networkCollector)
+	}
+
+	if nicExporter {
+		c := nic.Config{
+			Logger: logger,
+
+			IFace: iface,
+		}
+
+		nicCollector, err := nic.New(c)
+		if err != nil {
+			panic(fmt.Sprintf("%#v\n", err))
+		}
+
+		collectors = append(collectors, nicCollector)
+	}
+
+	if nstatExporter {
+		c := nic.Config{
+			Logger: logger,
+		}
+
+		nstatCollector, err := nstat.New(c)
+		if err != nil {
+			panic(fmt.Sprintf("%#v\n", err))
+		}
+
+		collectors = append(nstatCollector)
 	}
 
 	var exporter *exporterkit.Exporter
 	{
 		c := exporterkit.Config{
-			Collectors: []prometheus.Collector{
-				dnsCollector,
-				networkCollector,
-			},
-			Logger: logger,
+			Collectors: collectors,
+			Logger:     logger,
 		}
 
 		exporter, err = exporterkit.New(c)
