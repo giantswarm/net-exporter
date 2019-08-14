@@ -123,6 +123,8 @@ func main() {
 	}
 
 	if nicExporter {
+		logger.Log("debug", "nic exporter enabled")
+
 		c := nic.Config{
 			Logger: logger,
 
@@ -138,6 +140,8 @@ func main() {
 	}
 
 	if nstatExporter {
+		logger.Log("debug", "nstat exporter enabled")
+
 		c := nstat.Config{
 			Logger: logger,
 		}
