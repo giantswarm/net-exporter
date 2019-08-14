@@ -25,7 +25,7 @@ spec:
           runAsUser: 1000
           runAsGroup: 1000
       priorityClassName: giantswarm-critical
-      {{ if or .debug.nicExporter .debug.nstatExporter }}
+      {{ if or .Values.debug.nicExporter .Values.debug.nstatExporter }}
       hostNetwork: true
       {{ end }}
       containers:
