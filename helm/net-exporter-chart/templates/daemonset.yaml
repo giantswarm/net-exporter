@@ -25,6 +25,9 @@ spec:
           runAsUser: 1000
           runAsGroup: 1000
       priorityClassName: giantswarm-critical
+      {{ if or .debug.nicExporter .debug.nstatExporter }}
+      hostNetwork: true
+      {{ end }}
       containers:
       - name: net-exporter
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
