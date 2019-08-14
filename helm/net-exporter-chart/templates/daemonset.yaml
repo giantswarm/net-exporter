@@ -30,6 +30,8 @@ spec:
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         args:
         - "-namespace={{ .Values.namespace }}"
+        - "-nic-exporter-enabled={{ .Values.debug.nicExporter }}"
+        - "-nstat-exporter-enabled={{ .Values.debug.nstatExporter }}"
         livenessProbe:
           httpGet:
             path: /healthz
