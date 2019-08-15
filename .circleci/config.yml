@@ -8,12 +8,6 @@ e2eTest: &e2eTest
         at: .
 
     - run:
-        name: Get e2e-harness binary
-        command: |
-          wget -q $(curl -sS https://api.github.com/repos/giantswarm/e2e-harness/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
-          chmod +x ./e2e-harness
-
-    - run:
         name: Get e2ectl binary
         command: |
           wget -q $(curl -sS https://api.github.com/repos/giantswarm/e2ectl/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
@@ -23,25 +17,28 @@ e2eTest: &e2eTest
         name: Init cluster
         command: |
           ./e2ectl cluster create
-          cp $(./e2ectl kubeconfig path) ${TEST_DIR}/kubeconfig
-          mkdir .e2e-harness
-          echo "existingCluster: true" >> .e2e-harness/config.yaml
-          echo "remoteCluster: false" >> .e2e-harness/config.yaml
+          cp $(./e2ectl kubeconfig path) ${E2E_TEST_DIR}/kubeconfig
 
     - run:
         name: Publish chart to CNR using a temporary channel for testing
-        command: ./architect publish --pipeline=false --channels=${CIRCLE_SHA1}-${TEST_NAME}
+        command: ./architect publish --pipeline=false --channels=${CIRCLE_SHA1}-${E2E_TEST_NAME}
 
     - run:
         name: Run test
         command: |
-          E2E_KUBECONFIG=/e2e/kubeconfig ./e2e-harness test --test-dir=${TEST_DIR}
+          docker run --rm --network host \
+            -v $(pwd)/${E2E_TEST_DIR}:/e2e \
+            -v $(pwd):/go/src/github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} \
+            -e E2E_KUBECONFIG=/e2e/kubeconfig \
+            -e CIRCLE_SHA1=${CIRCLE_SHA1} \
+            -w /go/src/github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} \
+            quay.io/giantswarm/golang:1.12.6 go test -v -tags k8srequired ./${E2E_TEST_DIR}/
 
     - run:
         name: Finish with cleanup, no matter if the test succeeded or not
         command: |
           ./e2ectl cluster delete
-          ./architect unpublish --channels=${CIRCLE_SHA1}-${TEST_NAME}
+          ./architect unpublish --channels=${CIRCLE_SHA1}-${E2E_TEST_NAME}
         when: always
 
 version: 2
@@ -74,8 +71,8 @@ jobs:
 
   e2eTestBasic:
     environment:
-      TEST_DIR: "integration/test/basic"
-      TEST_NAME: "basic"
+      E2E_TEST_DIR: "integration/test/basic"
+      E2E_TEST_NAME: "basic"
     <<: *e2eTest
 
   deploy:
