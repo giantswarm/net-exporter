@@ -1,11 +1,10 @@
-package k8s
+package k8sclient
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/giantswarm/backoff"
-	"github.com/giantswarm/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/giantswarm/operatorkit/client/k8scrdclient"
@@ -16,12 +15,12 @@ import (
 )
 
 type SetupConfig struct {
-	Clients k8sclient.Interface
+	Clients *Clients
 	Logger  micrologger.Logger
 }
 
 type Setup struct {
-	clients k8sclient.Interface
+	clients *Clients
 	logger  micrologger.Logger
 }
 
