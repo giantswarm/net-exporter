@@ -14,6 +14,7 @@ import (
 	"github.com/giantswarm/e2esetup/k8s"
 	"github.com/giantswarm/e2etests/managedservices"
 	"github.com/giantswarm/helmclient"
+	"github.com/giantswarm/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/afero"
@@ -47,15 +48,15 @@ func init() {
 		}
 	}
 
-	var cpK8sClients *k8s.Clients
+	var k8sClients *k8sclient.Clients
 	{
-		c := k8s.ClientsConfig{
+		c := k8sclient.ClientsConfig{
 			Logger: l,
 
 			KubeConfigPath: env.KubeConfigPath(),
 		}
 
-		cpK8sClients, err = k8s.NewClients(c)
+		k8sClients, err = k8sclient.NewClients(c)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -63,7 +64,7 @@ func init() {
 
 	{
 		c := k8s.SetupConfig{
-			Clients: cpK8sClients,
+			Clients: k8sClients,
 			Logger:  l,
 		}
 
@@ -90,8 +91,8 @@ func init() {
 	{
 		c := helmclient.Config{
 			Logger:     l,
-			K8sClient:  cpK8sClients.K8sClient(),
-			RestConfig: cpK8sClients.RestConfig(),
+			K8sClient:  k8sClients.K8sClient(),
+			RestConfig: k8sClients.RestConfig(),
 
 			TillerNamespace: "giantswarm",
 		}
@@ -105,7 +106,7 @@ func init() {
 	{
 		c := managedservices.Config{
 			ApprClient: a,
-			Clients:    cpK8sClients,
+			Clients:    k8sClients,
 			HelmClient: helmClient,
 			Logger:     l,
 
