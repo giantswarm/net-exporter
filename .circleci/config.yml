@@ -35,6 +35,16 @@ e2eTest: &e2eTest
             golang:1 go test -v -tags k8srequired ./${E2E_TEST_DIR}/
 
     - run:
+        name: Export logs
+        command: |
+          ./e2ectl logs export --logs-dir=kind/logs
+        when: always
+
+    - store_artifacts:
+        path: kind/logs
+        destination: logs
+
+    - run:
         name: Finish with cleanup, no matter if the test succeeded or not
         command: |
           ./e2ectl cluster delete
