@@ -10,6 +10,8 @@ dns:
   port: 1053
   label: coredns
 
+timeout: 5
+
 image:
   registry: quay.io
   repository: giantswarm/net-exporter
