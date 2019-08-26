@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -25,7 +24,7 @@ var (
 	namespace string
 	port      string
 	service   string
-	timeout   string
+	timeout   time.Duration
 )
 
 func init() {
@@ -33,7 +32,7 @@ func init() {
 	flag.StringVar(&namespace, "namespace", "monitoring", "Namespace of net-exporter service")
 	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
 	flag.StringVar(&service, "service", "net-exporter", "Name of net-exporter service")
-	flag.StringVar(&timeout, "timeout", "5", "Timeout of the dialer")
+	flag.DurationVar(&timeout, "timeout", 5*time.Second, "Timeout of the dialer")
 }
 
 func main() {
@@ -93,14 +92,9 @@ func main() {
 
 	var networkCollector prometheus.Collector
 	{
-		t, err := strconv.Atoi(timeout)
-		if err != nil {
-			panic(fmt.Sprintf("%#v\n", err))
-		}
-
 		c := network.Config{
 			Dialer: &net.Dialer{
-				Timeout: time.Duration(t) * time.Second,
+				Timeout: timeout,
 			},
 			KubernetesClient: kubernetesClient,
 			Logger:           logger,
