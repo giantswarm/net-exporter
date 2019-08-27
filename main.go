@@ -24,6 +24,7 @@ var (
 	namespace string
 	port      string
 	service   string
+	timeout   time.Duration
 )
 
 func init() {
@@ -31,6 +32,7 @@ func init() {
 	flag.StringVar(&namespace, "namespace", "monitoring", "Namespace of net-exporter service")
 	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
 	flag.StringVar(&service, "service", "net-exporter", "Name of net-exporter service")
+	flag.DurationVar(&timeout, "timeout", 5*time.Second, "Timeout of the dialer")
 }
 
 func main() {
@@ -92,7 +94,7 @@ func main() {
 	{
 		c := network.Config{
 			Dialer: &net.Dialer{
-				Timeout: 5 * time.Second,
+				Timeout: timeout,
 			},
 			KubernetesClient: kubernetesClient,
 			Logger:           logger,

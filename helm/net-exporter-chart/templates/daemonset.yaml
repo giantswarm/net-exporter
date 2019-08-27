@@ -30,6 +30,7 @@ spec:
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         args:
         - "-namespace={{ .Values.namespace }}"
+        - "-timeout={{ .Values.timeout }}"
         livenessProbe:
           httpGet:
             path: /healthz
