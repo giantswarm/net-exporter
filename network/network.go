@@ -3,7 +3,6 @@ package network
 import (
 	"fmt"
 	"net"
-	"sync"
 	"time"
 
 	"github.com/giantswarm/exporterkit/histogramvec"
@@ -153,31 +152,20 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		}
 	}
 
-	var wg sync.WaitGroup
-
 	for _, host := range hosts {
-		wg.Add(1)
+		start := time.Now()
 
-		go func(host string) {
-			defer wg.Done()
+		conn, err := c.dialer.Dial("tcp", host)
+		if err != nil {
+			c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", microerror.Stack(err))
+			c.dialErrorCount.WithLabelValues(host).Inc()
+			return
+		}
 
-			start := time.Now()
+		elapsed := time.Since(start)
 
-			conn, err := c.dialer.Dial("tcp", host)
-			if err != nil {
-				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", microerror.Stack(err))
-				c.dialErrorCount.WithLabelValues(host).Inc()
-				return
-			}
-			defer conn.Close()
-
-			elapsed := time.Since(start)
-
-			c.latencyHistogramVec.Add(host, elapsed.Seconds())
-		}(host)
+		c.latencyHistogramVec.Add(host, elapsed.Seconds())
 	}
-
-	wg.Wait()
 
 	c.latencyHistogramVec.Ensure(hosts)
 
