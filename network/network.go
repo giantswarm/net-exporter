@@ -166,6 +166,8 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 		elapsed := time.Since(start)
 
+		time.Sleep(100 * time.Millisecond)
+
 		c.latencyHistogramVec.Add(host, elapsed.Seconds())
 	}
 
