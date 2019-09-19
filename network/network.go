@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/exporterkit/histogramvec"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -21,7 +20,6 @@ const (
 	bucketStart  = 0.001
 	bucketFactor = 2
 	numBuckets   = 15
-	retries      = 3
 )
 
 // Config provides the necessary configuration for creating a Collector.
@@ -88,7 +86,7 @@ func New(config Config) (*Collector, error) {
 
 	errorCount := prometheus.NewCounter(prometheus.CounterOpts{
 		Name: prometheus.BuildFQName(namespace, "", "error_total"),
-		Help: "Total number of errors connecting to kubernetes API.",
+		Help: "Total number of internal errors.",
 	})
 	dialErrorCount := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
@@ -132,39 +130,35 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-
 	hosts := []string{}
 
-	o := func() error {
+	start := time.Now()
+	c.logger.Log("level", "info", "message", fmt.Sprintf("connecting to kubernetes api to get %#q service info.", c.service))
 
-		service, err := c.kubernetesClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
-		if err != nil {
-			c.logger.Log("level", "error", "message", "could not get service from kubernetes api", "stack", microerror.Stack(err))
-			return err
-		}
+	service, err := c.kubernetesClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
+	if err != nil {
+		c.logger.Log("level", "error", "message", "could not get service from kubernetes api ", "stack", microerror.Stack(err))
+		c.errorCount.Inc()
+		return
+	}
+	c.logger.Log("level", "info", "message", fmt.Sprintf("collected %#q service", c.service))
 
-		hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
+	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
 
-		endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
-		if err != nil {
-			c.logger.Log("level", "error", "message", "could not get endpoints from kubernetes api", "stack", microerror.Stack(err))
-			return err
-		}
+	c.logger.Log("level", "info", "message", fmt.Sprintf("connecting to kubernetes api to get %#q endpoints", c.service))
 
-		for _, endpointSubset := range endpoints.Subsets {
-			for _, address := range endpointSubset.Addresses {
-				hosts = append(hosts, fmt.Sprintf("%v:%v", address.IP, c.port))
-			}
-		}
-
-		return nil
+	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
+	if err != nil {
+		c.logger.Log("level", "error", "message", "could not get endpoints from kubernetes api ", "stack", microerror.Stack(err))
+		c.errorCount.Inc()
 	}
 
-	b := backoff.NewMaxRetries(retries, 10*time.Second)
+	c.logger.Log("level", "info", "message", fmt.Sprintf("collected endpoints in %#q", c.service))
 
-	err := backoff.Retry(o, b)
-	if err != nil {
-		c.errorCount.Inc()
+	for _, endpointSubset := range endpoints.Subsets {
+		for _, address := range endpointSubset.Addresses {
+			hosts = append(hosts, fmt.Sprintf("%v:%v", address.IP, c.port))
+		}
 	}
 
 	var wg sync.WaitGroup
@@ -202,4 +196,9 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			host,
 		)
 	}
+
+	t := time.Now()
+	elapsed := t.Sub(start)
+	c.logger.Log("level", "info", "message", fmt.Sprintf("Scrap finished, took %#q", elapsed))
+
 }
