@@ -150,7 +150,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.logger.Log("level", "info", "message", "collected service", "service ", c.service, "scrapeID", c.scrapeID)
 	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
 
-	c.logger.Log("level", "info", "message", "connecting to kubernetes api to get endpoints", "service", c.service)
+	c.logger.Log("level", "info", "message", "connecting to kubernetes api to get endpoints", "service", c.service, "scrapeID", c.scrapeID)
 	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not get endpoints from kubernetes api ", "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
