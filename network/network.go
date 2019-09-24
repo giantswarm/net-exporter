@@ -140,25 +140,26 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	scrapingStart := time.Now()
 	c.logger.Log("level", "info", "message", "collecting metrics", "scrapeID", c.scrapeID)
 
+	c.logger.Log("level", "info", "message", "collecting service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
 	service, err := c.kubernetesClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get service from kubernetes api ", "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 		c.errorCount.Inc()
 		return
 	}
 
-	c.logger.Log("level", "info", "message", "collected service", "service ", c.service, "scrapeID", c.scrapeID)
+	c.logger.Log("level", "info", "message", "collected service from kubernetes api", "service ", c.service, "scrapeID", c.scrapeID)
 	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
 
-	c.logger.Log("level", "info", "message", "connecting to kubernetes api to get endpoints", "service", c.service, "scrapeID", c.scrapeID)
+	c.logger.Log("level", "info", "message", "collecting endpoints for service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
 	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get endpoints from kubernetes api ", "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not collect endpoints for service from kubernetes api ", "service", c.service, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 		c.errorCount.Inc()
 		return
 	}
 
-	c.logger.Log("level", "info", "message", "collected endpoints", "service", c.service, "scrapeID", c.scrapeID)
+	c.logger.Log("level", "info", "message", "collected endpoints for service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
 	for _, endpointSubset := range endpoints.Subsets {
 		for _, address := range endpointSubset.Addresses {
 			hosts = append(hosts, fmt.Sprintf("%v:%v", address.IP, c.port))
@@ -175,7 +176,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 			start := time.Now()
 
-c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
+			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
 			conn, err := c.dialer.Dial("tcp", host)
 			if err != nil {
 				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
