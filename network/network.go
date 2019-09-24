@@ -175,6 +175,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 			start := time.Now()
 
+c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
 			conn, err := c.dialer.Dial("tcp", host)
 			if err != nil {
 				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
