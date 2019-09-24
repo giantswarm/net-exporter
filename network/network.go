@@ -184,7 +184,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			defer conn.Close()
 
 			elapsed := time.Since(start)
-			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeTime", elapsed.Seconds(), "scrapeID", c.scrapeID)
+			c.logger.Log("level", "info", "message", "dialed host", "host", host, "scrapeTime", elapsed.Seconds(), "scrapeID", c.scrapeID)
 
 			c.latencyHistogramVec.Add(host, elapsed.Seconds())
 		}(host)
