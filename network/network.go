@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/giantswarm/exporterkit/histogramvec"
@@ -43,6 +44,9 @@ type Collector struct {
 	port      string
 	service   string
 
+	// scrapeID is used to identify logs for a Collect call.
+	scrapeID uint64
+
 	latencyHistogramVec  *histogramvec.HistogramVec
 	latencyHistogramDesc *prometheus.Desc
 
@@ -73,6 +77,7 @@ func New(config Config) (*Collector, error) {
 	}
 
 	var err error
+
 	var latencyHistogramVec *histogramvec.HistogramVec
 	{
 		c := histogramvec.Config{
@@ -95,7 +100,6 @@ func New(config Config) (*Collector, error) {
 		},
 		[]string{"host"},
 	)
-
 	prometheus.MustRegister(errorCount)
 	prometheus.MustRegister(dialErrorCount)
 
@@ -131,22 +135,31 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	hosts := []string{}
+	atomic.AddUint64(&c.scrapeID, 1)
 
+	scrapingStart := time.Now()
+	c.logger.Log("level", "info", "message", "collecting metrics", "scrapeID", c.scrapeID)
+
+	c.logger.Log("level", "info", "message", "collecting service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
 	service, err := c.kubernetesClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get service", "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 		c.errorCount.Inc()
 		return
 	}
 
+	c.logger.Log("level", "info", "message", "collected service from kubernetes api", "service ", c.service, "scrapeID", c.scrapeID)
 	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
 
+	c.logger.Log("level", "info", "message", "collecting endpoints for service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
 	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get endpoints", "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not collect endpoints for service from kubernetes api ", "service", c.service, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 		c.errorCount.Inc()
+		return
 	}
 
+	c.logger.Log("level", "info", "message", "collected endpoints for service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
 	for _, endpointSubset := range endpoints.Subsets {
 		for _, address := range endpointSubset.Addresses {
 			hosts = append(hosts, fmt.Sprintf("%v:%v", address.IP, c.port))
@@ -163,15 +176,17 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 			start := time.Now()
 
+			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
 			conn, err := c.dialer.Dial("tcp", host)
 			if err != nil {
-				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", microerror.Stack(err))
+				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 				c.dialErrorCount.WithLabelValues(host).Inc()
 				return
 			}
 			defer conn.Close()
 
 			elapsed := time.Since(start)
+			c.logger.Log("level", "info", "message", "dialed host", "host", host, "scrapeTime", elapsed.Seconds(), "scrapeID", c.scrapeID)
 
 			c.latencyHistogramVec.Add(host, elapsed.Seconds())
 		}(host)
@@ -188,4 +203,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			host,
 		)
 	}
+
+	scrapingElapsed := time.Since(scrapingStart)
+	c.logger.Log("level", "info", "message", "collected metrics", "scrapeID", c.scrapeID, "scrapeTime", scrapingElapsed.Seconds())
 }
