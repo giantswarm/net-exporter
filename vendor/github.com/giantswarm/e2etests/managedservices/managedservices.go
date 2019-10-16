@@ -162,7 +162,7 @@ func (ms *ManagedServices) Test(ctx context.Context) error {
 
 // checkDaemonSet ensures that key properties of the daemonset are correct.
 func (ms *ManagedServices) checkDaemonSet(expectedDaemonSet DaemonSet) error {
-	ds, err := ms.clients.K8sClient().Apps().DaemonSets(expectedDaemonSet.Namespace).Get(expectedDaemonSet.Name, metav1.GetOptions{})
+	ds, err := ms.clients.K8sClient().AppsV1().DaemonSets(expectedDaemonSet.Namespace).Get(expectedDaemonSet.Name, metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
 		return microerror.Maskf(notFoundError, "daemonset %#q", expectedDaemonSet.Name)
 	} else if err != nil {
@@ -189,7 +189,7 @@ func (ms *ManagedServices) checkDaemonSet(expectedDaemonSet DaemonSet) error {
 
 // checkDeployment ensures that key properties of the deployment are correct.
 func (ms *ManagedServices) checkDeployment(expectedDeployment Deployment) error {
-	ds, err := ms.clients.K8sClient().Apps().Deployments(expectedDeployment.Namespace).Get(expectedDeployment.Name, metav1.GetOptions{})
+	ds, err := ms.clients.K8sClient().AppsV1().Deployments(expectedDeployment.Namespace).Get(expectedDeployment.Name, metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
 		return microerror.Maskf(notFoundError, "deployment: %#q", expectedDeployment.Name)
 	} else if err != nil {

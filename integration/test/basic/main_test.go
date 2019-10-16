@@ -92,7 +92,7 @@ func init() {
 		c := helmclient.Config{
 			Logger:     l,
 			K8sClient:  k8sClients.K8sClient(),
-			RestConfig: k8sClients.RestConfig(),
+			RestConfig: k8sClients.RESTConfig(),
 
 			TillerNamespace: "giantswarm",
 		}
