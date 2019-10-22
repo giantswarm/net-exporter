@@ -1,0 +1,59 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: net-exporter
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: net-exporter
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: net-exporter
+  template:
+    metadata:
+      labels:
+        app: net-exporter
+      annotations:
+        releasetime: {{ $.Release.Time }}
+    spec:
+      initContainers:
+      - name: label-kube-system-namespace
+        image: quay.io/giantswarm/namespace-labeler
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+      priorityClassName: giantswarm-critical
+      containers:
+      - name: net-exporter
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        args:
+        - "-namespace={{ .Values.namespace }}"
+        - "-timeout={{ .Values.timeout }}"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 5
+        resources:
+          # cpu limits removed so that throttling doesn't cause any unwanted
+          # side-effects to measurements.
+          requests:
+            memory: 75Mi
+          limits:
+            memory: 75Mi
+      serviceAccountName: net-exporter
+      securityContext:
+        runAsUser: {{ .Values.userID }}
+        runAsGroup: {{ .Values.groupID }}
+      tolerations:
+      # Tolerate all taints for observability
+      - operator: "Exists"
