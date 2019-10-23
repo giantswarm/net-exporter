@@ -2,7 +2,7 @@ kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: net-exporter
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.exporter.namespace }}
   labels:
     app: net-exporter
 spec:
@@ -29,7 +29,7 @@ spec:
       - name: net-exporter
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         args:
-        - "-namespace={{ .Values.namespace }}"
+        - "-namespace={{ .Values.exporter.namespace }}"
         - "-timeout={{ .Values.timeout }}"
         livenessProbe:
           httpGet:
