@@ -39,7 +39,7 @@ spec:
       protocol: UDP
     - port: {{ .Values.dns.port }}
       protocol: TCP
-    # legacy part kept for compatibility
+    # legacy port kept for compatibility
     - port: 53
       protocol: UDP
     - port: 53
