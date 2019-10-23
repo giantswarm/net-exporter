@@ -1,4 +1,4 @@
-net-exporter
+/net-exporter
 
 # don't apply earlier restrictions under vendor
 !vendor/**

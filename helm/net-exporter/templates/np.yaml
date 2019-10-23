@@ -1,0 +1,68 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: {{ .Values.exporter.namespace }}
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.name }}
+    giantswarm.io/service-type: "managed"
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Values.name }}
+  ingress:
+  - ports:
+    - port: {{ .Values.port }}
+      protocol: TCP
+    from:
+    - podSelector:
+        matchLabels:
+          app: {{ .Values.name }}
+    - podSelector:
+        matchLabels:
+          app: prometheus
+    {{ $privateSubnets := list "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/16" }}
+    {{ range $index, $privateSubnet := $privateSubnets }}
+    - ipBlock:
+        cidr: {{ $privateSubnet }}
+    {{ end }}
+  egress:
+  - ports:
+    - port: {{ .Values.port }}
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: {{ .Values.name }}
+  - ports:
+    - port: {{ .Values.dns.port }}
+      protocol: UDP
+    - port: {{ .Values.dns.port }}
+      protocol: TCP
+    # legacy port kept for compatibility
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          k8s-app: {{ .Values.dns.label }}
+      namespaceSelector:
+        matchLabels:
+          name: kube-system
+  - ports:
+    - port: 443
+      protocol: TCP
+    # legacy port kept for compatibility
+    - port: 6443
+      protocol: TCP
+    to:
+    {{ $privateSubnets := list "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/16" }}
+    {{ range $index, $privateSubnet := $privateSubnets }}
+    - ipBlock:
+        cidr: {{ $privateSubnet }}
+    {{ end }}
+  policyTypes:
+  - Ingress
+  - Egress
