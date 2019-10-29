@@ -1,30 +1,56 @@
-[![CircleCI](https://circleci.com/gh/giantswarm/net-exporter.svg?&style=shield)](https://circleci.com/gh/giantswarm/net-exporter) [![Docker Repository on Quay](https://quay.io/repository/giantswarm/net-exporter/status "Docker Repository on Quay")](https://quay.io/repository/giantswarm/net-exporter) [![Go Report Card](https://goreportcard.com/badge/github.com/giantswarm/net-exporter)](https://goreportcard.com/report/github.com/giantswarm/net-exporter)
+[![CircleCI](https://circleci.com/gh/giantswarm/net-exporter.svg?&style=shield)](https://circleci.com/gh/giantswarm/net-exporter) [![Go Report Card](https://goreportcard.com/badge/github.com/giantswarm/net-exporter)](https://goreportcard.com/report/github.com/giantswarm/net-exporter)
 
 # net-exporter
 
 net-exporter is a Prometheus exporter for exposing network information in Kubernetes clusters.
-
-## Getting Project
-
-Clone the git repository: https://github.com/giantswarm/net-exporter.git
-
-### How to build
-
-Build it using the standard `go build` command.
-
-```
-go build github.com/giantswarm/net-exporter
-```
-
-## Running net-exporter
-
-Installing the Helm chart is the best way to run net-exporter.
-```
-helm registry install quay.io/giantswarm/net-exporter-chart
-```
+It is packaged as a Helm chart.
 
 net-exporter runs as a Kubernetes Daemonset. This is to allow for intra-pod network calls,
 to determine network latency.
+
+## How to build
+
+Build it using the standard `go build` command.
+
+```bash
+go build github.com/giantswarm/net-exporter
+```
+
+## Deployment
+
+* Managed by [app-operator].
+* Production releases are stored in the [default-catalog].
+* WIP releases are stored in the [default-test-catalog].
+
+## Installing the Chart
+
+To install the chart locally:
+
+```bash
+$ git clone https://github.com/giantswarm/net-exporter.git
+$ cd net-exporter
+$ helm install helm/net-exporter
+```
+
+Provide a custom `values.yaml`:
+
+```bash
+$ helm install net-exporter -f values.yaml
+```
+
+## Release Process
+
+* Ensure CHANGELOG.md is up to date.
+* Create a new GitHub release with the version e.g. `v0.1.0` and link the
+changelog entry.
+* This will push a new git tag and trigger a new tarball to be pushed to the
+[default-catalog].  
+* Update [cluster-operator] with the new version.
+
+[app-operator]: https://github.com/giantswarm/app-operator
+[cluster-operator]: https://github.com/giantswarm/cluster-operator
+[default-catalog]: https://github.com/giantswarm/default-catalog
+[default-test-catalog]: https://github.com/giantswarm/default-test-catalog
 
 ## Collectors
 All Collectors are enabled by default.
