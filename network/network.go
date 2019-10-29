@@ -20,7 +20,7 @@ const (
 
 	bucketStart  = 0.001
 	bucketFactor = 2
-	numBuckets   = 15
+	numBuckets   = 5
 )
 
 // Config provides the necessary configuration for creating a Collector.
