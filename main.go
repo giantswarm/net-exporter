@@ -28,7 +28,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&hosts, "hosts", "giantswarm.io,kubernetes.default.svc.cluster.local", "DNS hosts to resolve")
+	flag.StringVar(&hosts, "hosts", "giantswarm.io.,kubernetes.default.svc.cluster.local.", "DNS hosts to resolve")
 	flag.StringVar(&namespace, "namespace", "monitoring", "Namespace of net-exporter service")
 	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
 	flag.StringVar(&service, "service", "net-exporter", "Name of net-exporter service")
