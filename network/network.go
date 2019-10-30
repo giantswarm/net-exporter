@@ -3,6 +3,8 @@ package network
 import (
 	"fmt"
 	"net"
+	"sort"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -11,6 +13,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
+	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -21,6 +24,16 @@ const (
 	bucketStart  = 0.001
 	bucketFactor = 2
 	numBuckets   = 5
+
+	// numNeighbours is the number of neighbours for the net-exporter to dial.
+	// The lower the number, the higher the likelihood that a net-exporter is not dialed
+	// in case of failures - e.g: if numNeighbours is 1, if a single net-exporter is down,
+	// its neighbour will not be pinged.
+	// The higher the number, the higher the cardinality of network latency metrics exposed
+	// by the net-exporter.
+	// Having a value of 2 means that 2 specific net-exporters need to be down
+	// for one net-exporter to not be dialed, without exposing very high cardinality metrics.
+	numNeighbours = 2
 )
 
 // Config provides the necessary configuration for creating a Collector.
@@ -134,7 +147,6 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-	hosts := []string{}
 	atomic.AddUint64(&c.scrapeID, 1)
 
 	scrapingStart := time.Now()
@@ -149,7 +161,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	c.logger.Log("level", "info", "message", "collected service from kubernetes api", "service ", c.service, "scrapeID", c.scrapeID)
-	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
 
 	c.logger.Log("level", "info", "message", "collecting endpoints for service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
 	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
@@ -160,10 +171,18 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	c.logger.Log("level", "info", "message", "collected endpoints for service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
-	for _, endpointSubset := range endpoints.Subsets {
-		for _, address := range endpointSubset.Addresses {
-			hosts = append(hosts, fmt.Sprintf("%v:%v", address.IP, c.port))
-		}
+
+	hosts := []string{}
+	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
+
+	neighbours, err := c.getNeighbours(numNeighbours, endpoints.Subsets)
+	if err != nil {
+		c.logger.Log("level", "error", "message", "could not get neighbours", "service", c.service, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+		c.errorCount.Inc()
+		return
+	}
+	for _, neighbour := range neighbours {
+		hosts = append(hosts, fmt.Sprintf("%v:%v", neighbour, c.port))
 	}
 
 	var wg sync.WaitGroup
@@ -206,4 +225,51 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	scrapingElapsed := time.Since(scrapingStart)
 	c.logger.Log("level", "info", "message", "collected metrics", "scrapeID", c.scrapeID, "scrapeTime", scrapingElapsed.Seconds())
+}
+
+func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset) ([]string, error) {
+	// Find our IP - note: this does not open a connection, due to UDP.
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	defer conn.Close()
+	ip := conn.LocalAddr().(*net.UDPAddr).IP.String()
+
+	// Get all other net-exporter IPs, and sort them.
+	addresses := []string{}
+	for _, endpointSubset := range subsets {
+		for _, address := range endpointSubset.Addresses {
+			addresses = append(addresses, address.IP)
+		}
+	}
+
+	// Calculate n neighbours, given our local IP and all other net-exporter IPs.
+	neighbours := c.calculateNeighbours(n, ip, addresses)
+
+	c.logger.Log("level", "info", "message", "calculated neighbours", "ip", ip, "neighbours", strings.Join(neighbours, ", "), "scrapeID", c.scrapeID)
+
+	return neighbours, nil
+}
+
+func (c *Collector) calculateNeighbours(n int, ip string, addresses []string) []string {
+	sort.Strings(addresses)
+
+	neighbours := []string{}
+
+	if n > len(addresses) {
+		n = len(addresses)
+	}
+
+	for i := 0; i < len(addresses); i++ {
+		if addresses[i] == ip {
+			for j := 1; j < n+1; j++ {
+				k := i + j
+				k = k % len(addresses)
+				neighbours = append(neighbours, addresses[k])
+			}
+		}
+	}
+
+	return neighbours
 }
