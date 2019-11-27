@@ -12,6 +12,7 @@ rules:
   - endpoints
   resourceNames:
   - net-exporter
+  - coredns
   verbs:
   - get
 - apiGroups:
