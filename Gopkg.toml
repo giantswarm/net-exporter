@@ -100,6 +100,9 @@ required = [
   name = "github.com/russross/blackfriday"
   version = "v1.5.2"
 
+[[override]]
+  name = "github.com/miekg/dns"
+  version = "v1.1.22"
 
 
 [prune]

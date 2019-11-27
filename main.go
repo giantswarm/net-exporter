@@ -11,6 +11,7 @@ import (
 	"github.com/giantswarm/exporterkit"
 	"github.com/giantswarm/micrologger"
 	"github.com/giantswarm/operatorkit/client/k8srestconfig"
+	dnsclient "github.com/miekg/dns"
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -79,7 +80,14 @@ func main() {
 		splitHosts := strings.Split(hosts, ",")
 
 		c := dns.Config{
-			Logger: logger,
+			KubernetesClient: kubernetesClient,
+			Logger:           logger,
+			TCPClient: &dnsclient.Client{
+				Net: "tcp",
+			},
+			UDPClient: &dnsclient.Client{
+				Net: "udp",
+			},
 
 			Hosts: splitHosts,
 		}

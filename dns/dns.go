@@ -1,14 +1,17 @@
 package dns
 
 import (
-	"net"
+	"fmt"
 	"sync"
 	"time"
 
 	"github.com/giantswarm/exporterkit/histogramvec"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	dnsclient "github.com/miekg/dns"
 	"github.com/prometheus/client_golang/prometheus"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
 )
 
 const (
@@ -21,19 +24,27 @@ const (
 
 // Config provides the necessary configuration for creating a Collector.
 type Config struct {
-	Logger micrologger.Logger
+	KubernetesClient kubernetes.Interface
+	Logger           micrologger.Logger
+	TCPClient        *dnsclient.Client
+	UDPClient        *dnsclient.Client
 
 	Hosts []string
 }
 
 // Collector implements the Collector interface, exposing DNS latency information.
 type Collector struct {
-	logger micrologger.Logger
+	kubernetesClient kubernetes.Interface
+	logger           micrologger.Logger
+	tcpClient        *dnsclient.Client
+	udpClient        *dnsclient.Client
 
 	hosts []string
 
-	latencyHistogramVec  *histogramvec.HistogramVec
-	latencyHistogramDesc *prometheus.Desc
+	tcpLatencyHistogramVec  *histogramvec.HistogramVec
+	tcpLatencyHistogramDesc *prometheus.Desc
+	udpLatencyHistogramVec  *histogramvec.HistogramVec
+	udpLatencyHistogramDesc *prometheus.Desc
 
 	errorCount        prometheus.Counter
 	resolveErrorCount *prometheus.CounterVec
@@ -41,8 +52,17 @@ type Collector struct {
 
 // New creates a Collector, given a Config.
 func New(config Config) (*Collector, error) {
+	if config.KubernetesClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.KubernetesClient must not be empty", config)
+	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
+	}
+	if config.TCPClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.TCPClient must not be empty", config)
+	}
+	if config.UDPClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.UDPClient must not be empty", config)
 	}
 
 	if len(config.Hosts) == 0 {
@@ -50,12 +70,22 @@ func New(config Config) (*Collector, error) {
 	}
 
 	var err error
-	var latencyHistogramVec *histogramvec.HistogramVec
+	var tcpLatencyHistogramVec *histogramvec.HistogramVec
 	{
 		c := histogramvec.Config{
 			BucketLimits: prometheus.ExponentialBuckets(bucketStart, bucketFactor, numBuckets),
 		}
-		latencyHistogramVec, err = histogramvec.New(c)
+		tcpLatencyHistogramVec, err = histogramvec.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+	var udpLatencyHistogramVec *histogramvec.HistogramVec
+	{
+		c := histogramvec.Config{
+			BucketLimits: prometheus.ExponentialBuckets(bucketStart, bucketFactor, numBuckets),
+		}
+		udpLatencyHistogramVec, err = histogramvec.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -70,21 +100,31 @@ func New(config Config) (*Collector, error) {
 			Name: prometheus.BuildFQName(namespace, "", "resolve_error_total"),
 			Help: "Total number of errors resolving hosts.",
 		},
-		[]string{"host"},
+		[]string{"proto", "host"},
 	)
 
 	prometheus.MustRegister(errorCount)
 	prometheus.MustRegister(resolveErrorCount)
 
 	collector := &Collector{
-		logger: config.Logger,
+		kubernetesClient: config.KubernetesClient,
+		logger:           config.Logger,
+		tcpClient:        config.TCPClient,
+		udpClient:        config.UDPClient,
 
 		hosts: config.Hosts,
 
-		latencyHistogramVec: latencyHistogramVec,
-		latencyHistogramDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "latency_seconds"),
-			"Histogram of latency of DNS resolutions.",
+		tcpLatencyHistogramVec: tcpLatencyHistogramVec,
+		tcpLatencyHistogramDesc: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "tcp_latency_seconds"),
+			"Histogram of latency of TCP DNS resolutions.",
+			[]string{"host"},
+			nil,
+		),
+		udpLatencyHistogramVec: udpLatencyHistogramVec,
+		udpLatencyHistogramDesc: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "", "udp_latency_seconds"),
+			"Histogram of latency of UDP DNS resolutions.",
 			[]string{"host"},
 			nil,
 		),
@@ -98,41 +138,70 @@ func New(config Config) (*Collector, error) {
 
 // Describe implements the Describe method of the Collector interface.
 func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
-	ch <- c.latencyHistogramDesc
+	ch <- c.tcpLatencyHistogramDesc
+	ch <- c.udpLatencyHistogramDesc
+}
+
+func (c *Collector) resolve(proto string, client *dnsclient.Client, host string, dnsServer string, latencyHistogramVec *histogramvec.HistogramVec) {
+	start := time.Now()
+
+	message := &dnsclient.Msg{}
+	message.SetQuestion(host, dnsclient.TypeA)
+
+	msg, _, err := client.Exchange(message, fmt.Sprintf("%s:53", dnsServer))
+	if err != nil || len(msg.Answer) == 0 {
+		c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "proto", proto, "stack", microerror.Stack(err))
+		c.resolveErrorCount.WithLabelValues(proto, host).Inc()
+		return
+	}
+
+	elapsed := time.Since(start)
+
+	latencyHistogramVec.Add(host, elapsed.Seconds())
 }
 
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
+	service, err := c.kubernetesClient.CoreV1().Services("kube-system").Get("coredns", metav1.GetOptions{})
+	if err != nil {
+		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "stack", microerror.Stack(err))
+		c.errorCount.Inc()
+		return
+	}
+
 	var wg sync.WaitGroup
 
 	for _, host := range c.hosts {
-		wg.Add(1)
+		wg.Add(2)
 
 		go func(host string) {
 			defer wg.Done()
 
-			start := time.Now()
+			c.resolve("tcp", c.tcpClient, host, service.Spec.ClusterIP, c.tcpLatencyHistogramVec)
+		}(host)
 
-			_, err := net.LookupHost(host)
-			if err != nil {
-				c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "stack", microerror.Stack(err))
-				c.resolveErrorCount.WithLabelValues(host).Inc()
-				return
-			}
+		go func(host string) {
+			defer wg.Done()
 
-			elapsed := time.Since(start)
-
-			c.latencyHistogramVec.Add(host, elapsed.Seconds())
+			c.resolve("udp", c.udpClient, host, service.Spec.ClusterIP, c.udpLatencyHistogramVec)
 		}(host)
 	}
 
 	wg.Wait()
 
-	c.latencyHistogramVec.Ensure(c.hosts)
+	c.tcpLatencyHistogramVec.Ensure(c.hosts)
+	c.udpLatencyHistogramVec.Ensure(c.hosts)
 
-	for host, histogram := range c.latencyHistogramVec.Histograms() {
+	for host, histogram := range c.tcpLatencyHistogramVec.Histograms() {
 		ch <- prometheus.MustNewConstHistogram(
-			c.latencyHistogramDesc,
+			c.tcpLatencyHistogramDesc,
+			histogram.Count(), histogram.Sum(), histogram.Buckets(),
+			host,
+		)
+	}
+	for host, histogram := range c.udpLatencyHistogramVec.Histograms() {
+		ch <- prometheus.MustNewConstHistogram(
+			c.udpLatencyHistogramDesc,
 			histogram.Count(), histogram.Sum(), histogram.Buckets(),
 			host,
 		)
