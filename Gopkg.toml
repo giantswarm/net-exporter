@@ -58,6 +58,10 @@ required = [
 
 [[constraint]]
   branch = "master"
+  name = "github.com/giantswarm/k8sclient"
+
+[[constraint]]
+  branch = "master"
   name = "github.com/giantswarm/micrologger"
 
 [[constraint]]
@@ -90,7 +94,7 @@ required = [
 
 [[override]]
   name = "k8s.io/kubernetes"
-  version = "1.15.4"
+  version = "=1.15.4"
 
 [[override]]
   name = "github.com/ghodss/yaml"
@@ -108,11 +112,3 @@ required = [
 [prune]
   go-tests = true
   unused-packages = true
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/giantswarm/operatorkit"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/giantswarm/k8sclient"

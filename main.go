@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/giantswarm/exporterkit"
+	"github.com/giantswarm/k8sclient/k8srestconfig"
 	"github.com/giantswarm/micrologger"
-	"github.com/giantswarm/operatorkit/client/k8srestconfig"
 	dnsclient "github.com/miekg/dns"
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/client-go/kubernetes"
