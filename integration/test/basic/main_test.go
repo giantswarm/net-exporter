@@ -11,7 +11,6 @@ import (
 	"github.com/giantswarm/apprclient"
 	e2esetup "github.com/giantswarm/e2esetup/chart"
 	"github.com/giantswarm/e2esetup/chart/env"
-	"github.com/giantswarm/e2esetup/k8s"
 	"github.com/giantswarm/e2etests/managedservices"
 	"github.com/giantswarm/helmclient"
 	"github.com/giantswarm/k8sclient"
@@ -33,7 +32,7 @@ var (
 	ms         *managedservices.ManagedServices
 	helmClient *helmclient.Client
 	l          micrologger.Logger
-	k8sSetup   *k8s.Setup
+	k8sSetup   *k8sclient.Setup
 )
 
 func init() {
@@ -63,12 +62,12 @@ func init() {
 	}
 
 	{
-		c := k8s.SetupConfig{
+		c := k8sclient.SetupConfig{
 			Clients: k8sClients,
 			Logger:  l,
 		}
 
-		k8sSetup, err = k8s.NewSetup(c)
+		k8sSetup, err = k8sclient.NewSetup(c)
 		if err != nil {
 			panic(err.Error())
 		}
