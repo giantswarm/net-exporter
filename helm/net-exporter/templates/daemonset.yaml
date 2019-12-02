@@ -20,14 +20,14 @@ spec:
     spec:
       initContainers:
       - name: label-kube-system-namespace
-        image: quay.io/giantswarm/namespace-labeler
+        image: "{{ .Values.image.registry }}/{{ .Values.namespaceLabeler.image.name }}"
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
       priorityClassName: giantswarm-critical
       containers:
       - name: net-exporter
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
         args:
         - "-namespace={{ .Values.exporter.namespace }}"
         - "-timeout={{ .Values.timeout }}"
