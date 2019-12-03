@@ -67,9 +67,9 @@ func main() {
 		}
 	}
 
-	var kubernetesClient kubernetes.Interface
+	var k8sClient kubernetes.Interface
 	{
-		kubernetesClient, err = kubernetes.NewForConfig(restConfig)
+		k8sClient, err = kubernetes.NewForConfig(restConfig)
 		if err != nil {
 			panic(fmt.Sprintf("%#v\n", err))
 		}
@@ -80,8 +80,8 @@ func main() {
 		splitHosts := strings.Split(hosts, ",")
 
 		c := dns.Config{
-			KubernetesClient: kubernetesClient,
-			Logger:           logger,
+			K8sClient: k8sClient,
+			Logger:    logger,
 			TCPClient: &dnsclient.Client{
 				Net: "tcp",
 			},
@@ -104,8 +104,8 @@ func main() {
 			Dialer: &net.Dialer{
 				Timeout: timeout,
 			},
-			KubernetesClient: kubernetesClient,
-			Logger:           logger,
+			K8sClient: k8sClient,
+			Logger:    logger,
 
 			Namespace: namespace,
 			Port:      port,

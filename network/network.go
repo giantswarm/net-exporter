@@ -38,9 +38,9 @@ const (
 
 // Config provides the necessary configuration for creating a Collector.
 type Config struct {
-	Dialer           *net.Dialer
-	KubernetesClient kubernetes.Interface
-	Logger           micrologger.Logger
+	Dialer    *net.Dialer
+	K8sClient kubernetes.Interface
+	Logger    micrologger.Logger
 
 	Namespace string
 	Port      string
@@ -49,9 +49,9 @@ type Config struct {
 
 // Collector implements the Collector interface, exposing network latency information.
 type Collector struct {
-	dialer           *net.Dialer
-	kubernetesClient kubernetes.Interface
-	logger           micrologger.Logger
+	dialer    *net.Dialer
+	k8sClient kubernetes.Interface
+	logger    micrologger.Logger
 
 	namespace string
 	port      string
@@ -72,8 +72,8 @@ func New(config Config) (*Collector, error) {
 	if config.Dialer == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Dialer must not be empty", config)
 	}
-	if config.KubernetesClient == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.KubernetesClient must not be empty", config)
+	if config.K8sClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
 	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
@@ -117,9 +117,9 @@ func New(config Config) (*Collector, error) {
 	prometheus.MustRegister(dialErrorCount)
 
 	collector := &Collector{
-		dialer:           config.Dialer,
-		kubernetesClient: config.KubernetesClient,
-		logger:           config.Logger,
+		dialer:    config.Dialer,
+		k8sClient: config.K8sClient,
+		logger:    config.Logger,
 
 		namespace: config.Namespace,
 		port:      config.Port,
@@ -153,7 +153,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.logger.Log("level", "info", "message", "collecting metrics", "scrapeID", c.scrapeID)
 
 	c.logger.Log("level", "info", "message", "collecting service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
-	service, err := c.kubernetesClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
+	service, err := c.k8sClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 		c.errorCount.Inc()
@@ -163,7 +163,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.logger.Log("level", "info", "message", "collected service from kubernetes api", "service ", c.service, "scrapeID", c.scrapeID)
 
 	c.logger.Log("level", "info", "message", "collecting endpoints for service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
-	endpoints, err := c.kubernetesClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
+	endpoints, err := c.k8sClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not collect endpoints for service from kubernetes api ", "service", c.service, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 		c.errorCount.Inc()

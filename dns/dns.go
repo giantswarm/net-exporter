@@ -24,20 +24,20 @@ const (
 
 // Config provides the necessary configuration for creating a Collector.
 type Config struct {
-	KubernetesClient kubernetes.Interface
-	Logger           micrologger.Logger
-	TCPClient        *dnsclient.Client
-	UDPClient        *dnsclient.Client
+	K8sClient kubernetes.Interface
+	Logger    micrologger.Logger
+	TCPClient *dnsclient.Client
+	UDPClient *dnsclient.Client
 
 	Hosts []string
 }
 
 // Collector implements the Collector interface, exposing DNS latency information.
 type Collector struct {
-	kubernetesClient kubernetes.Interface
-	logger           micrologger.Logger
-	tcpClient        *dnsclient.Client
-	udpClient        *dnsclient.Client
+	k8sClient kubernetes.Interface
+	logger    micrologger.Logger
+	tcpClient *dnsclient.Client
+	udpClient *dnsclient.Client
 
 	hosts []string
 
@@ -52,8 +52,8 @@ type Collector struct {
 
 // New creates a Collector, given a Config.
 func New(config Config) (*Collector, error) {
-	if config.KubernetesClient == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.KubernetesClient must not be empty", config)
+	if config.K8sClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
 	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
@@ -107,10 +107,10 @@ func New(config Config) (*Collector, error) {
 	prometheus.MustRegister(resolveErrorCount)
 
 	collector := &Collector{
-		kubernetesClient: config.KubernetesClient,
-		logger:           config.Logger,
-		tcpClient:        config.TCPClient,
-		udpClient:        config.UDPClient,
+		k8sClient: config.K8sClient,
+		logger:    config.Logger,
+		tcpClient: config.TCPClient,
+		udpClient: config.UDPClient,
 
 		hosts: config.Hosts,
 
@@ -162,7 +162,7 @@ func (c *Collector) resolve(proto string, client *dnsclient.Client, host string,
 
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-	service, err := c.kubernetesClient.CoreV1().Services("kube-system").Get("coredns", metav1.GetOptions{})
+	service, err := c.k8sClient.CoreV1().Services("kube-system").Get("coredns", metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "stack", microerror.Stack(err))
 		c.errorCount.Inc()
