@@ -53,7 +53,7 @@ e2eTest: &e2eTest
 
 version: 2.1
 orbs:
-  architect: giantswarm/architect@0.4.3
+  architect: giantswarm/architect@0.4.5
 
 jobs:
   build:
@@ -141,6 +141,18 @@ workflows:
               only: master
             tags:
               only: /^v.*/
+        # Push to Aliyun should execute without manual approval on master.
+      - architect/push-to-docker-legacy:
+          name: push-net-exporter-to-aliyun-master-legacy
+          image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/net-exporter"
+          username_envar: "ALIYUN_USERNAME"
+          password_envar: "ALIYUN_PASSWORD"
+          requires:
+            - build
+          # Needed to trigger job only on merge to master.
+          filters:
+            branches:
+              only: master
 
       - architect/push-to-app-catalog:
           name: push-net-exporter-to-app-catalog
@@ -164,3 +176,4 @@ workflows:
               only: master
           requires:
           - build
+          - push-net-exporter-to-aliyun-master-legacy
