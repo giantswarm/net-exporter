@@ -15,7 +15,7 @@ timeout: 5s
 
 image:
   registry: quay.io
-  repository: giantswarm/net-exporter
+  name: giantswarm/net-exporter
   tag: "[[ .Version ]]"
 
 namespaceLabeler:
