@@ -17,6 +17,10 @@ image:
   repository: giantswarm/net-exporter
   tag: [[ .SHA ]]
 
+namespaceLabeler:
+  image:
+    name: giantswarm/namespace-labeler
+
 # Control-plane subnets used to generate network policies
 # for managed applications.
 controlPlaneSubnets: []
