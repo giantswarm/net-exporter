@@ -147,37 +147,37 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-	atomic.AddUint64(&c.scrapeID, 1)
+	scrapeID := atomic.AddUint64(&c.scrapeID, 1)
 
 	scrapingStart := time.Now()
-	c.logger.Log("level", "info", "message", "collecting metrics", "scrapeID", c.scrapeID)
+	c.logger.Log("level", "info", "message", "collecting metrics", "scrapeID", scrapeID)
 
-	c.logger.Log("level", "info", "message", "collecting service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
+	c.logger.Log("level", "info", "message", "collecting service from kubernetes api", "service", c.service, "scrapeID", scrapeID)
 	service, err := c.k8sClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "scrapeID", scrapeID, "stack", microerror.Stack(err))
 		c.errorCount.Inc()
 		return
 	}
 
-	c.logger.Log("level", "info", "message", "collected service from kubernetes api", "service ", c.service, "scrapeID", c.scrapeID)
+	c.logger.Log("level", "info", "message", "collected service from kubernetes api", "service ", c.service, "scrapeID", scrapeID)
 
-	c.logger.Log("level", "info", "message", "collecting endpoints for service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
+	c.logger.Log("level", "info", "message", "collecting endpoints for service from kubernetes api", "service", c.service, "scrapeID", scrapeID)
 	endpoints, err := c.k8sClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not collect endpoints for service from kubernetes api ", "service", c.service, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not collect endpoints for service from kubernetes api ", "service", c.service, "scrapeID", scrapeID, "stack", microerror.Stack(err))
 		c.errorCount.Inc()
 		return
 	}
 
-	c.logger.Log("level", "info", "message", "collected endpoints for service from kubernetes api", "service", c.service, "scrapeID", c.scrapeID)
+	c.logger.Log("level", "info", "message", "collected endpoints for service from kubernetes api", "service", c.service, "scrapeID", scrapeID)
 
 	hosts := []string{}
 	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
 
-	neighbours, err := c.getNeighbours(numNeighbours, endpoints.Subsets)
+	neighbours, err := c.getNeighbours(numNeighbours, endpoints.Subsets, scrapeID)
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get neighbours", "service", c.service, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not get neighbours", "service", c.service, "scrapeID", scrapeID, "stack", microerror.Stack(err))
 		c.errorCount.Inc()
 		return
 	}
@@ -195,17 +195,17 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 			start := time.Now()
 
-			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
+			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", scrapeID)
 			conn, err := c.dialer.Dial("tcp", host)
 			if err != nil {
-				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", scrapeID, "stack", microerror.Stack(err))
 				c.dialErrorCount.WithLabelValues(host).Inc()
 				return
 			}
 			defer conn.Close()
 
 			elapsed := time.Since(start)
-			c.logger.Log("level", "info", "message", "dialed host", "host", host, "scrapeTime", elapsed.Seconds(), "scrapeID", c.scrapeID)
+			c.logger.Log("level", "info", "message", "dialed host", "host", host, "scrapeTime", elapsed.Seconds(), "scrapeID", scrapeID)
 
 			c.latencyHistogramVec.Add(host, elapsed.Seconds())
 		}(host)
@@ -224,10 +224,10 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	scrapingElapsed := time.Since(scrapingStart)
-	c.logger.Log("level", "info", "message", "collected metrics", "scrapeID", c.scrapeID, "scrapeTime", scrapingElapsed.Seconds())
+	c.logger.Log("level", "info", "message", "collected metrics", "scrapeID", scrapeID, "scrapeTime", scrapingElapsed.Seconds())
 }
 
-func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset) ([]string, error) {
+func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset, scrapeID uint64) ([]string, error) {
 	// Find our IP - note: this does not open a connection, due to UDP.
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
@@ -247,7 +247,7 @@ func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset) ([]string,
 	// Calculate n neighbours, given our local IP and all other net-exporter IPs.
 	neighbours := c.calculateNeighbours(n, ip, addresses)
 
-	c.logger.Log("level", "info", "message", "calculated neighbours", "ip", ip, "neighbours", strings.Join(neighbours, ", "), "scrapeID", c.scrapeID)
+	c.logger.Log("level", "info", "message", "calculated neighbours", "ip", ip, "neighbours", strings.Join(neighbours, ", "), "scrapeID", scrapeID)
 
 	return neighbours, nil
 }
