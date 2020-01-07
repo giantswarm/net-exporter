@@ -9,7 +9,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ### Changed
 
-- Changed Priority Class to `system-node-critical`
+- Changed Priority Class to `system-node-critical`.
 
 ## [1.4.3] 2019-12-27
 
