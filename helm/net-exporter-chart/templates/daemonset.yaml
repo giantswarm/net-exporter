@@ -28,7 +28,7 @@ spec:
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
-      priorityClassName: giantswarm-critical
+      priorityClassName: system-node-critical
       containers:
       - name: net-exporter
         {{ if (.Values.Installation) }}
