@@ -38,6 +38,14 @@ Provide a custom `values.yaml`:
 $ helm install net-exporter -f values.yaml
 ```
 
+## Changes to Charts
+
+At the current stage under [helm](./helm), there are two charts. The [net-exporter](./helm/net-exporter) is pushed to the App Catalog. The [net-exporter-chart](./helm/net-exporter-chart) is pushed to the Quay `appr` repo.
+
+It is **important** that they are kept in sync.
+
+We have this differentiation in place because in our Control Planes, we don't use the app-operator to deploy.
+
 ## Release Process
 
 * Ensure CHANGELOG.md is up to date.
