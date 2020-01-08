@@ -28,7 +28,17 @@ spec:
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
+      ## In our Control Plane net-exporter runs on monitoring ns
+      ## By design Kubernetes does not allow to run critical pods
+      ## having Priority Class like system-node-critical out of
+      ## the namespace kube-system
+      ##
+      ## In the TC, net-exporter runs on kube-system and so this is fine
+      {{ if (.Values.Installation) }}
+      priorityClassName: giantswarm-critical
+      {{ else }}
       priorityClassName: system-node-critical
+      {{ end }}
       containers:
       - name: net-exporter
         {{ if (.Values.Installation) }}
