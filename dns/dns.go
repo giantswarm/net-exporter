@@ -29,7 +29,8 @@ type Config struct {
 	TCPClient *dnsclient.Client
 	UDPClient *dnsclient.Client
 
-	Hosts []string
+	DisableTCPCheck bool
+	Hosts           []string
 }
 
 // Collector implements the Collector interface, exposing DNS latency information.
@@ -39,7 +40,8 @@ type Collector struct {
 	tcpClient *dnsclient.Client
 	udpClient *dnsclient.Client
 
-	hosts []string
+	disableTCPCheck bool
+	hosts           []string
 
 	tcpLatencyHistogramVec  *histogramvec.HistogramVec
 	tcpLatencyHistogramDesc *prometheus.Desc
@@ -112,7 +114,8 @@ func New(config Config) (*Collector, error) {
 		tcpClient: config.TCPClient,
 		udpClient: config.UDPClient,
 
-		hosts: config.Hosts,
+		disableTCPCheck: config.DisableTCPCheck,
+		hosts:           config.Hosts,
 
 		tcpLatencyHistogramVec: tcpLatencyHistogramVec,
 		tcpLatencyHistogramDesc: prometheus.NewDesc(
@@ -138,7 +141,9 @@ func New(config Config) (*Collector, error) {
 
 // Describe implements the Describe method of the Collector interface.
 func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
-	ch <- c.tcpLatencyHistogramDesc
+	if !c.disableTCPCheck {
+		ch <- c.tcpLatencyHistogramDesc
+	}
 	ch <- c.udpLatencyHistogramDesc
 }
 
@@ -172,14 +177,16 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	var wg sync.WaitGroup
 
 	for _, host := range c.hosts {
-		wg.Add(2)
+		if !c.disableTCPCheck {
+			wg.Add(1)
+			go func(host string) {
+				defer wg.Done()
 
-		go func(host string) {
-			defer wg.Done()
+				c.resolve("tcp", c.tcpClient, host, service.Spec.ClusterIP, c.tcpLatencyHistogramVec)
+			}(host)
+		}
 
-			c.resolve("tcp", c.tcpClient, host, service.Spec.ClusterIP, c.tcpLatencyHistogramVec)
-		}(host)
-
+		wg.Add(1)
 		go func(host string) {
 			defer wg.Done()
 
@@ -192,12 +199,14 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.tcpLatencyHistogramVec.Ensure(c.hosts)
 	c.udpLatencyHistogramVec.Ensure(c.hosts)
 
-	for host, histogram := range c.tcpLatencyHistogramVec.Histograms() {
-		ch <- prometheus.MustNewConstHistogram(
-			c.tcpLatencyHistogramDesc,
-			histogram.Count(), histogram.Sum(), histogram.Buckets(),
-			host,
-		)
+	if !c.disableTCPCheck {
+		for host, histogram := range c.tcpLatencyHistogramVec.Histograms() {
+			ch <- prometheus.MustNewConstHistogram(
+				c.tcpLatencyHistogramDesc,
+				histogram.Count(), histogram.Sum(), histogram.Buckets(),
+				host,
+			)
+		}
 	}
 	for host, histogram := range c.udpLatencyHistogramVec.Histograms() {
 		ch <- prometheus.MustNewConstHistogram(
