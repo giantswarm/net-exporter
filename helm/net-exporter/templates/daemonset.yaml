@@ -49,6 +49,10 @@ spec:
         args:
         - "-namespace={{ .Values.exporter.namespace }}"
         - "-timeout={{ .Values.timeout }}"
+        - "-calico.etcd.endpoints={{ .Values.Installation.V1.Infra.EtcdBackup.EtcdEndpoints }}"
+        - "-calico.etcd.ca=/calico-secrets/server-ca.pem"
+        - "-calico.etcd.crt=/calico-secrets/server-crt.pem"
+        - "-calico.etcd.key=/calico-secrets/server-key.pem"
         livenessProbe:
           httpGet:
             path: /healthz
@@ -69,6 +73,10 @@ spec:
             memory: 75Mi
           limits:
             memory: 75Mi
+        volumeMounts:
+          - name: etcd-certs
+            mountPath: /calico-secrets
+            readOnly: true
       serviceAccountName: net-exporter
       securityContext:
         runAsUser: {{ .Values.userID }}
@@ -76,3 +84,7 @@ spec:
       tolerations:
       # Tolerate all taints for observability
       - operator: "Exists"
+      volumes:
+        - name: etcd-certs
+          hostPath:
+            path: /etc/kubernetes/ssl/etcd

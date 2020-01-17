@@ -12,6 +12,8 @@ import (
 	"github.com/giantswarm/k8sclient/k8srestconfig"
 	"github.com/giantswarm/micrologger"
 	dnsclient "github.com/miekg/dns"
+	"github.com/projectcalico/libcalico-go/lib/apiconfig"
+	"github.com/projectcalico/libcalico-go/lib/client"
 	"github.com/prometheus/client_golang/prometheus"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -26,6 +28,11 @@ var (
 	port      string
 	service   string
 	timeout   time.Duration
+
+	calicoEtcdEndpoints string
+	calicoEtcdCAPath    string
+	calicoEtcdCrtPath   string
+	calicoEtcdKeyPath   string
 )
 
 func init() {
@@ -34,6 +41,11 @@ func init() {
 	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
 	flag.StringVar(&service, "service", "net-exporter", "Name of net-exporter service")
 	flag.DurationVar(&timeout, "timeout", 5*time.Second, "Timeout of the dialer")
+
+	flag.StringVar(&calicoEtcdEndpoints, "calico.etcd.endpoints", "", "Calico etcd endpoints")
+	flag.StringVar(&calicoEtcdCAPath, "calico.etcd.ca", "", "Path to calico etcd CA")
+	flag.StringVar(&calicoEtcdCrtPath, "calico.etcd.crt", "", "Path to calico etcd CRT")
+	flag.StringVar(&calicoEtcdKeyPath, "calico.etcd.key", "", "Path to calico etcd KEY")
 }
 
 func main() {
@@ -48,6 +60,25 @@ func main() {
 	var logger micrologger.Logger
 	{
 		logger, err = micrologger.New(micrologger.Config{})
+		if err != nil {
+			panic(fmt.Sprintf("%#v\n", err))
+		}
+	}
+
+	var calicoClient *client.Client
+	{
+		c := apiconfig.CalicoAPIConfig{
+			Spec: apiconfig.CalicoAPIConfigSpec{
+				EtcdConfig: apiconfig.EtcdConfig{
+					EtcdCACertFile: *calicoEtcdCAPath,
+					EtcdCertFile:   *calicoEtcdCrtPath,
+					EtcdEndpoints:  *calicoEtcdEndpoints,
+					EtcdKeyFile:    *calicoEtcdKeyPath,
+				},
+			},
+		}
+
+		calicoClient, err = client.New(c)
 		if err != nil {
 			panic(fmt.Sprintf("%#v\n", err))
 		}

@@ -73,6 +73,10 @@ required = [
   branch = "master"
 
 [[constraint]]
+  name = "github.com/projectcalico/libcalico-go"
+  branch = "release-v3.11"
+
+[[constraint]]
   name = "github.com/prometheus/client_golang"
   version = "0.9.3"
 
