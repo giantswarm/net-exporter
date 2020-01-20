@@ -44,6 +44,9 @@ spec:
         args:
         - "-namespace={{ .Values.namespace }}"
         - "-timeout={{ .Values.timeout }}"
+        {{ if (.Values.Installation) }}
+        - "-disable-dns-tcp-check={{ .Values.Installation.V1.Monitoring.NetExporter.DisableDNSTCPCheck }}"
+        {{ end }}
         livenessProbe:
           httpGet:
             path: /healthz
