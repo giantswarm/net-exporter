@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.6.0] 2020-01-29
+
 ### Changed
 
 - Allow to disable DNS TCP check.
