@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.6.0] 2020-01-29
+
 ### Changed
 
 - Allow to disable DNS TCP check.
@@ -63,4 +65,4 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.2.0...HEAD
+[unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.2.0...HEAD
