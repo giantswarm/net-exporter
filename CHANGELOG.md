@@ -65,4 +65,4 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.2.0...HEAD
