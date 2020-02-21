@@ -22,7 +22,7 @@ kubectl:
   image:
     registry: quay.io
     name: giantswarm/docker-kubectl
-    tag: 1.16.4
+    tag: latest
 
 # Control-plane subnets used to generate network policies
 # for managed applications.
