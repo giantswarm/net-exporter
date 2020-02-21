@@ -17,9 +17,11 @@ image:
   name: giantswarm/net-exporter
   tag: [[ .SHA ]]
 
-namespaceLabeler:
+kubectl:
   image:
-    name: giantswarm/namespace-labeler
+    registry: quay.io
+    name: giantswarm/docker-kubectl
+    tag: 1.16.4
 
 # Control-plane subnets used to generate network policies
 # for managed applications.
