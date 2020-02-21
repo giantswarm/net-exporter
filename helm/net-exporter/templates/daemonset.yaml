@@ -21,10 +21,16 @@ spec:
       initContainers:
       - name: label-kube-system-namespace
         {{ if (.Values.Installation) }}
-        image: "{{ .Values.Installation.V1.Registry.Domain }}/{{ .Values.namespaceLabeler.image.name }}"
+        image: "{{ .Values.Installation.V1.Registry.Domain }}/{{ .Values.kubectl.image.name }}:{{ .Values.kubectl.image.tag }}"
         {{ else }}
-        image: "{{ .Values.image.registry }}/{{ .Values.namespaceLabeler.image.name }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.kubectl.image.name }}:{{ .Values.kubectl.image.tag }}"
         {{ end }}
+        args:
+          - label
+          - namespace
+          - kube-system
+          - name=kube-system
+          - --overwrite=true
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
