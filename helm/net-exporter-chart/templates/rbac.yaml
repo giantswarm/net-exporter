@@ -25,6 +25,7 @@ rules:
   verbs:
   - get
   - update
+  - patch
 - apiGroups:
   - extensions
   resources:
