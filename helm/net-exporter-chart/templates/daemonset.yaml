@@ -52,7 +52,6 @@ spec:
         - "-timeout={{ .Values.timeout }}"
         {{ if (.Values.Installation) }}
         - "-disable-dns-tcp-check={{ .Values.Installation.V1.Monitoring.NetExporter.DNSCheck.TCP.Disabled }}"
-        - "-hosts={{ .Values.Installation.V1.Monitoring.NetExporter.Hosts }}"
         {{ end }}
           livenessProbe:
           httpGet:
