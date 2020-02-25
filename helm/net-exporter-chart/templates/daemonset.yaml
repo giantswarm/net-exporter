@@ -52,11 +52,9 @@ spec:
         - "-timeout={{ .Values.timeout }}"
         {{ if (.Values.Installation) }}
         - "-disable-dns-tcp-check={{ .Values.Installation.V1.Monitoring.NetExporter.DNSCheck.TCP.Disabled }}"
+        - "-hosts={{ .Values.Installation.V1.Monitoring.NetExporter.Hosts }}"
         {{ end }}
-        {{ if ne .Values.Installation.V1.Guest.Kuberetes.API.Domain "cluster.local" }}
-        - "giantswarm.io.,kubernetes.default.svc.{{ .Values.Installation.V1.Guest.Kuberetes.API.Domain }}."
-        {{ end }}
-        livenessProbe:
+          livenessProbe:
           httpGet:
             path: /healthz
             port: 8000
