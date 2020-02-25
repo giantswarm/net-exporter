@@ -53,7 +53,7 @@ spec:
         {{ if (.Values.Installation) }}
         - "-disable-dns-tcp-check={{ .Values.Installation.V1.Monitoring.NetExporter.DNSCheck.TCP.Disabled }}"
         {{ end }}
-          livenessProbe:
+        livenessProbe:
           httpGet:
             path: /healthz
             port: 8000
