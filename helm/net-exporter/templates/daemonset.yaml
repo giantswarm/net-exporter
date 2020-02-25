@@ -58,6 +58,9 @@ spec:
         {{ if (.Values.NetExporter.DNSCheck.TCP.Disabled) }}
         - "-disable-dns-tcp-check={{ .Values.NetExporter.DNSCheck.TCP.Disabled }}"
         {{ end }}
+        {{ if ne .Values.Installation.V1.Guest.Kuberetes.API.Domain "cluster.local" }}
+        - "giantswarm.io.,kubernetes.default.svc.{{ .Values.Installation.V1.Guest.Kuberetes.API.Domain }}."
+        {{ end }}
         livenessProbe:
           httpGet:
             path: /healthz
