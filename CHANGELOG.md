@@ -12,6 +12,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Changed
 
 - Allow to disable DNS TCP check.
+- Allow custom internal domain configuration for dns collector.
 
 ## [1.5.1] 2020-01-08
 
