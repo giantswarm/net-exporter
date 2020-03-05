@@ -7,11 +7,15 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Allow to customize dns service.
+
 ## [1.10.1] - 2021-04-29
 
 ## [1.10.0] - 2021-04-20
 
-## Changed
+### Changed
 
 - Add label selector for pods to help lower memory usage
 
