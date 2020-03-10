@@ -9,8 +9,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"k8s.io/apimachinery/pkg/api/errors"
-
 	"github.com/giantswarm/exporterkit/histogramvec"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -189,6 +187,13 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	var wg sync.WaitGroup
 
+	pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(metav1.ListOptions{})
+	if err != nil {
+		c.logger.Log("level", "error", "message", "could not get running pods", "service", c.service, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+		c.errorCount.Inc()
+		return
+	}
+
 	for _, host := range hosts {
 		wg.Add(1)
 
@@ -198,21 +203,20 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			start := time.Now()
 
 			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
-			_, err := c.k8sClient.CoreV1().Pods(c.namespace).Get(host, metav1.GetOptions{})
-			if errors.IsNotFound(err) {
+			if c.hostIsInPodList(host, pods) {
+				conn, err := c.dialer.Dial("tcp", host)
+				if err != nil {
+					c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+					c.dialErrorCount.WithLabelValues(host).Inc()
+					return
+				}
+				defer conn.Close()
+			} else {
 				c.logger.Log("level", "error", "message", "host does not exist", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 				// TODO: remove this host from future scrapes - how?
 				c.dialErrorCount.WithLabelValues(host).Inc()
 				return
 			}
-
-			conn, err := c.dialer.Dial("tcp", host)
-			if err != nil {
-				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
-				c.dialErrorCount.WithLabelValues(host).Inc()
-				return
-			}
-			defer conn.Close()
 
 			elapsed := time.Since(start)
 			c.logger.Log("level", "info", "message", "dialed host", "host", host, "scrapeTime", elapsed.Seconds(), "scrapeID", c.scrapeID)
@@ -235,6 +239,15 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	scrapingElapsed := time.Since(scrapingStart)
 	c.logger.Log("level", "info", "message", "collected metrics", "scrapeID", c.scrapeID, "scrapeTime", scrapingElapsed.Seconds())
+}
+
+func (c *Collector) hostIsInPodList(host string, list *v1.PodList) bool {
+	for _, p := range list.Items {
+		if p.Status.PodIP == host {
+			return true
+		}
+	}
+	return false
 }
 
 func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset) ([]string, error) {
