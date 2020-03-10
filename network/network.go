@@ -9,11 +9,13 @@ import (
 	"sync/atomic"
 	"time"
 
+	"k8s.io/apimachinery/pkg/api/errors"
+
 	"github.com/giantswarm/exporterkit/histogramvec"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -196,6 +198,14 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			start := time.Now()
 
 			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
+			_, err := c.k8sClient.CoreV1().Pods(c.namespace).Get(host, metav1.GetOptions{})
+			if errors.IsNotFound(err) {
+				c.logger.Log("level", "error", "message", "host does not exist", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+				// TODO: remove this host from future scrapes - how?
+				c.dialErrorCount.WithLabelValues(host).Inc()
+				return
+			}
+
 			conn, err := c.dialer.Dial("tcp", host)
 			if err != nil {
 				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
