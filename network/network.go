@@ -206,13 +206,17 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
 			conn, err := c.dialer.Dial("tcp", host)
 			if err != nil {
-				if c.podExists(host, pods) {
+				podExists, err := c.podExists(host, pods)
+				if err != nil {
+					c.logger.Log("level", "error", "message", "unable to check if host exists", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+				}
+
+				if podExists {
 					c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
 				} else {
 					c.logger.Log("level", "error", "message", "host does not exist", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
-					// TODO: remove this host from future scrapes - how?
 					return
 				}
 			}
@@ -241,23 +245,29 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.logger.Log("level", "info", "message", "collected metrics", "scrapeID", c.scrapeID, "scrapeTime", scrapingElapsed.Seconds())
 }
 
-func (c *Collector) podExists(podIP string, podList *v1.PodList) bool {
+func (c *Collector) podExists(podIP string, podList *v1.PodList) (bool, error) {
 	podName, ok := c.podNameFromIP(podIP, podList)
 	if !ok {
-		return false
+		return false, nil
 	}
 
-	// Get the Pod to see if it still exists
-	_, err := c.k8sClient.CoreV1().Pods(c.namespace).Get(podName, metav1.GetOptions{})
+	// Get the Pod to see if it still exists.
+	pod, err := c.k8sClient.CoreV1().Pods(c.namespace).Get(podName, metav1.GetOptions{})
 	if err != nil {
-		if !errors.IsNotFound(err) {
-			// Couldn't get the Pod, but for some other reason
-			c.logger.Log("level", "error", "message", "unable to check if host exists", "host", podIP, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+		if errors.IsNotFound(err) {
+			// Pod doesn't exist anymore.
+			return false, nil
 		}
-		return false
+		// Couldn't get the Pod, but for some other reason.
+		return false, err
 	}
 
-	return true
+	// Pod is deleting or deleted.
+	if pod.GetDeletionTimestamp() != nil {
+		return false, nil
+	}
+
+	return true, nil
 }
 
 func (c *Collector) podNameFromIP(host string, list *v1.PodList) (name string, ok bool) {
