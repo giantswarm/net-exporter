@@ -14,6 +14,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -203,19 +204,19 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			start := time.Now()
 
 			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
-			if c.hostIsInPodList(host, pods) {
-				conn, err := c.dialer.Dial("tcp", host)
-				if err != nil {
+			conn, err := c.dialer.Dial("tcp", host)
+			if err != nil {
+				if c.podExists(host, pods) {
 					c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
+				} else {
+					c.logger.Log("level", "error", "message", "host does not exist", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+					// TODO: remove this host from future scrapes - how?
+					return
 				}
-				defer conn.Close()
-			} else {
-				c.logger.Log("level", "error", "message", "host does not exist", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
-				// TODO: remove this host from future scrapes - how?
-				return
 			}
+			defer conn.Close()
 
 			elapsed := time.Since(start)
 			c.logger.Log("level", "info", "message", "dialed host", "host", host, "scrapeTime", elapsed.Seconds(), "scrapeID", c.scrapeID)
@@ -240,13 +241,32 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.logger.Log("level", "info", "message", "collected metrics", "scrapeID", c.scrapeID, "scrapeTime", scrapingElapsed.Seconds())
 }
 
-func (c *Collector) hostIsInPodList(host string, list *v1.PodList) bool {
+func (c *Collector) podExists(podIP string, podList *v1.PodList) bool {
+	podName, ok := c.podNameFromIP(podIP, podList)
+	if !ok {
+		return false
+	}
+
+	// Get the Pod to see if it still exists
+	_, err := c.k8sClient.CoreV1().Pods(c.namespace).Get(podName, metav1.GetOptions{})
+	if err != nil {
+		if !errors.IsNotFound(err) {
+			// Couldn't get the Pod, but for some other reason
+			c.logger.Log("level", "error", "message", "unable to check if host exists", "host", podIP, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+		}
+		return false
+	}
+
+	return true
+}
+
+func (c *Collector) podNameFromIP(host string, list *v1.PodList) (name string, ok bool) {
 	for _, p := range list.Items {
 		if p.Status.PodIP == host {
-			return true
+			return p.Name, true
 		}
 	}
-	return false
+	return "", false
 }
 
 func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset) ([]string, error) {
