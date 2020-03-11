@@ -214,7 +214,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			} else {
 				c.logger.Log("level", "error", "message", "host does not exist", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 				// TODO: remove this host from future scrapes - how?
-				c.dialErrorCount.WithLabelValues(host).Inc()
 				return
 			}
 
