@@ -209,6 +209,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 				podExists, err := c.podExists(host, pods)
 				if err != nil {
 					c.logger.Log("level", "error", "message", "unable to check if host exists", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+					return
 				}
 
 				if podExists {
