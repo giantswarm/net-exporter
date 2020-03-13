@@ -194,7 +194,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		c.errorCount.Inc()
 		return
 	}
-
+	time.Sleep(10 * time.Second)
 	for _, host := range hosts {
 		wg.Add(1)
 
