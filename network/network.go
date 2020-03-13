@@ -254,11 +254,11 @@ func (c *Collector) podExists(podIP string, podList *v1.PodList) (bool, error) {
 
 	// Get the Pod to see if it still exists.
 	pod, err := c.k8sClient.CoreV1().Pods(c.namespace).Get(podName, metav1.GetOptions{})
+	if errors.IsNotFound(err) {
+		// Pod doesn't exist anymore.
+		return false, nil
+	}
 	if err != nil {
-		if errors.IsNotFound(err) {
-			// Pod doesn't exist anymore.
-			return false, nil
-		}
 		// Couldn't get the Pod, but for some other reason.
 		return false, err
 	}
