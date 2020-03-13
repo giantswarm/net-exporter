@@ -13,7 +13,8 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -187,6 +188,13 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	var wg sync.WaitGroup
 
+	pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(metav1.ListOptions{})
+	if err != nil {
+		c.logger.Log("level", "error", "message", "could not get running pods", "service", c.service, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+		c.errorCount.Inc()
+		return
+	}
+
 	for _, host := range hosts {
 		wg.Add(1)
 
@@ -196,10 +204,22 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			start := time.Now()
 
 			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
-			conn, err := c.dialer.Dial("tcp", host)
-			if err != nil {
-				c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
-				c.dialErrorCount.WithLabelValues(host).Inc()
+			conn, dialErr := c.dialer.Dial("tcp", host)
+			if dialErr != nil {
+				podExists, err := c.podExists(host, pods)
+				if err != nil {
+					c.logger.Log("level", "error", "message", "unable to check if host exists", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+					c.dialErrorCount.WithLabelValues(host).Inc()
+					return
+				}
+
+				if podExists {
+					c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(dialErr))
+					c.dialErrorCount.WithLabelValues(host).Inc()
+					return
+				}
+
+				c.logger.Log("level", "error", "message", "host does not exist", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
 				return
 			}
 			defer conn.Close()
@@ -225,6 +245,39 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	scrapingElapsed := time.Since(scrapingStart)
 	c.logger.Log("level", "info", "message", "collected metrics", "scrapeID", c.scrapeID, "scrapeTime", scrapingElapsed.Seconds())
+}
+
+func (c *Collector) podExists(podIP string, podList *v1.PodList) (bool, error) {
+	podName, ok := c.podNameFromIP(podIP, podList)
+	if !ok {
+		return false, nil
+	}
+
+	// Get the Pod to see if it still exists.
+	pod, err := c.k8sClient.CoreV1().Pods(c.namespace).Get(podName, metav1.GetOptions{})
+	if errors.IsNotFound(err) {
+		// Pod doesn't exist anymore.
+		return false, nil
+	} else if err != nil {
+		// Couldn't get the Pod, but for some other reason.
+		return false, err
+	}
+
+	// Pod is deleting or deleted.
+	if pod.GetDeletionTimestamp() != nil {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func (c *Collector) podNameFromIP(host string, list *v1.PodList) (name string, ok bool) {
+	for _, p := range list.Items {
+		if p.Status.PodIP == host {
+			return p.Name, true
+		}
+	}
+	return "", false
 }
 
 func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset) ([]string, error) {
