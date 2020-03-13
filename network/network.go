@@ -204,8 +204,8 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			start := time.Now()
 
 			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
-			conn, err := c.dialer.Dial("tcp", host)
-			if err != nil {
+			conn, dialErr := c.dialer.Dial("tcp", host)
+			if dialErr != nil {
 				podExists, err := c.podExists(host, pods)
 				if err != nil {
 					c.logger.Log("level", "error", "message", "unable to check if host exists", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
@@ -213,13 +213,13 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 				}
 
 				if podExists {
-					c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+					c.logger.Log("level", "error", "message", "could not dial host", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(dialErr))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
-				} else {
-					c.logger.Log("level", "error", "message", "host does not exist", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
-					return
 				}
+
+				c.logger.Log("level", "error", "message", "host does not exist", "host", host, "scrapeID", c.scrapeID, "stack", microerror.Stack(err))
+				return
 			}
 			defer conn.Close()
 
