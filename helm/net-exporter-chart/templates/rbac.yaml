@@ -27,6 +27,13 @@ rules:
   - update
   - patch
 - apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
+- apiGroups:
   - extensions
   resources:
   - podsecuritypolicies
