@@ -257,8 +257,7 @@ func (c *Collector) podExists(podIP string, podList *v1.PodList) (bool, error) {
 	if errors.IsNotFound(err) {
 		// Pod doesn't exist anymore.
 		return false, nil
-	}
-	if err != nil {
+	} else if err != nil {
 		// Couldn't get the Pod, but for some other reason.
 		return false, err
 	}
