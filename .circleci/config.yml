@@ -176,4 +176,6 @@ workflows:
               only: master
           requires:
           - build
+          - push-net-exporter-to-aliyun
           - push-net-exporter-to-aliyun-master-legacy
+          - push-net-exporter-to-app-catalog
