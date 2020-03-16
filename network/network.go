@@ -205,6 +205,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 			c.logger.Log("level", "info", "message", "dialing host", "host", host, "scrapeID", c.scrapeID)
 			conn, dialErr := c.dialer.Dial("tcp", host)
+			elapsed := time.Since(start)
 			if dialErr != nil {
 				podExists, err := c.podExists(host, pods)
 				if err != nil {
@@ -224,7 +225,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			}
 			defer conn.Close()
 
-			elapsed := time.Since(start)
 			c.logger.Log("level", "info", "message", "dialed host", "host", host, "scrapeTime", elapsed.Seconds(), "scrapeID", c.scrapeID)
 
 			c.latencyHistogramVec.Add(host, elapsed.Seconds())
