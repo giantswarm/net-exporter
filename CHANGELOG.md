@@ -7,50 +7,50 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
-## [1.7.0] 2020-03-20
+## [v1.7.0] 2020-03-20
 
 ### Changed
 
 - Dial error if the Pod doesn't exist anymore will be ignored.
 
-## [1.6.0] 2020-01-29
+## [v1.6.0] 2020-01-29
 
 ### Changed
 
 - Allow to disable DNS TCP check.
 - Allow custom internal domain configuration for dns collector.
 
-## [1.5.1] 2020-01-08
+## [v1.5.1] 2020-01-08
 
 ### Changed
 
 - Changed Priority Class to `system-node-critical` for net-exporter deployed in TC.
 
-## [1.5.0] 2020-01-07
+## [v1.5.0] 2020-01-07
 
 ### Changed
 
 - Changed Priority Class to `system-node-critical`.
 
-## [1.4.3] 2019-12-27
+## [v1.4.3] 2019-12-27
 
 ### Changed
 
 - Fixed invalid image reference.
 
-## [1.4.2] 2019-12-24
+## [v1.4.2] 2019-12-24
 
 ### Changed
 
 - Restore CPU requests.
 
-## [1.4.1] 2019-11-29
+## [v1.4.1] 2019-11-29
 
 ### Changed
 
 - Make image registry configurable for namespace labeler init container.
 
-## [1.4.0] 2019-11-21
+## [v1.4.0] 2019-11-21
 
 ### Changed
 
@@ -59,13 +59,13 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Fix DNS 5 dots issue for test installations
 - Update README to align with other apps
 
-## [1.3.0] 2019-10-24
+## [v1.3.0] 2019-10-24
 
 ### Changed
 
 - Add net-exporter to default app catalog
 
-## [1.2.0] 2019-07-17
+## [v1.2.0] 2019-07-17
 
 ### Changed
 
