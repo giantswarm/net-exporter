@@ -7,7 +7,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
-## [1.7.0] 2020-01-29
+## [1.7.0] 2020-03-20
 
 ### Changed
 
@@ -72,4 +72,12 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.2.0...HEAD
+[v1.7.0]: https://github.com/giantswarm/net-exporter/releases/tag/v1.7.0
+[v1.6.0]: https://github.com/giantswarm/net-exporter/releases/tag/v1.6.0
+[v1.5.1]: https://github.com/giantswarm/net-exporter/releases/tag/v1.5.1
+[v1.5.0]: https://github.com/giantswarm/net-exporter/releases/tag/v1.5.0
+[v1.4.3]: https://github.com/giantswarm/net-exporter/releases/tag/v1.4.3
+[v1.4.2]: https://github.com/giantswarm/net-exporter/releases/tag/v1.4.2
+[v1.4.1]: https://github.com/giantswarm/net-exporter/releases/tag/v1.4.1
+[v1.4.0]: https://github.com/giantswarm/net-exporter/releases/tag/v1.4.0
+[v1.3.0]: https://github.com/giantswarm/net-exporter/releases/tag/v1.3.0
