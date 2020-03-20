@@ -7,6 +7,12 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.7.0] 2020-01-29
+
+### Changed
+
+- Dial error if the Pod doesn't exist anymore will be ignored.
+
 ## [1.6.0] 2020-01-29
 
 ### Changed
