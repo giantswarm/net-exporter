@@ -9,6 +9,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ### Changed
 
+- Change daemonset to use release revision not time for Helm 3 support.
 - Only set hosts arg if a value is present.
 - Remove label from role ref in cluster role binding.
 

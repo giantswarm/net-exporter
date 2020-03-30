@@ -16,7 +16,7 @@ spec:
       labels:
         app: net-exporter
       annotations:
-        releasetime: {{ $.Release.Time }}
+        releaseRevision: {{ $.Release.Revision | quote }}
     spec:
       initContainers:
       - name: label-kube-system-namespace
