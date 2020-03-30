@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Remove label from role ref in cluster role binding.
+
 ## [v1.7.0] 2020-03-20
 
 ### Changed
