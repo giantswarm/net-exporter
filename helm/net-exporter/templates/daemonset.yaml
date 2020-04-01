@@ -16,7 +16,7 @@ spec:
       labels:
         app: net-exporter
       annotations:
-        releasetime: {{ $.Release.Time }}
+        releaseRevision: {{ $.Release.Revision | quote }}
     spec:
       initContainers:
       - name: label-kube-system-namespace
@@ -55,9 +55,13 @@ spec:
         args:
         - "-namespace={{ .Values.exporter.namespace }}"
         - "-timeout={{ .Values.timeout }}"
+        {{ if (.Values.NetExporter) }}
+        {{ if (.Values.NetExporter.Hosts) }}
         - "-hosts={{ .Values.NetExporter.Hosts }}"
+        {{ end }}
         {{ if (.Values.NetExporter.DNSCheck.TCP.Disabled) }}
         - "-disable-dns-tcp-check={{ .Values.NetExporter.DNSCheck.TCP.Disabled }}"
+        {{ end }}
         {{ end }}
         livenessProbe:
           httpGet:

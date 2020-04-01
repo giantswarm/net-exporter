@@ -7,6 +7,16 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+## [v1.7.1] 2020-04-01
+
+### Changed
+
+- Change daemonset to use release revision not time for Helm 3 support.
+- Only set hosts arg if a value is present.
+- Remove label from role ref in cluster role binding.
+
 ## [v1.7.0] 2020-03-20
 
 ### Changed
@@ -72,6 +82,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.7.1...master
+[v1.7.1]: https://github.com/giantswarm/net-exporter/releases/tag/v1.7.1
 [v1.7.0]: https://github.com/giantswarm/net-exporter/releases/tag/v1.7.0
 [v1.6.0]: https://github.com/giantswarm/net-exporter/releases/tag/v1.6.0
 [v1.5.1]: https://github.com/giantswarm/net-exporter/releases/tag/v1.5.1
