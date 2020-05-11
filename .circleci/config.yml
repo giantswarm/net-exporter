@@ -1,56 +1,3 @@
-e2eTest: &e2eTest
-    machine: true
-    working_directory: /home/circleci/.go_workspace/src/github.com/giantswarm/net-exporter
-    steps:
-    - checkout
-
-    - attach_workspace:
-        at: .
-
-    - run:
-        name: Get e2ectl binary
-        command: |
-          wget -q $(curl -sS https://api.github.com/repos/giantswarm/e2ectl/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
-          chmod +x ./e2ectl
-
-    - run:
-        name: Init cluster
-        command: |
-          ./e2ectl cluster create
-          cp $(./e2ectl kubeconfig path) ${E2E_TEST_DIR}/kubeconfig
-
-    - run:
-        name: Publish chart to CNR using a temporary channel for testing
-        command: ./architect publish --pipeline=false --channels=${CIRCLE_SHA1}-${E2E_TEST_NAME}
-
-    - run:
-        name: Run test
-        command: |
-          docker run --rm --network host \
-            -v $(pwd)/${E2E_TEST_DIR}:/e2e \
-            -v $(pwd):/go/src/github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} \
-            -e E2E_KUBECONFIG=/e2e/kubeconfig \
-            -e CIRCLE_SHA1=${CIRCLE_SHA1} \
-            -w /go/src/github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME} \
-            golang:1 go test -v -tags k8srequired ./${E2E_TEST_DIR}/
-
-    - run:
-        name: Export logs
-        command: |
-          ./e2ectl logs export --logs-dir=kind/logs
-        when: always
-
-    - store_artifacts:
-        path: kind/logs
-        destination: logs
-
-    - run:
-        name: Finish with cleanup, no matter if the test succeeded or not
-        command: |
-          ./e2ectl cluster delete
-          ./architect unpublish --channels=${CIRCLE_SHA1}-${E2E_TEST_NAME}
-        when: always
-
 version: 2.1
 orbs:
   architect: giantswarm/architect@0.8.14
@@ -82,12 +29,6 @@ jobs:
         paths:
         - ./net-exporter
         - ./architect
-
-  e2eTestBasic:
-    environment:
-      E2E_TEST_DIR: "integration/test/basic"
-      E2E_TEST_NAME: "basic"
-    <<: *e2eTest
 
   deploy:
     machine: true
@@ -166,9 +107,11 @@ workflows:
             tags:
               only: /^v.*/
 
-      - e2eTestBasic:
+      - architect/integration-test:
+          name: basic
+          test-dir: "integration/test/basic"
           requires:
-          - build
+          - push-net-exporter-to-app-catalog
 
       - deploy:
           filters:
