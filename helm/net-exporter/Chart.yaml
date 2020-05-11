@@ -1,2 +1,6 @@
+apiVersion: "v1"
 name: net-exporter
-version: [[ .Version ]]
+description: "Helm chart for net-exporter."
+home: "https://github.com/giantswarm/net-exporter"
+version: "[[ .Version ]]"
+appVersion: "[[ .AppVersion ]]"
