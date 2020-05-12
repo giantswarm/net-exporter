@@ -107,12 +107,6 @@ workflows:
             tags:
               only: /^v.*/
 
-      - architect/integration-test:
-          name: basic
-          test-dir: "integration/test/basic"
-          requires:
-          - push-net-exporter-to-app-catalog
-
       - deploy:
           filters:
             branches:
