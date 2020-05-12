@@ -146,14 +146,14 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	service, err := c.k8sClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "stack", microerror.JSON(err))
 		c.errorCount.Inc()
 		return
 	}
 
 	endpoints, err := c.k8sClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not collect endpoints for service from kubernetes api ", "service", c.service, "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not collect endpoints for service from kubernetes api ", "service", c.service, "stack", microerror.JSON(err))
 		c.errorCount.Inc()
 		return
 	}
@@ -163,7 +163,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	neighbours, err := c.getNeighbours(numNeighbours, endpoints.Subsets)
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get neighbours", "service", c.service, "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not get neighbours", "service", c.service, "stack", microerror.JSON(err))
 		c.errorCount.Inc()
 		return
 	}
@@ -175,7 +175,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(metav1.ListOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get running pods", "service", c.service, "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not get running pods", "service", c.service, "stack", microerror.JSON(err))
 		c.errorCount.Inc()
 		return
 	}
@@ -193,18 +193,18 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			if dialErr != nil {
 				podExists, err := c.podExists(host, pods)
 				if err != nil {
-					c.logger.Log("level", "error", "message", "unable to check if host exists", "host", host, "stack", microerror.Stack(err))
+					c.logger.Log("level", "error", "message", "unable to check if host exists", "host", host, "stack", microerror.JSON(err))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
 				}
 
 				if podExists {
-					c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", microerror.Stack(dialErr))
+					c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", microerror.JSON(dialErr))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
 				}
 
-				c.logger.Log("level", "error", "message", "host does not exist", "host", host, "stack", microerror.Stack(err))
+				c.logger.Log("level", "error", "message", "host does not exist", "host", host, "stack", microerror.JSON(err))
 				return
 			}
 			defer conn.Close()
