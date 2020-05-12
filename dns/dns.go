@@ -155,7 +155,7 @@ func (c *Collector) resolve(proto string, client *dnsclient.Client, host string,
 
 	msg, _, err := client.Exchange(message, fmt.Sprintf("%s:53", dnsServer))
 	if err != nil || len(msg.Answer) == 0 {
-		c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "proto", proto, "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "proto", proto, "stack", microerror.JSON(err))
 		c.resolveErrorCount.WithLabelValues(proto, host).Inc()
 		return
 	}
@@ -169,7 +169,7 @@ func (c *Collector) resolve(proto string, client *dnsclient.Client, host string,
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	service, err := c.k8sClient.CoreV1().Services("kube-system").Get("coredns", metav1.GetOptions{})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "stack", microerror.Stack(err))
+		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "stack", microerror.JSON(err))
 		c.errorCount.Inc()
 		return
 	}
