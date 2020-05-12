@@ -1,0 +1,82 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: net-exporter
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: net-exporter
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: net-exporter
+  template:
+    metadata:
+      labels:
+        app: net-exporter
+      annotations:
+        releasetime: {{ $.Release.Time }}
+    spec:
+      initContainers:
+      - name: label-kube-system-namespace
+        {{ if (.Values.Installation) }}
+        image: "{{ .Values.Installation.V1.Registry.Domain }}/{{ .Values.kubectl.image.name }}:{{ .Values.kubectl.image.tag }}"
+        {{ else }}
+        image: "{{ .Values.image.registry }}/{{ .Values.kubectl.image.name }}:{{ .Values.kubectl.image.tag }}"
+        {{ end }}
+        args:
+          - label
+          - namespace
+          - kube-system
+          - name=kube-system
+          - --overwrite=true
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+      {{ if (.Values.Installation) }}
+      priorityClassName: giantswarm-critical
+      {{ else }}
+      priorityClassName: system-node-critical
+      {{ end }}
+      containers:
+      - name: net-exporter
+        {{ if (.Values.Installation) }}
+        image: "{{ .Values.Installation.V1.Registry.Domain }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        {{ else }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        {{ end }}
+
+        args:
+        - "-namespace={{ .Values.namespace }}"
+        - "-timeout={{ .Values.timeout }}"
+        {{ if (.Values.Installation) }}
+        - "-disable-dns-tcp-check={{ .Values.Installation.V1.Monitoring.NetExporter.DNSCheck.TCP.Disabled }}"
+        {{ end }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 5
+        resources:
+          # cpu limits removed so that throttling doesn't cause any unwanted
+          # side-effects to measurements.
+          requests:
+            cpu: 50m
+            memory: 75Mi
+          limits:
+            memory: 75Mi
+      serviceAccountName: net-exporter
+      securityContext:
+        runAsUser: {{ .Values.userID }}
+        runAsGroup: {{ .Values.groupID }}
+      tolerations:
+      # Tolerate all taints for observability
+      - operator: "Exists"
