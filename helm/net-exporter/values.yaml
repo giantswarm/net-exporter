@@ -1,6 +1,4 @@
 name: net-exporter
-exporter:
-  namespace: kube-system
 
 userID: 1000
 groupID: 1000

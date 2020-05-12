@@ -50,7 +50,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: net-exporter
-  namespace: {{ .Values.exporter.namespace }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: net-exporter
