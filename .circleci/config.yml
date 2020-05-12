@@ -42,6 +42,20 @@ workflows:
       - architect/push-to-app-catalog:
           context: "architect"
           name: push-net-exporter-to-control-plane-app-catalog
+          app_catalog: "control-plane-catalog"
+          app_catalog_test: "control-plane-test-catalog"
+          chart: "net-exporter"
+          requires:
+            - push-net-exporter-to-aliyun
+            - push-net-exporter-to-quay
+          # Needed to trigger job also on git tag.
+          filters:
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-catalog:
+          context: "architect"
+          name: push-net-exporter-to-default-app-catalog
           app_catalog: "default-catalog"
           app_catalog_test: "default-test-catalog"
           chart: "net-exporter"
