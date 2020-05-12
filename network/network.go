@@ -193,23 +193,28 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			if dialErr != nil {
 				podExists, err := c.podExists(host, pods)
 				if err != nil {
-					c.logger.Log("level", "error", "message", "unable to check if host exists", "host", host, "stack", microerror.JSON(err))
+					c.logger.Log("level", "error", "message", fmt.Sprintf("unable to check if host %#q exists", host), "stack", microerror.JSON(err))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
 				}
 
 				if podExists {
-					c.logger.Log("level", "error", "message", "could not dial host", "host", host, "stack", microerror.JSON(dialErr))
+					c.logger.Log("level", "error", "message", fmt.Sprintf("could not dial host %#q", host), "stack", microerror.JSON(dialErr))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
 				}
 
-				c.logger.Log("level", "error", "message", "host does not exist", "host", host, "stack", microerror.JSON(err))
+				c.logger.Log("level", "error", "message", fmt.Sprintf("host %#q does not exist", host), "stack", microerror.JSON(err))
 				return
 			}
 			defer conn.Close()
 
-			c.latencyHistogramVec.Add(host, elapsed.Seconds())
+			err = c.latencyHistogramVec.Add(host, elapsed.Seconds())
+			if err != nil {
+				c.logger.Log("level", "error", "message", fmt.Sprintf("failed to update latency histogram for host %#q", host), "stack", microerror.JSON(err))
+				c.dialErrorCount.WithLabelValues(host).Inc()
+				return
+			}
 		}(host)
 	}
 

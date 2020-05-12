@@ -155,14 +155,19 @@ func (c *Collector) resolve(proto string, client *dnsclient.Client, host string,
 
 	msg, _, err := client.Exchange(message, fmt.Sprintf("%s:53", dnsServer))
 	if err != nil || len(msg.Answer) == 0 {
-		c.logger.Log("level", "error", "message", "could not resolve dns", "host", host, "proto", proto, "stack", microerror.JSON(err))
+		c.logger.Log("level", "error", "message", fmt.Sprintf("could not resolve dns for host %#q and protocol %#q", host, proto), "stack", microerror.JSON(err))
 		c.resolveErrorCount.WithLabelValues(proto, host).Inc()
 		return
 	}
 
 	elapsed := time.Since(start)
 
-	latencyHistogramVec.Add(host, elapsed.Seconds())
+	err = latencyHistogramVec.Add(host, elapsed.Seconds())
+	if err != nil {
+		c.logger.Log("level", "error", "message", fmt.Sprintf("failed to update latency histogram for host %#q and protocol %#q", host, proto), "stack", microerror.JSON(err))
+		c.resolveErrorCount.WithLabelValues(proto, host).Inc()
+		return
+	}
 }
 
 // Collect implements the Collect method of the Collector interface.
