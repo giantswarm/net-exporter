@@ -1,7 +1,7 @@
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  namespace: {{ .Values.exporter.namespace }}
+  namespace: {{ .Release.Namespace }}
   name: {{ .Values.name }}
   labels:
     app: {{ .Values.name }}
@@ -50,7 +50,7 @@ spec:
           k8s-app: {{ .Values.dns.label }}
       namespaceSelector:
         matchLabels:
-          name: kube-system
+          name: {{ .Values.dns.namespace }}
   - ports:
     - port: 443
       protocol: TCP

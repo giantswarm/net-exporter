@@ -1,6 +1,4 @@
 name: net-exporter
-exporter:
-  namespace: kube-system
 
 userID: 1000
 groupID: 1000
@@ -10,6 +8,7 @@ port: 8000
 dns:
   port: 1053
   label: coredns
+  namespace: kube-system
 
 timeout: 5s
 
