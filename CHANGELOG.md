@@ -9,6 +9,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ### Changed
 
+- Deploy as a unique app in app collection.
+
 ## [v1.7.1] 2020-04-01
 
 ### Changed
