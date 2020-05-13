@@ -46,7 +46,6 @@ workflows:
           app_catalog_test: "control-plane-test-catalog"
           chart: "net-exporter"
           requires:
-            - push-net-exporter-to-aliyun
             - push-net-exporter-to-quay
           # Needed to trigger job also on git tag.
           filters:
@@ -71,6 +70,7 @@ workflows:
           context: architect
           name: push-net-exporter-to-aws-app-collection
           app_name: "net-exporter"
+          app_namespace: "monitoring"
           app_collection_repo: "aws-app-collection"
           unique: "true"
           requires:
@@ -85,6 +85,7 @@ workflows:
           context: architect
           name: push-net-exporter-to-azure-app-collection
           app_name: "net-exporter"
+          app_namespace: "monitoring"
           app_collection_repo: "azure-app-collection"
           unique: "true"
           requires:
@@ -99,6 +100,7 @@ workflows:
           context: architect
           name: push-net-exporter-to-kvm-app-collection
           app_name: "net-exporter"
+          app_namespace: "monitoring"
           app_collection_repo: "kvm-app-collection"
           unique: "true"
           requires:
