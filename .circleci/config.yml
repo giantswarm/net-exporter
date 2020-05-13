@@ -71,6 +71,7 @@ workflows:
           context: architect
           name: push-net-exporter-to-aws-app-collection
           app_name: "net-exporter"
+          app_namespace: "monitoring"
           app_collection_repo: "aws-app-collection"
           unique: "true"
           requires:
@@ -85,6 +86,7 @@ workflows:
           context: architect
           name: push-net-exporter-to-azure-app-collection
           app_name: "net-exporter"
+          app_namespace: "monitoring"
           app_collection_repo: "azure-app-collection"
           unique: "true"
           requires:
@@ -99,6 +101,7 @@ workflows:
           context: architect
           name: push-net-exporter-to-kvm-app-collection
           app_name: "net-exporter"
+          app_namespace: "monitoring"
           app_collection_repo: "kvm-app-collection"
           unique: "true"
           requires:
