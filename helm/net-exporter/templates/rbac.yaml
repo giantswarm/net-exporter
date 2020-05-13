@@ -20,7 +20,7 @@ rules:
   resources:
   - namespaces
   resourceNames:
-  - kube-system
+  - {{ .Values.dns.namespace }}
   verbs:
   - get
   - update

@@ -53,7 +53,7 @@ spec:
         image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
         {{ end }}
         args:
-        - "-namespace={{ .Values.exporter.namespace }}"
+        - "-namespace={{ .Release.Namespace }}"
         - "-timeout={{ .Values.timeout }}"
         {{ if (.Values.NetExporter) }}
         {{ if (.Values.NetExporter.Hosts) }}

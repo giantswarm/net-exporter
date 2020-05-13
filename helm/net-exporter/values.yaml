@@ -8,6 +8,7 @@ port: 8000
 dns:
   port: 1053
   label: coredns
+  namespace: kube-system
 
 timeout: 5s
 
