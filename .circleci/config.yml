@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@dev:retry
+  architect: giantswarm/architect@0.8.14
 
 workflows:
   build:
