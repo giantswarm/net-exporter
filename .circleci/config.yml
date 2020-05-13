@@ -46,7 +46,7 @@ workflows:
           app_catalog_test: "control-plane-test-catalog"
           chart: "net-exporter"
           requires:
-            #- push-net-exporter-to-aliyun
+            - push-net-exporter-to-aliyun
             - push-net-exporter-to-quay
           # Needed to trigger job also on git tag.
           filters:
