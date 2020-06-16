@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Added the installations IPAM CIDR to the allowed egress subnets in NetworkPolicy.
+
 ## [1.8.0]
 
 ### Changed
