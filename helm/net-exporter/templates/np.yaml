@@ -22,6 +22,8 @@ spec:
         matchLabels:
           app: prometheus
     {{ $privateSubnets := list "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/16" }}
+    {{ $privateSubnets = append $privateSubnets .Values.Installation.V1.Guest.IPAM.NetworkCIDR -}}
+    {{ $privateSubnets = $privateSubnets | uniq -}}
     {{ range $index, $privateSubnet := $privateSubnets }}
     - ipBlock:
         cidr: {{ $privateSubnet }}
