@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.8.1] - 2020-06-17
+
 ### Changed
 
 - Added 100.64.0.0/10 to the allowed egress subnets in NetworkPolicy.
@@ -90,7 +92,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.8.1...HEAD
+[1.8.1]: https://github.com/giantswarm/net-exporter/compare/v1.8.0...v1.8.1
 [1.8.0]: https://github.com/giantswarm/net-exporter/compare/v1.7.1...v1.8.0
 [1.7.1]: https://github.com/giantswarm/net-exporter/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/giantswarm/net-exporter/compare/v1.6.0...v1.7.0
