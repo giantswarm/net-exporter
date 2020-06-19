@@ -10,7 +10,6 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
-	"k8s.io/client-go/kubernetes"
 )
 
 const (
@@ -30,8 +29,7 @@ type Config struct {
 
 // Collector implements the Collector interface, exposing DNS latency information.
 type Collector struct {
-	k8sClient kubernetes.Interface
-	logger    micrologger.Logger
+	logger micrologger.Logger
 
 	ntpServers []string
 
