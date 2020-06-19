@@ -18,7 +18,7 @@ const (
 
 	bucketStart  = 0.001
 	bucketFactor = 2
-	numBuckets   = 15
+	numBuckets   = 10
 )
 
 // Config provides the necessary configuration for creating a Collector.
@@ -26,7 +26,6 @@ type Config struct {
 	Logger micrologger.Logger
 
 	NTPServers []string
-	SourceHost string
 }
 
 // Collector implements the Collector interface, exposing DNS latency information.
@@ -35,7 +34,6 @@ type Collector struct {
 	logger    micrologger.Logger
 
 	ntpServers []string
-	sourceHost string
 
 	latencyHistogramVec  *histogramvec.HistogramVec
 	latencyHistogramDesc *prometheus.Desc
@@ -52,10 +50,6 @@ func New(config Config) (*Collector, error) {
 
 	if len(config.NTPServers) == 0 {
 		return nil, microerror.Maskf(invalidConfigError, "%T.NTPServers must not be empty", config)
-	}
-
-	if len(config.SourceHost) == 0 {
-		return nil, microerror.Maskf(invalidConfigError, "%T.SourceHost must not be empty", config)
 	}
 
 	var err error
@@ -76,10 +70,10 @@ func New(config Config) (*Collector, error) {
 	})
 	syncErrorCount := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, "", "ntp_sync_error_total"),
+			Name: prometheus.BuildFQName(namespace, "", "sync_error_total"),
 			Help: "Total number of errors ntp syncs.",
 		},
-		[]string{"ntp-server"},
+		[]string{"server"},
 	)
 
 	prometheus.MustRegister(errorCount)
@@ -89,13 +83,12 @@ func New(config Config) (*Collector, error) {
 		logger: config.Logger,
 
 		ntpServers: config.NTPServers,
-		sourceHost: config.SourceHost,
 
 		latencyHistogramVec: latencyHistogramVec,
 		latencyHistogramDesc: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "latency_seconds"),
 			"Histogram of latency of NTP sync requests.",
-			[]string{"ntp-servers"},
+			[]string{"server"},
 			nil,
 		),
 
@@ -111,13 +104,13 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.latencyHistogramDesc
 }
 
-func (c *Collector) ntpsync(host string, ntpServer string, latencyHistogramVec *histogramvec.HistogramVec) {
+func (c *Collector) ntpsync(ntpServer string, latencyHistogramVec *histogramvec.HistogramVec) {
 	start := time.Now()
 
 	_, err := ntp.Time(ntpServer)
 	if err != nil {
-		c.logger.Log("level", "error", "message", fmt.Sprintf("could not sync time with ntp server %#q from host %#q", ntpServer, host), "stack", microerror.JSON(err))
-		c.syncErrorCount.WithLabelValues(host).Inc()
+		c.logger.Log("level", "error", "message", fmt.Sprintf("could not sync time with ntp server %#q", ntpServer), "stack", microerror.JSON(err))
+		c.syncErrorCount.WithLabelValues(ntpServer).Inc()
 		return
 	}
 
@@ -125,8 +118,8 @@ func (c *Collector) ntpsync(host string, ntpServer string, latencyHistogramVec *
 
 	err = latencyHistogramVec.Add(ntpServer, elapsed.Seconds())
 	if err != nil {
-		c.logger.Log("level", "error", "message", fmt.Sprintf("failed to update latency histogram for host %#q", host), "stack", microerror.JSON(err))
-		c.syncErrorCount.WithLabelValues(host, ntpServer).Inc()
+		c.logger.Log("level", "error", "message", fmt.Sprintf("failed to update latency histogram for ntp server %#q", ntpServer), "stack", microerror.JSON(err))
+		c.syncErrorCount.WithLabelValues(ntpServer).Inc()
 		return
 	}
 }
@@ -139,8 +132,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		wg.Add(1)
 		go func(host string) {
 			defer wg.Done()
-
-			c.ntpsync(c.sourceHost, ntpServer, c.latencyHistogramVec)
+			c.ntpsync(host, c.latencyHistogramVec)
 		}(ntpServer)
 	}
 
