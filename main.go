@@ -18,14 +18,17 @@ import (
 
 	"github.com/giantswarm/net-exporter/dns"
 	"github.com/giantswarm/net-exporter/network"
+	"github.com/giantswarm/net-exporter/ntp"
 )
 
 var (
 	disableDNSTCPCheck bool
 	hosts              string
 	namespace          string
+	ntpServers         string
 	port               string
 	service            string
+	sourceHost         string
 	timeout            time.Duration
 )
 
@@ -33,8 +36,10 @@ func init() {
 	flag.BoolVar(&disableDNSTCPCheck, "disable-dns-tcp-check", false, "Disable DNS TCP check")
 	flag.StringVar(&hosts, "hosts", "giantswarm.io.,kubernetes.default.svc.cluster.local.", "DNS hosts to resolve")
 	flag.StringVar(&namespace, "namespace", "monitoring", "Namespace of net-exporter service")
+	flag.StringVar(&ntpServers, "ntp-servers", "0.flatcar.pool.ntp.org,1.flatcar.pool.ntp.org", "NTP servers to use for time synchronization")
 	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
 	flag.StringVar(&service, "service", "net-exporter", "Name of net-exporter service")
+	flag.StringVar(&sourceHost, "source-host", "", "Node, from which time synchronization is performed")
 	flag.DurationVar(&timeout, "timeout", 5*time.Second, "Timeout of the dialer")
 }
 
@@ -121,12 +126,30 @@ func main() {
 		}
 	}
 
+	var ntpCollector prometheus.Collector
+	{
+		splitNTPServers := strings.Split(ntpServers, ",")
+
+		c := ntp.Config{
+			Logger: logger,
+
+			NTPServers: splitNTPServers,
+			SourceHost: sourceHost,
+		}
+
+		ntpCollector, err = ntp.New(c)
+		if err != nil {
+			panic(fmt.Sprintf("%#v\n", err))
+		}
+	}
+
 	var exporter *exporterkit.Exporter
 	{
 		c := exporterkit.Config{
 			Collectors: []prometheus.Collector{
 				dnsCollector,
 				networkCollector,
+				ntpCollector,
 			},
 			Logger: logger,
 		}
