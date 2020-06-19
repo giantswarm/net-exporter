@@ -28,7 +28,6 @@ var (
 	ntpServers         string
 	port               string
 	service            string
-	sourceHost         string
 	timeout            time.Duration
 )
 
@@ -39,7 +38,6 @@ func init() {
 	flag.StringVar(&ntpServers, "ntp-servers", "0.flatcar.pool.ntp.org,1.flatcar.pool.ntp.org", "NTP servers to use for time synchronization")
 	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
 	flag.StringVar(&service, "service", "net-exporter", "Name of net-exporter service")
-	flag.StringVar(&sourceHost, "source-host", "", "Node, from which time synchronization is performed")
 	flag.DurationVar(&timeout, "timeout", 5*time.Second, "Timeout of the dialer")
 }
 
@@ -134,7 +132,6 @@ func main() {
 			Logger: logger,
 
 			NTPServers: splitNTPServers,
-			SourceHost: sourceHost,
 		}
 
 		ntpCollector, err = ntp.New(c)
