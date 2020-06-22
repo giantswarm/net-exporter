@@ -107,7 +107,7 @@ func (c *Collector) ntpsync(ntpServer string, latencyHistogramVec *histogramvec.
 
 	_, err := ntp.Time(ntpServer)
 	if err != nil {
-		c.logger.Log("level", "error", "message", fmt.Sprintf("could not sync time with ntp server %#q", ntpServer), "stack", microerror.JSON(err))
+		c.logger.Log("level", "error", "message", fmt.Sprintf("failed to sync time with ntp server %#q", ntpServer), "stack", microerror.JSON(err))
 		c.syncErrorCount.WithLabelValues(ntpServer).Inc()
 		return
 	}
