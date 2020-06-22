@@ -136,7 +136,7 @@ func main() {
 
 		ntpCollector, err = ntp.New(c)
 		if err != nil {
-			panic(fmt.Sprintf("%#v\n", err))
+			panic(microerror.JSON(err))
 		}
 	}
 
