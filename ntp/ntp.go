@@ -20,6 +20,15 @@ const (
 	numBuckets   = 10
 )
 
+var (
+	latencyHistogramDesc = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "", "latency_seconds"),
+		"Histogram of latency of NTP sync requests.",
+		[]string{"server"},
+		nil,
+	)
+)
+
 // Config provides the necessary configuration for creating a Collector.
 type Config struct {
 	Logger micrologger.Logger
@@ -82,13 +91,8 @@ func New(config Config) (*Collector, error) {
 
 		ntpServers: config.NTPServers,
 
-		latencyHistogramVec: latencyHistogramVec,
-		latencyHistogramDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, "", "latency_seconds"),
-			"Histogram of latency of NTP sync requests.",
-			[]string{"server"},
-			nil,
-		),
+		latencyHistogramVec:  latencyHistogramVec,
+		latencyHistogramDesc: latencyHistogramDesc,
 
 		errorCount:     errorCount,
 		syncErrorCount: syncErrorCount,
