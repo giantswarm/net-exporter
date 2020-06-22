@@ -16,6 +16,8 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/net-exporter/dns"
 	"github.com/giantswarm/net-exporter/network"
 	"github.com/giantswarm/net-exporter/ntp"
