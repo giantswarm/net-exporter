@@ -39,7 +39,7 @@ spec:
           app: {{ .Values.name }}
   - ports:
     - port: 123
-      protocol: TCP
+      protocol: UDP
     to:
     - ipBlock:
         cidr: 0.0.0.0/0
