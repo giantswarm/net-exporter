@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## Added
+
+- Add `ntp` collector.
+
 ## [1.8.1] - 2020-06-17
 
 ### Changed

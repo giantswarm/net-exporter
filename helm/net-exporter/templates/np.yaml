@@ -38,6 +38,12 @@ spec:
         matchLabels:
           app: {{ .Values.name }}
   - ports:
+    - port: 123
+      protocol: UDP
+    to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+  - ports:
     - port: {{ .Values.dns.port }}
       protocol: UDP
     - port: {{ .Values.dns.port }}

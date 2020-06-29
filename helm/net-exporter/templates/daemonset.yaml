@@ -59,6 +59,9 @@ spec:
         {{ if (.Values.NetExporter.Hosts) }}
         - "-hosts={{ .Values.NetExporter.Hosts }}"
         {{ end }}
+        {{ if (.Values.NetExporter.NTPServers) }}
+        - "-ntp-servers={{ .Values.NetExporter.NTPServers }}"
+        {{ end }}
         {{ if (.Values.NetExporter.DNSCheck.TCP.Disabled) }}
         - "-disable-dns-tcp-check={{ .Values.NetExporter.DNSCheck.TCP.Disabled }}"
         {{ end }}
