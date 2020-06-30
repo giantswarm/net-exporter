@@ -56,14 +56,14 @@ spec:
         - "-namespace={{ .Release.Namespace }}"
         - "-timeout={{ .Values.timeout }}"
         {{ if (.Values.Installation) }}
-        {{ if (.Values.Installation.V1.NetExporter.Hosts) }}
-        - "-hosts={{ .Values.Installation.V1.NetExporter.Hosts }}"
+        {{ if (.Values.Installation.V1.Monitoring.NetExporter.Hosts) }}
+        - "-hosts={{ .Values.Installation.V1.Monitoring.NetExporter.Hosts }}"
         {{ end }}
-        {{ if (.Values.Installation.V1.NetExporter.NTPServers) }}
-        - "-ntp-servers={{ .Values.Installation.V1.NetExporter.NTPServers }}"
+        {{ if (.Values.Installation.V1.Monitoring.NetExporter.NTPServers) }}
+        - "-ntp-servers={{ .Values.Installation.V1.Monitoring.NetExporter.NTPServers }}"
         {{ end }}
-        {{ if (.Values.Installation.V1.NetExporter.DNSCheck.TCP.Disabled) }}
-        - "-disable-dns-tcp-check={{ .Values.Installation.V1.NetExporter.DNSCheck.TCP.Disabled }}"
+        {{ if (.Values.Installation.V1.Monitoring.NetExporter.DNSCheck.TCP.Disabled) }}
+        - "-disable-dns-tcp-check={{ .Values.Installation.V1.Monitoring.NetExporter.DNSCheck.TCP.Disabled }}"
         {{ end }}
         {{ end }}
         {{ if (.Values.NetExporter) }}
