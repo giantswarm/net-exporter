@@ -4,7 +4,8 @@ metadata:
   name: net-exporter
   namespace: {{ .Release.Namespace }}
   labels:
-    app: net-exporter
+    {{- include "labels.common" . | nindent 4 }}
+    giantswarm.io/monitoring: "true"
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/scheme: "http"
@@ -12,4 +13,4 @@ spec:
   ports:
     - port: {{ .Values.port }}
   selector:
-    app: net-exporter
+    {{- include "labels.selector" . | nindent 4 }}

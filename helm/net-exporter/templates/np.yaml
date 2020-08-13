@@ -4,12 +4,11 @@ metadata:
   namespace: {{ .Release.Namespace }}
   name: {{ .Values.name }}
   labels:
-    app: {{ .Values.name }}
-    giantswarm.io/service-type: "managed"
+    {{- include "labels.common" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:
-      app: {{ .Values.name }}
+      {{- include "labels.selector" . | nindent 6 }}
   policyTypes:
     - Ingress
     - Egress
@@ -20,7 +19,7 @@ spec:
     from:
     - podSelector:
         matchLabels:
-          app: {{ .Values.name }}
+          {{- include "labels.selector" . | nindent 10 }}
     - podSelector:
         matchLabels:
           app: prometheus
@@ -36,7 +35,7 @@ spec:
     to:
     - podSelector:
         matchLabels:
-          app: {{ .Values.name }}
+          {{- include "labels.selector" . | nindent 10 }}
   - ports:
     - port: 123
       protocol: UDP
@@ -68,7 +67,7 @@ spec:
       protocol: TCP
     to:
     {{ $privateSubnets := list "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/16" "100.64.0.0/10" -}}
-    {{ range $index, $privateSubnet := $privateSubnets -}}
+    {{- range $index, $privateSubnet := $privateSubnets -}}
     - ipBlock:
         cidr: {{ $privateSubnet }}
     {{ end -}}

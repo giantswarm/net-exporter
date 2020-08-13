@@ -4,27 +4,27 @@ metadata:
   name: net-exporter
   namespace: {{ .Release.Namespace }}
   labels:
-    app: net-exporter
+    {{- include "labels.common" . | nindent 4 }}
 spec:
   updateStrategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: net-exporter
+      {{- include "labels.selector" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: net-exporter
+        {{- include "labels.common" . | nindent 8 }}
       annotations:
         releaseRevision: {{ $.Release.Revision | quote }}
     spec:
       initContainers:
       - name: label-kube-system-namespace
-        {{ if (.Values.Installation) }}
+        {{- if (.Values.Installation) -}}
         image: "{{ .Values.Installation.V1.Registry.Domain }}/{{ .Values.kubectl.image.name }}:{{ .Values.kubectl.image.tag }}"
-        {{ else }}
+        {{- else }}
         image: "{{ .Values.image.registry }}/{{ .Values.kubectl.image.name }}:{{ .Values.kubectl.image.tag }}"
-        {{ end }}
+        {{- end }}
         args:
           - label
           - namespace
@@ -40,43 +40,43 @@ spec:
       ## the namespace kube-system
       ##
       ## In the TC, net-exporter runs on kube-system and so this is fine
-      {{ if (.Values.Installation) }}
+      {{- if (.Values.Installation) -}}
       priorityClassName: giantswarm-critical
       {{ else }}
       priorityClassName: system-node-critical
-      {{ end }}
+      {{- end }}
       containers:
       - name: net-exporter
-        {{ if (.Values.Installation) }}
+        {{- if (.Values.Installation) -}}
         image: "{{ .Values.Installation.V1.Registry.Domain }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
-        {{ else }}
+        {{- else }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
-        {{ end }}
+        {{- end }}
         args:
         - "-namespace={{ .Release.Namespace }}"
         - "-timeout={{ .Values.timeout }}"
-        {{ if (.Values.Installation) }}
-        {{ if (.Values.Installation.V1.Monitoring.NetExporter.Hosts) }}
+        {{- if (.Values.Installation) }}
+        {{- if (.Values.Installation.V1.Monitoring.NetExporter.Hosts) }}
         - "-hosts={{ .Values.Installation.V1.Monitoring.NetExporter.Hosts }}"
-        {{ end }}
-        {{ if (.Values.Installation.V1.Monitoring.NetExporter.NTPServers) }}
+        {{- end }}
+        {{- if (.Values.Installation.V1.Monitoring.NetExporter.NTPServers) }}
         - "-ntp-servers={{ .Values.Installation.V1.Monitoring.NetExporter.NTPServers }}"
-        {{ end }}
-        {{ if (.Values.Installation.V1.Monitoring.NetExporter.DNSCheck.TCP.Disabled) }}
+        {{- end }}
+        {{- if (.Values.Installation.V1.Monitoring.NetExporter.DNSCheck.TCP.Disabled) }}
         - "-disable-dns-tcp-check={{ .Values.Installation.V1.Monitoring.NetExporter.DNSCheck.TCP.Disabled }}"
-        {{ end }}
-        {{ end }}
-        {{ if (.Values.NetExporter) }}
-        {{ if (.Values.NetExporter.Hosts) }}
+        {{- end }}
+        {{- end }}
+        {{- if (.Values.NetExporter) }}
+        {{- if (.Values.NetExporter.Hosts) }}
         - "-hosts={{ .Values.NetExporter.Hosts }}"
-        {{ end }}
-        {{ if (.Values.NetExporter.NTPServers) }}
+        {{- end }}
+        {{- if (.Values.NetExporter.NTPServers) }}
         - "-ntp-servers={{ .Values.NetExporter.NTPServers }}"
-        {{ end }}
-        {{ if (.Values.NetExporter.DNSCheck.TCP.Disabled) }}
+        {{- end }}
+        {{- if (.Values.NetExporter.DNSCheck.TCP.Disabled) }}
         - "-disable-dns-tcp-check={{ .Values.NetExporter.DNSCheck.TCP.Disabled }}"
-        {{ end }}
-        {{ end }}
+        {{- end }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /healthz
