@@ -3,8 +3,7 @@ kind: PodSecurityPolicy
 metadata:
   name: {{ .Values.name }}
   labels:
-    app: {{ .Values.name }}
-    giantswarm.io/service-type: "managed"
+    {{- include "labels.common" . | nindent 4 }}
 spec:
   privileged: false
   runAsUser:
