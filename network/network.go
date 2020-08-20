@@ -1,6 +1,7 @@
 package network
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"sort"
@@ -144,14 +145,15 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-	service, err := c.k8sClient.CoreV1().Services(c.namespace).Get(c.service, metav1.GetOptions{})
+	ctx := context.Background()
+	service, err := c.k8sClient.CoreV1().Services(c.namespace).Get(ctx, c.service, metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "stack", microerror.JSON(err))
 		c.errorCount.Inc()
 		return
 	}
 
-	endpoints, err := c.k8sClient.CoreV1().Endpoints(c.namespace).Get(c.service, metav1.GetOptions{})
+	endpoints, err := c.k8sClient.CoreV1().Endpoints(c.namespace).Get(ctx, c.service, metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not collect endpoints for service from kubernetes api ", "service", c.service, "stack", microerror.JSON(err))
 		c.errorCount.Inc()
@@ -173,7 +175,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	var wg sync.WaitGroup
 
-	pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(metav1.ListOptions{})
+	pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not get running pods", "service", c.service, "stack", microerror.JSON(err))
 		c.errorCount.Inc()
@@ -191,7 +193,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			conn, dialErr := c.dialer.Dial("tcp", host)
 			elapsed := time.Since(start)
 			if dialErr != nil {
-				podExists, err := c.podExists(host, pods)
+				podExists, err := c.podExists(ctx, host, pods)
 				if err != nil {
 					c.logger.Log("level", "error", "message", fmt.Sprintf("unable to check if host %#q exists", host), "stack", microerror.JSON(err))
 					c.dialErrorCount.WithLabelValues(host).Inc()
@@ -231,14 +233,14 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	}
 }
 
-func (c *Collector) podExists(podIP string, podList *v1.PodList) (bool, error) {
+func (c *Collector) podExists(ctx context.Context, podIP string, podList *v1.PodList) (bool, error) {
 	podName, ok := c.podNameFromIP(podIP, podList)
 	if !ok {
 		return false, nil
 	}
 
 	// Get the Pod to see if it still exists.
-	pod, err := c.k8sClient.CoreV1().Pods(c.namespace).Get(podName, metav1.GetOptions{})
+	pod, err := c.k8sClient.CoreV1().Pods(c.namespace).Get(ctx, podName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
 		// Pod doesn't exist anymore.
 		return false, nil

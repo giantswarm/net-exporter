@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## Changed
+
+- Updated backward incompatible Kubernetes dependencies to v1.18.5.
+
 ## [1.9.1] - 2020-08-19
 
 ### Added
