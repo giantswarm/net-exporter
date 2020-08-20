@@ -1,6 +1,7 @@
 package dns
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -172,7 +173,8 @@ func (c *Collector) resolve(proto string, client *dnsclient.Client, host string,
 
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
-	service, err := c.k8sClient.CoreV1().Services("kube-system").Get("coredns", metav1.GetOptions{})
+	ctx := context.Background()
+	service, err := c.k8sClient.CoreV1().Services("kube-system").Get(ctx, "coredns", metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "stack", microerror.JSON(err))
 		c.errorCount.Inc()
