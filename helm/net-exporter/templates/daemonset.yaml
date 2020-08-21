@@ -26,11 +26,11 @@ spec:
         image: "{{ .Values.image.registry }}/{{ .Values.kubectl.image.name }}:{{ .Values.kubectl.image.tag }}"
         {{- end }}
         args:
-          - label
-          - namespace
-          - kube-system
-          - name=kube-system
-          - --overwrite=true
+        - label
+        - namespace
+        - kube-system
+        - name=kube-system
+        - --overwrite=true
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
