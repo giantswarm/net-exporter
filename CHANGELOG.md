@@ -11,6 +11,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 - Updated backward incompatible Kubernetes dependencies to v1.18.5.
 
+## Fixed
+
+- Fixed indentation problem with the daemonset template.
+
 ## [1.9.1] - 2020-08-19
 
 ### Added
