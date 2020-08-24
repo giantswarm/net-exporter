@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.9.2] - 2020-08-21
+
 ## Changed
 
 - Updated backward incompatible Kubernetes dependencies to v1.18.5.
@@ -112,7 +114,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.9.1...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.9.2...HEAD
+[1.9.2]: https://github.com/giantswarm/net-exporter/compare/v1.9.1...v1.9.2
 [1.9.1]: https://github.com/giantswarm/net-exporter/compare/v1.9.0...v1.9.1
 [1.9.0]: https://github.com/giantswarm/net-exporter/compare/v1.8.1...v1.9.0
 [1.8.1]: https://github.com/giantswarm/net-exporter/compare/v1.8.0...v1.8.1
