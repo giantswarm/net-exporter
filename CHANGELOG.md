@@ -9,11 +9,11 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [1.9.2] - 2020-08-21
 
-## Changed
+### Changed
 
 - Updated backward incompatible Kubernetes dependencies to v1.18.5.
 
-## Fixed
+### Fixed
 
 - Fixed indentation problem with the daemonset template.
 
@@ -25,7 +25,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [1.9.0] - 2020-06-29
 
-## Added
+### Added
 
 - Add `ntp` collector.
 
