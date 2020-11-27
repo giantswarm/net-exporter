@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Update kubectl image to v1.18.8.
+
 ## [1.9.2] - 2020-08-21
 
 ### Changed
