@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@2.1.0
+  architect: giantswarm/architect@2.2.0
 
 workflows:
   build:
@@ -72,7 +72,6 @@ workflows:
           app_name: "net-exporter"
           app_namespace: "monitoring"
           app_collection_repo: "aws-app-collection"
-          unique: "true"
           requires:
             - push-net-exporter-to-control-plane-app-catalog
           filters:
@@ -87,7 +86,6 @@ workflows:
           app_name: "net-exporter"
           app_namespace: "monitoring"
           app_collection_repo: "azure-app-collection"
-          unique: "true"
           requires:
             - push-net-exporter-to-control-plane-app-catalog
           filters:
@@ -102,7 +100,6 @@ workflows:
           app_name: "net-exporter"
           app_namespace: "monitoring"
           app_collection_repo: "kvm-app-collection"
-          unique: "true"
           requires:
             - push-net-exporter-to-control-plane-app-catalog
           filters:
