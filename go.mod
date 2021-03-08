@@ -15,3 +15,8 @@ require (
 	k8s.io/apimachinery v0.18.5
 	k8s.io/client-go v0.18.5
 )
+
+replace (
+	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
+	github.com/coreos/etcd v3.3.13+incompatible => github.com/coreos/etcd v3.3.25+incompatible
+)
