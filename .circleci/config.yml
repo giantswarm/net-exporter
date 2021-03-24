@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@2.2.0
+  architect: giantswarm/architect@2.4.1
 
 workflows:
   build:
@@ -63,6 +63,20 @@ workflows:
             - push-net-exporter-to-quay
           # Needed to trigger job also on git tag.
           filters:
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          context: architect
+          name: push-net-exporter-to-shared-app-collection
+          app_name: "net-exporter"
+          app_namespace: "monitoring"
+          app_collection_repo: "shared-app-collection"
+          requires:
+            - push-net-exporter-to-control-plane-app-catalog
+          filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
 
