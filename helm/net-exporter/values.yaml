@@ -14,13 +14,13 @@ dns:
 timeout: 5s
 
 image:
-  registry: quay.io
+  registry: docker.io
   name: giantswarm/net-exporter
   tag: "[[ .Version ]]"
 
 kubectl:
   image:
-    registry: quay.io
+    registry: docker.io
     name: giantswarm/docker-kubectl
     tag: 1.18.8
 
