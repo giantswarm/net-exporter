@@ -21,6 +21,7 @@ import (
 	"github.com/giantswarm/net-exporter/dns"
 	"github.com/giantswarm/net-exporter/network"
 	"github.com/giantswarm/net-exporter/ntp"
+	_ "net/http/pprof"
 )
 
 var (
@@ -44,6 +45,10 @@ func init() {
 }
 
 func main() {
+        // we need a webserver to get the pprof webserver
+        go func() {
+          log.Println(http.ListenAndServe("localhost:6060", nil))
+        }()
 	if len(os.Args) > 1 && (os.Args[1] == "version" || os.Args[1] == "--help") {
 		return
 	}
