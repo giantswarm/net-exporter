@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	_ "net/http/pprof"
 	"os"
 	"strings"
 	"time"
-	_ "net/http/pprof"
 
 	"github.com/giantswarm/exporterkit"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8srestconfig"
