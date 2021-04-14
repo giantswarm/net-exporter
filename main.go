@@ -4,10 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"net"
-	//"net/http/pprof"
+	_ "net/http/pprof"
 	"os"
 	"strings"
 	"time"
+        "net/http"
 
 	"github.com/giantswarm/exporterkit"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8srestconfig"
@@ -47,7 +48,7 @@ func init() {
 func main() {
         // we need a webserver to get the pprof webserver
         go func() {
-          log.Println(http.ListenAndServe("localhost:6060", nil))
+          fmt.Println(http.ListenAndServe("localhost:6060", nil))
         }()
 	if len(os.Args) > 1 && (os.Args[1] == "version" || os.Args[1] == "--help") {
 		return
