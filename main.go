@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	_ "net/http/ppro"
+	_ "net/http/pprof"
 	"os"
 	"strings"
 	"time"
