@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"net"
-	_ "net/http/pprof"
+	"net/http/pprof"
 	"os"
 	"strings"
 	"time"
