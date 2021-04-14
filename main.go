@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	_ "net/http/pprof"
 
 	"github.com/giantswarm/exporterkit"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8srestconfig"
@@ -21,7 +22,6 @@ import (
 	"github.com/giantswarm/net-exporter/dns"
 	"github.com/giantswarm/net-exporter/network"
 	"github.com/giantswarm/net-exporter/ntp"
-	_ "net/http/pprof"
 )
 
 var (
