@@ -307,7 +307,7 @@ func (c *Collector) calculateNeighbours(n int, ip string, addresses []string) []
 				k = k % len(addresses)
 				neighbours = append(neighbours, addresses[k])
 			}
-			break 
+			break
 		}
 	}
 
