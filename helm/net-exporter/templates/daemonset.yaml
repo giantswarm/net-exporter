@@ -94,9 +94,9 @@ spec:
           # side-effects to measurements.
           requests:
             cpu: 50m
-            memory: 75Mi
+            memory: 150Mi
           limits:
-            memory: 75Mi
+            memory: 150Mi
       serviceAccountName: net-exporter
       securityContext:
         runAsUser: {{ .Values.userID }}

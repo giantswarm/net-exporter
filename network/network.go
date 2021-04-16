@@ -35,6 +35,8 @@ const (
 	// Having a value of 2 means that 2 specific net-exporters need to be down
 	// for one net-exporter to not be dialed, without exposing very high cardinality metrics.
 	numNeighbours = 2
+
+    appName = "net-exporter"
 )
 
 // Config provides the necessary configuration for creating a Collector.
@@ -174,8 +176,12 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	var wg sync.WaitGroup
-
-	pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(ctx, metav1.ListOptions{LabelSelector: "app=net-exporter"})
+	
+    opts := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf( "app=%s", appName ),
+	}
+	
+	pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(ctx, opts)
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not get running pods", "service", c.service, "stack", microerror.JSON(err))
 		c.errorCount.Inc()
@@ -307,7 +313,6 @@ func (c *Collector) calculateNeighbours(n int, ip string, addresses []string) []
 				k = k % len(addresses)
 				neighbours = append(neighbours, addresses[k])
 			}
-			break
 		}
 	}
 
