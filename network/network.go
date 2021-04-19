@@ -21,6 +21,7 @@ import (
 
 const (
 	namespace = "network"
+	appName = "net-exporter"
 
 	bucketStart  = 0.001
 	bucketFactor = 2
@@ -36,7 +37,6 @@ const (
 	// for one net-exporter to not be dialed, without exposing very high cardinality metrics.
 	numNeighbours = 2
 
-	appName = "net-exporter"
 )
 
 // Config provides the necessary configuration for creating a Collector.
