@@ -176,7 +176,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	var wg sync.WaitGroup
 
-	opts := metav1.ListOptions{
+opts := metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("app=%s", appName),
 	}
 
