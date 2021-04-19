@@ -94,7 +94,7 @@ spec:
           # side-effects to measurements.
           requests:
             cpu: 50m
-            memory: 150Mi
+            memory: 75Mi
           limits:
             memory: 150Mi
       serviceAccountName: net-exporter
