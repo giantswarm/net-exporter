@@ -21,6 +21,7 @@ import (
 
 const (
 	namespace = "network"
+	appName   = "net-exporter"
 
 	bucketStart  = 0.001
 	bucketFactor = 2
@@ -175,7 +176,11 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	var wg sync.WaitGroup
 
-	pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(ctx, metav1.ListOptions{})
+	opts := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("app=%s", appName),
+	}
+
+	pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(ctx, opts)
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not get running pods", "service", c.service, "stack", microerror.JSON(err))
 		c.errorCount.Inc()
