@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.10.0] - 2021-04-20
+
 ## Changed
 
 - Add label selector for pods to help lower memory usage
@@ -125,7 +127,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.9.3...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/giantswarm/net-exporter/compare/v1.9.3...v1.10.0
 [1.9.3]: https://github.com/giantswarm/net-exporter/compare/v1.9.2...v1.9.3
 [1.9.2]: https://github.com/giantswarm/net-exporter/compare/v1.9.1...v1.9.2
 [1.9.1]: https://github.com/giantswarm/net-exporter/compare/v1.9.0...v1.9.1
