@@ -19,4 +19,5 @@ require (
 replace (
 	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/coreos/etcd v3.3.13+incompatible => github.com/coreos/etcd v3.3.25+incompatible
+	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
 )

@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## Changed
+
+- Add label selector for pods to help lower memory usage
+
 ## [1.9.3] - 2021-03-26
 
 ### Changed
