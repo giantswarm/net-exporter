@@ -9,7 +9,7 @@ require (
 	github.com/giantswarm/microerror v0.3.0
 	github.com/giantswarm/micrologger v0.5.0
 	github.com/google/go-cmp v0.5.5
-	github.com/miekg/dns v1.1.40
+	github.com/miekg/dns v1.1.41
 	github.com/prometheus/client_golang v1.9.0
 	k8s.io/api v0.18.5
 	k8s.io/apimachinery v0.18.5
@@ -19,5 +19,6 @@ require (
 replace (
 	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/coreos/etcd v3.3.13+incompatible => github.com/coreos/etcd v3.3.25+incompatible
+	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
 )
