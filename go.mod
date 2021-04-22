@@ -10,7 +10,7 @@ require (
 	github.com/giantswarm/micrologger v0.5.0
 	github.com/google/go-cmp v0.5.5
 	github.com/miekg/dns v1.1.41
-	github.com/prometheus/client_golang v1.9.0
+	github.com/prometheus/client_golang v1.10.0
 	k8s.io/api v0.18.5
 	k8s.io/apimachinery v0.18.5
 	k8s.io/client-go v0.18.5
