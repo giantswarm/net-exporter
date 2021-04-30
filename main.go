@@ -3,7 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net"
+	"net/http"
+	_ "net/http/pprof" //nolint
 	"os"
 	"strings"
 	"time"
@@ -51,6 +54,10 @@ func main() {
 	flag.Parse()
 
 	var err error
+
+	go func() {
+		log.Println(http.ListenAndServe("0.0.0.0:6061", nil))
+	}()
 
 	var logger micrologger.Logger
 	{
