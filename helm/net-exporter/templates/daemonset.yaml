@@ -58,6 +58,7 @@ spec:
         args:
           - "-namespace={{ .Release.Namespace }}"
           - "-timeout={{ .Values.timeout }}"
+          - "-dns-service={{ .Values.dns.service }}"
           {{- if (.Values.Installation) }}
           {{- if (.Values.Installation.V1.Monitoring.NetExporter.Hosts) }}
           - "-hosts={{ .Values.Installation.V1.Monitoring.NetExporter.Hosts }}"

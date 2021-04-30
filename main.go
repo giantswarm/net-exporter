@@ -29,6 +29,7 @@ import (
 var (
 	disableDNSTCPCheck bool
 	hosts              string
+	dnsService         string
 	namespace          string
 	ntpServers         string
 	port               string
@@ -39,6 +40,7 @@ var (
 func init() {
 	flag.BoolVar(&disableDNSTCPCheck, "disable-dns-tcp-check", false, "Disable DNS TCP check")
 	flag.StringVar(&hosts, "hosts", "giantswarm.io.,kubernetes.default.svc.cluster.local.", "DNS hosts to resolve")
+	flag.StringVar(&dnsService, "dns-service", "coredns", "Name of DNS service")
 	flag.StringVar(&namespace, "namespace", "monitoring", "Namespace of net-exporter service")
 	flag.StringVar(&ntpServers, "ntp-servers", "0.flatcar.pool.ntp.org,1.flatcar.pool.ntp.org", "NTP servers to use for time synchronization")
 	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
@@ -105,6 +107,7 @@ func main() {
 
 			DisableTCPCheck: disableDNSTCPCheck,
 			Hosts:           splitHosts,
+			Service:         dnsService,
 		}
 
 		dnsCollector, err = dns.New(c)
