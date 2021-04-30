@@ -48,8 +48,8 @@ We have this differentiation in place because in our Control Planes, we don't us
 
 ## Release Process
 
-* Create a new branch off master with the format `master#release#v1.15.1`
-* Push the branch to the repo and CI will create the release
+Currently only members of the Giantswarm org can create releases.
+For up to date steps please referrer to internal docs here: https://intranet.giantswarm.io/docs/dev-and-releng/how-to-release-a-project/
 
 
 ## Collectors
