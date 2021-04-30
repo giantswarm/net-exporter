@@ -32,6 +32,7 @@ type Config struct {
 
 	DisableTCPCheck bool
 	Hosts           []string
+	Service         string
 }
 
 // Collector implements the Collector interface, exposing DNS latency information.
@@ -43,6 +44,7 @@ type Collector struct {
 
 	disableTCPCheck bool
 	hosts           []string
+	service         string
 
 	tcpLatencyHistogramVec  *histogramvec.HistogramVec
 	tcpLatencyHistogramDesc *prometheus.Desc
@@ -70,6 +72,9 @@ func New(config Config) (*Collector, error) {
 
 	if len(config.Hosts) == 0 {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Host must not be empty", config)
+	}
+	if len(config.Service) == 0 {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Service must not be empty", config)
 	}
 
 	var err error
@@ -117,6 +122,7 @@ func New(config Config) (*Collector, error) {
 
 		disableTCPCheck: config.DisableTCPCheck,
 		hosts:           config.Hosts,
+		service:         config.Service,
 
 		tcpLatencyHistogramVec: tcpLatencyHistogramVec,
 		tcpLatencyHistogramDesc: prometheus.NewDesc(
@@ -174,7 +180,7 @@ func (c *Collector) resolve(proto string, client *dnsclient.Client, host string,
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	ctx := context.Background()
-	service, err := c.k8sClient.CoreV1().Services("kube-system").Get(ctx, "coredns", metav1.GetOptions{})
+	service, err := c.k8sClient.CoreV1().Services("kube-system").Get(ctx, c.service, metav1.GetOptions{})
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not collect service from kubernetes api", "stack", microerror.JSON(err))
 		c.errorCount.Inc()
