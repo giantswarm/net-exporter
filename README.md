@@ -48,17 +48,9 @@ We have this differentiation in place because in our Control Planes, we don't us
 
 ## Release Process
 
-* Ensure CHANGELOG.md is up to date.
-* Create a new GitHub release with the version e.g. `v0.1.0` and link the
-changelog entry.
-* This will push a new git tag and trigger a new tarball to be pushed to the
-[default-catalog].  
-* Update [cluster-operator] with the new version.
+Currently only members of the Giant Swarm organization can create releases for this project.
+For up to date steps, please refer to internal docs here: https://intranet.giantswarm.io/docs/dev-and-releng/how-to-release-a-project/
 
-[app-operator]: https://github.com/giantswarm/app-operator
-[cluster-operator]: https://github.com/giantswarm/cluster-operator
-[default-catalog]: https://github.com/giantswarm/default-catalog
-[default-test-catalog]: https://github.com/giantswarm/default-test-catalog
 
 ## Collectors
 All Collectors are enabled by default.
