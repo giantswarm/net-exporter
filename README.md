@@ -48,7 +48,7 @@ We have this differentiation in place because in our Control Planes, we don't us
 
 ## Release Process
 
-Currently only members of the Giantswarm org can create releases.
+Currently only members of the Giant Swarm organization can create releases for this project.
 For up to date steps please referrer to internal docs here: https://intranet.giantswarm.io/docs/dev-and-releng/how-to-release-a-project/
 
 
