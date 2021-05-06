@@ -14,14 +14,12 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
 	v1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
 const (
 	namespace = "network"
-	appName   = "net-exporter"
 
 	bucketStart  = 0.001
 	bucketFactor = 2
@@ -176,17 +174,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 	var wg sync.WaitGroup
 
-	opts := metav1.ListOptions{
-		LabelSelector: fmt.Sprintf("app=%s", appName),
-	}
-
-	pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(ctx, opts)
-	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get running pods", "service", c.service, "stack", microerror.JSON(err))
-		c.errorCount.Inc()
-		return
-	}
-
 	for _, host := range hosts {
 		wg.Add(1)
 
@@ -198,14 +185,21 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			conn, dialErr := c.dialer.Dial("tcp", host)
 			elapsed := time.Since(start)
 			if dialErr != nil {
-				podExists, err := c.podExists(ctx, host, pods)
+				pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(ctx, metav1.ListOptions{
+					FieldSelector: fmt.Sprintf("status.podIP=%s", host),
+				})
 				if err != nil {
 					c.logger.Log("level", "error", "message", fmt.Sprintf("unable to check if host %#q exists", host), "stack", microerror.JSON(err))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
 				}
+				if len(pods.Items) != 1 {
+					c.logger.Log("level", "error", "message", fmt.Sprintf("unable to check if host %#q exists, multiple pods found", host))
+					c.dialErrorCount.WithLabelValues(host).Inc()
+					return
+				}
 
-				if podExists {
+				if pods.Items[0].GetDeletionTimestamp() != nil {
 					c.logger.Log("level", "error", "message", fmt.Sprintf("could not dial host %#q", host), "stack", microerror.JSON(dialErr))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
@@ -236,39 +230,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			host,
 		)
 	}
-}
-
-func (c *Collector) podExists(ctx context.Context, podIP string, podList *v1.PodList) (bool, error) {
-	podName, ok := c.podNameFromIP(podIP, podList)
-	if !ok {
-		return false, nil
-	}
-
-	// Get the Pod to see if it still exists.
-	pod, err := c.k8sClient.CoreV1().Pods(c.namespace).Get(ctx, podName, metav1.GetOptions{})
-	if errors.IsNotFound(err) {
-		// Pod doesn't exist anymore.
-		return false, nil
-	} else if err != nil {
-		// Couldn't get the Pod, but for some other reason.
-		return false, err
-	}
-
-	// Pod is deleting or deleted.
-	if pod.GetDeletionTimestamp() != nil {
-		return false, nil
-	}
-
-	return true, nil
-}
-
-func (c *Collector) podNameFromIP(host string, list *v1.PodList) (name string, ok bool) {
-	for _, p := range list.Items {
-		if p.Status.PodIP == host {
-			return p.Name, true
-		}
-	}
-	return "", false
 }
 
 func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset) ([]string, error) {
