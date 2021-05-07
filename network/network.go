@@ -186,16 +186,16 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			elapsed := time.Since(start)
 			if dialErr != nil {
 				pods, err := c.k8sClient.CoreV1().Pods(c.namespace).List(ctx, metav1.ListOptions{
-					FieldSelector: fmt.Sprintf("status.podIP=%s", host),
+					FieldSelector: fmt.Sprintf("status.podIP=%s", strings.Split(host, ":")[0]),
 				})
 				if err != nil {
 					c.logger.Log("level", "error", "message", fmt.Sprintf("unable to check if host %#q exists", host), "stack", microerror.JSON(err))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
 				}
+
 				if len(pods.Items) == 0 {
-					c.logger.Log("level", "error", "message", fmt.Sprintf("unable to check if host %#q exists, no pods found", host))
-					c.dialErrorCount.WithLabelValues(host).Inc()
+					c.logger.Log("level", "error", "message", fmt.Sprintf("unable to check if host %#q exists, no pods found, assuming gone", host))
 					return
 				}
 				if len(pods.Items) > 1 {
@@ -204,13 +204,14 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 					return
 				}
 
-				if pods.Items[0].GetDeletionTimestamp() != nil {
-					c.logger.Log("level", "error", "message", fmt.Sprintf("could not dial host %#q", host), "stack", microerror.JSON(dialErr))
-					c.dialErrorCount.WithLabelValues(host).Inc()
+				if pods.Items[0].GetDeletionTimestamp() == nil {
+					c.logger.Log("level", "error", "message", fmt.Sprintf("host %#q is deleting, ignoring dial error", host))
 					return
 				}
 
-				c.logger.Log("level", "error", "message", fmt.Sprintf("host %#q does not exist", host), "stack", microerror.JSON(err))
+				c.logger.Log("level", "error", "message", fmt.Sprintf("could not dial host %#q", host), "stack", microerror.JSON(dialErr))
+				c.dialErrorCount.WithLabelValues(host).Inc()
+
 				return
 			}
 			defer conn.Close()
