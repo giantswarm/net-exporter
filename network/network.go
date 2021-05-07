@@ -193,7 +193,12 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
 				}
-				if len(pods.Items) != 1 {
+				if len(pods.Items) == 0 {
+					c.logger.Log("level", "error", "message", fmt.Sprintf("unable to check if host %#q exists, no pods found", host))
+					c.dialErrorCount.WithLabelValues(host).Inc()
+					return
+				}
+				if len(pods.Items) > 1 {
 					c.logger.Log("level", "error", "message", fmt.Sprintf("unable to check if host %#q exists, multiple pods found", host))
 					c.dialErrorCount.WithLabelValues(host).Inc()
 					return
