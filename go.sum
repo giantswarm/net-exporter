@@ -843,8 +843,9 @@ honnef.co/go/tools v0.0.0-20190523083050-ea95bdfd59fc/go.mod h1:rf3lG4BRIbNafJWh
 honnef.co/go/tools v0.0.1-2019.2.3/go.mod h1:a3bituU0lyd329TUQxRnasdCoJDkEUEAqEt0JzvZhAg=
 k8s.io/api v0.17.8/go.mod h1:N++Llhs8kCixMUoCaXXAyMMPbo8dDVnh+IQ36xZV2/0=
 k8s.io/api v0.18.4/go.mod h1:lOIQAKYgai1+vz9J7YcDZwC26Z0zQewYOGWdyIPUUQ4=
-k8s.io/api v0.18.5 h1:fKbCxr+U3fu7k6jB+QeYPD/c6xKYeSJ2KVWmyUypuWM=
 k8s.io/api v0.18.5/go.mod h1:tN+e/2nbdGKOAH55NMV8oGrMG+3uRlA9GaRfvnCCSNk=
+k8s.io/api v0.18.18 h1:h+IFTkmyQ5ZwJGy3kG+JXcNYxjRgkJCXHdiFvF284D4=
+k8s.io/api v0.18.18/go.mod h1:Gq0a7seDxpP8TmcLbtdKv/2kulShUvq7MH4jIh7FiWU=
 k8s.io/apiextensions-apiserver v0.17.8/go.mod h1:5H/i0XiKizIE9SkoAQaU/ou31JJBIffbsT0ALA18GmE=
 k8s.io/apiextensions-apiserver v0.18.4/go.mod h1:NYeyeYq4SIpFlPxSAB6jHPIdvu3hL0pc36wuRChybio=
 k8s.io/apiextensions-apiserver v0.18.5/go.mod h1:woZ7PkEIMHjhHIyApvOwkGOkBLUYKuet0VWVkPTQ/Fs=
