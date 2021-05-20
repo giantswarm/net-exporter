@@ -12,6 +12,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Changed
 
 - Allow to customize dns service.
+- Only check pod existence on dial errors. Check pod deletion directly by IP instead of listing pods and searching.
 
 ## [1.10.1] - 2021-04-29
 
