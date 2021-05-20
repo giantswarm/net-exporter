@@ -10,7 +10,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Changed
 
 - Allow to customize dns service.
-- Drastically decrease memory usage in large clusters
+- Significantly decrease memory usage in large clusters
 
 ## [1.10.1] - 2021-04-29
 
