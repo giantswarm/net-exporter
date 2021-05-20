@@ -10,7 +10,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Changed
 
 - Allow to customize dns service.
-- Significantly decrease memory usage in large clusters. This is accomplished by no longer pulling a list of all the net-exporter pods on every network check. A list of pods for a specific host is now only retrieved when there is a dial error detected.
+- Only check pod existence on dial errors. Check pod deletion directly by IP instead of listing pods and searching.
 
 ## [1.10.1] - 2021-04-29
 
