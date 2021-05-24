@@ -11,9 +11,9 @@ require (
 	github.com/google/go-cmp v0.5.5
 	github.com/miekg/dns v1.1.42
 	github.com/prometheus/client_golang v1.10.0
-	k8s.io/api v0.18.18
-	k8s.io/apimachinery v0.18.18
-	k8s.io/client-go v0.18.18
+	k8s.io/api v0.18.19
+	k8s.io/apimachinery v0.18.19
+	k8s.io/client-go v0.18.19
 )
 
 replace (
