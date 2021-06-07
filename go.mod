@@ -8,12 +8,12 @@ require (
 	github.com/giantswarm/k8sclient/v4 v4.1.0
 	github.com/giantswarm/microerror v0.3.0
 	github.com/giantswarm/micrologger v0.5.0
-	github.com/google/go-cmp v0.5.5
+	github.com/google/go-cmp v0.5.6
 	github.com/miekg/dns v1.1.42
 	github.com/prometheus/client_golang v1.10.0
-	k8s.io/api v0.18.18
+	k8s.io/api v0.18.19
 	k8s.io/apimachinery v0.18.19
-	k8s.io/client-go v0.18.18
+	k8s.io/client-go v0.18.19
 )
 
 replace (
