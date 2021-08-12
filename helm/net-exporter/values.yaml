@@ -25,6 +25,16 @@ kubectl:
     name: giantswarm/docker-kubectl
     tag: 1.18.8
 
+daemonset:
+  priorityClassName: system-node-critical
+
 # Control-plane subnets used to generate network policies
 # for managed applications.
 controlPlaneSubnets: []
+
+NetExporter:
+  Hosts: ""
+  NTPServers: ""
+  DNSCheck:
+    TCP:
+      Disabled: false
