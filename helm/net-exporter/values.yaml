@@ -4,7 +4,7 @@ serviceType: managed
 userID: 1000
 groupID: 1000
 
-port: 8000
+port: 8150
 
 dns:
   port: 1053
