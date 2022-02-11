@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Set the default port to 8150.
+
 ## [1.10.3] - 2021-08-12
 
 ### Changed
