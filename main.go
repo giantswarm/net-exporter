@@ -148,6 +148,7 @@ func main() {
 	var exporter *exporterkit.Exporter
 	{
 		c := exporterkit.Config{
+			Address: "http://0.0.0.0:" + port,
 			Collectors: []prometheus.Collector{
 				dnsCollector,
 				networkCollector,
