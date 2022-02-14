@@ -1,7 +1,6 @@
 {
   "extends": [
-    "config:base",
-    ":reviewer(team:area-kaas)"
+    "config:base"
   ],
   "packageRules": [
     {
