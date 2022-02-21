@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@2.11.0
+  architect: giantswarm/architect@4.13.0
 
 workflows:
   build:
@@ -114,6 +114,20 @@ workflows:
           app_name: "net-exporter"
           app_namespace: "monitoring"
           app_collection_repo: "kvm-app-collection"
+          requires:
+            - push-net-exporter-to-control-plane-app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          context: architect
+          name: push-net-exporter-to-openstack-app-collection
+          app_name: "net-exporter"
+          app_namespace: "monitoring"
+          app_collection_repo: "openstack-app-collection"
           requires:
             - push-net-exporter-to-control-plane-app-catalog
           filters:
