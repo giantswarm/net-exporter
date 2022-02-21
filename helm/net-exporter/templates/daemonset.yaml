@@ -54,16 +54,20 @@ spec:
           - "-disable-dns-tcp-check={{ .Values.NetExporter.DNSCheck.TCP.Disabled }}"
           {{- end }}
           - "-port={{ .Values.port }}"
+        ports:
+          - name: http
+            containerPort: {{ .Values.port }}
+            hostPort: {{ .Values.port }}
         livenessProbe:
           httpGet:
             path: /healthz
-            port: {{ .Values.port }}
+            port: http
             scheme: HTTP
           initialDelaySeconds: 5
         readinessProbe:
           httpGet:
             path: /healthz
-            port: {{ .Values.port }}
+            port: http
             scheme: HTTP
           initialDelaySeconds: 5
         resources:
