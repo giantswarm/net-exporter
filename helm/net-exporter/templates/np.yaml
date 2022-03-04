@@ -67,7 +67,7 @@ spec:
       protocol: TCP
     to:
     - ipBlock:
-        cidr: {{ .Values.cluster.kubernetes.DNS.IP }}
+        cidr: {{ .Values.cluster.kubernetes.DNS.IP }}/32
   - ports:
     - port: 443
       protocol: TCP
