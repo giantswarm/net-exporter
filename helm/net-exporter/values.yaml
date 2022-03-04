@@ -12,6 +12,11 @@ dns:
   namespace: kube-system
   service: coredns
 
+dnscache:
+  port: 1053
+  label: k8s-dns-node-cache
+  namespace: kube-system
+
 timeout: 5s
 
 image:
