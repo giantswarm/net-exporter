@@ -13,9 +13,12 @@ dns:
   service: coredns
 
 dnscache:
-  port: 1053
-  label: k8s-dns-node-cache
-  namespace: kube-system
+  port: 53
+
+cluster:
+  kubernetes:
+    DNS:
+      IP: 172.31.0.10
 
 timeout: 5s
 
