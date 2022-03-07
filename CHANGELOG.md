@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Added
+
+- Add networkpolicy to allow egress towards `k8s-dns-node-cache-app` endpoints.
+
 ## [1.10.3] - 2021-08-12
 
 ### Changed

@@ -12,6 +12,14 @@ dns:
   namespace: kube-system
   service: coredns
 
+dnscache:
+  port: 53
+
+cluster:
+  kubernetes:
+    DNS:
+      IP: 172.31.0.10
+
 timeout: 5s
 
 image:

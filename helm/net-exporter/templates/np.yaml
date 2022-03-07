@@ -59,6 +59,15 @@ spec:
       namespaceSelector:
         matchLabels:
           name: {{ .Values.dns.namespace }}
+  # allow DNS resolution through k8s-dns-node-cache-app
+  - ports:
+    - port: {{ .Values.dnscache.port }}
+      protocol: UDP
+    - port: {{ .Values.dnscache.port }}
+      protocol: TCP
+    to:
+    - ipBlock:
+        cidr: {{ .Values.cluster.kubernetes.DNS.IP }}/32
   - ports:
     - port: 443
       protocol: TCP
