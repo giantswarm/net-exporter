@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Use parameter for CoreDNS namespace (defaulted to kube-system)
+
 ## [1.11.0] - 2022-03-07
 
 ### Added
