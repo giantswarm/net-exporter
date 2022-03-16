@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.12.0] - 2022-03-16
+
 ### Changed
 
 - Use parameter for CoreDNS namespace (defaulted to kube-system)
@@ -153,7 +155,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.11.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.12.0...HEAD
+[1.12.0]: https://github.com/giantswarm/net-exporter/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/giantswarm/net-exporter/compare/v1.10.3...v1.11.0
 [1.10.3]: https://github.com/giantswarm/net-exporter/compare/v1.10.2...v1.10.3
 [1.10.2]: https://github.com/giantswarm/net-exporter/compare/v1.10.1...v1.10.2
