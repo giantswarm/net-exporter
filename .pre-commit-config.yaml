@@ -28,4 +28,4 @@ repos:
         # timeout is needed for CI
         args: [ -E, gosec, -E, goconst, -E, govet, --timeout, 300s ]
       - id: go-imports
-        args: [ -local, github.com/giantswarm/REPO_NAME ]
+        args: [ -local, github.com/giantswarm/net-exporter ]
