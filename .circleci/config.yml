@@ -136,7 +136,7 @@ workflows:
             tags:
               only: /^v.*/
 
-      - architect/push-to-app-collection:
+<<<<<<- architect/push-to-app-collection:
           context: architect
           name: push-to-capa-app-collection
           app_name: "net-exporter"
@@ -150,3 +150,16 @@ workflows:
             tags:
               only: /^v.*/
 
+      - architect/push-to-app-collection:
+          context: architect
+          name: push-to-cloud-director-app-collection
+          app_name: "net-exporter"
+          app_namespace: "monitoring"
+          app_collection_repo: "cloud-director-app-collection"
+          requires:
+            - push-net-exporter-to-control-plane-app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
