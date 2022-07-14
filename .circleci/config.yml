@@ -136,6 +136,19 @@ workflows:
             tags:
               only: /^v.*/
 
+<<<<<<- architect/push-to-app-collection:
+          context: architect
+          name: push-to-capa-app-collection
+          app_name: "net-exporter"
+          app_namespace: "monitoring"
+          app_collection_repo: "capa-app-collection"
+          requires:
+            - push-net-exporter-to-control-plane-app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
 
       - architect/push-to-app-collection:
           context: architect
@@ -150,4 +163,3 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
-
