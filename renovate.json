@@ -1,7 +1,7 @@
 {
   "extends": [
     "config:base",
-    ":reviewer(team:area-kaas)"
+    ":reviewer(team:team-cabbage)"
   ],
   "labels": ["dependencies", "renovate"],
   "packageRules": [
