@@ -31,7 +31,7 @@ kubectl:
   image:
     registry: docker.io
     name: giantswarm/docker-kubectl
-    tag: 1.18.8
+    tag: 1.25.4
 
 daemonset:
   priorityClassName: system-node-critical
