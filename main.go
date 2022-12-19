@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/giantswarm/exporterkit"
-	"github.com/giantswarm/k8sclient/v4/pkg/k8srestconfig"
+	"github.com/giantswarm/k8sclient/v7/pkg/k8srestconfig"
 	"github.com/giantswarm/micrologger"
 	dnsclient "github.com/miekg/dns"
 	"github.com/prometheus/client_golang/prometheus"
