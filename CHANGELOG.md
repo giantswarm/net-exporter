@@ -7,6 +7,14 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Update to Go 1.18
+- Update github.com/giantswarm/k8sclient to v7.0.1
+- Update github.com/giantswarm/micrologger to v1.0.0
+- Update github.com/miekg/dns to v1.1.50
+- Update k8s.io deps to v0.26.0
+
 ## [1.12.0] - 2022-03-16
 
 ### Changed
