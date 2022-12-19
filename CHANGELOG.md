@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Added
+
+- Add helm chart values schema
+
 ### Changed
 
 - Update to Go 1.18
