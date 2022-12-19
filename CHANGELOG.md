@@ -14,6 +14,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Update github.com/giantswarm/micrologger to v1.0.0
 - Update github.com/miekg/dns to v1.1.50
 - Update k8s.io deps to v0.26.0
+- Update docker-kubectl to 1.25.4
 
 ## [1.12.0] - 2022-03-16
 
