@@ -1,9 +1,9 @@
 {
   "extends": [
     "config:base",
-    ":reviewer(team:area-kaas)"
+    ":reviewer(team:team-cabbage)"
   ],
-  "labels": ["dependencies"],
+  "labels": ["dependencies", "renovate"],
   "packageRules": [
     {
       "matchPackagePatterns": [".*giantswarm.*"],
@@ -20,7 +20,7 @@
     },
     {
       "excludePackagePatterns": [".*giantswarm.*" ,"^k8s.io", "^sigs.k8s.io"],
-      "groupName": "etc modules"
+      "groupName": "misc modules"
     },
     {
       "matchPackagePatterns": ["^sigs.k8s.io/cluster*"],

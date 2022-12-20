@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@4.13.0
+  architect: giantswarm/architect@4.27.0
 
 workflows:
   build:
@@ -110,10 +110,10 @@ workflows:
 
       - architect/push-to-app-collection:
           context: architect
-          name: push-net-exporter-to-kvm-app-collection
+          name: push-net-exporter-to-vsphere-app-collection
           app_name: "net-exporter"
           app_namespace: "monitoring"
-          app_collection_repo: "kvm-app-collection"
+          app_collection_repo: "vsphere-app-collection"
           requires:
             - push-net-exporter-to-control-plane-app-catalog
           filters:
@@ -124,10 +124,10 @@ workflows:
 
       - architect/push-to-app-collection:
           context: architect
-          name: push-net-exporter-to-openstack-app-collection
+          name: push-to-capa-app-collection
           app_name: "net-exporter"
           app_namespace: "monitoring"
-          app_collection_repo: "openstack-app-collection"
+          app_collection_repo: "capa-app-collection"
           requires:
             - push-net-exporter-to-control-plane-app-catalog
           filters:
@@ -138,10 +138,10 @@ workflows:
 
       - architect/push-to-app-collection:
           context: architect
-          name: push-net-exporter-to-vmware-app-collection
+          name: push-to-cloud-director-app-collection
           app_name: "net-exporter"
           app_namespace: "monitoring"
-          app_collection_repo: "vmware-app-collection"
+          app_collection_repo: "cloud-director-app-collection"
           requires:
             - push-net-exporter-to-control-plane-app-catalog
           filters:

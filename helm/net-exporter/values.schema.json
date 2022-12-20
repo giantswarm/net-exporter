@@ -1,0 +1,135 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "NetExporter": {
+            "type": "object",
+            "properties": {
+                "DNSCheck": {
+                    "type": "object",
+                    "properties": {
+                        "TCP": {
+                            "type": "object",
+                            "properties": {
+                                "Disabled": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "Hosts": {
+                    "type": "string"
+                },
+                "NTPServers": {
+                    "type": "string"
+                }
+            }
+        },
+        "cluster": {
+            "type": "object",
+            "properties": {
+                "kubernetes": {
+                    "type": "object",
+                    "properties": {
+                        "DNS": {
+                            "type": "object",
+                            "properties": {
+                                "IP": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "controlPlaneSubnets": {
+            "type": "array"
+        },
+        "daemonset": {
+            "type": "object",
+            "properties": {
+                "priorityClassName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dns": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "namespace": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "service": {
+                    "type": "string"
+                }
+            }
+        },
+        "dnscache": {
+            "type": "object",
+            "properties": {
+                "port": {
+                    "type": "integer"
+                }
+            }
+        },
+        "groupID": {
+            "type": "integer"
+        },
+        "image": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "registry": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            }
+        },
+        "kubectl": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "registry": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "name": {
+            "type": "string"
+        },
+        "port": {
+            "type": "integer"
+        },
+        "serviceType": {
+            "type": "string"
+        },
+        "timeout": {
+            "type": "string"
+        },
+        "userID": {
+            "type": "integer"
+        }
+    }
+}

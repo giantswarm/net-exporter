@@ -1,3 +1,21 @@
-# Affects all versions of archiver which is required by vault.
-# Taken from: https://github.com/giantswarm/opsctl/pull/1072/files#diff-bbe4a7fb12c43622bce7c6840c770e9995be614626a219942ca138403629cb69R1
-CVE-2019-10743 until=2021-10-17
+# pkg:golang/github.com/caddyserver/caddy@v1.0.5
+CVE-2022-29718
+
+# pkg:golang/github.com/hashicorp/consul/api@v1.15.3
+# pkg:golang/github.com/hashicorp/consul/sdk@v0.11.0
+CVE-2022-29153
+CVE-2021-41803
+
+# pkg:golang/github.com/lucas-clemente/quic-go@v0.13.1
+CVE-2022-30591
+
+# pkg:golang/github.com/nats-io/jwt@v1.2.2
+CVE-2021-3127
+
+# pkg:golang/github.com/nats-io/nats-server/v2@v2.5.0
+CVE-2022-24450
+CVE-2022-26652
+CVE-2022-28357
+CVE-2022-29946
+CVE-2022-42709
+CVE-2022-42708
