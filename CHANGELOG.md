@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Don't push net-exporter to capa-app-collection because it's already a default app.
+
 ## [1.13.0] - 2022-12-19
 
 ### Added
