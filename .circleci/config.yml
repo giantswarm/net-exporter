@@ -29,7 +29,7 @@ workflows:
       - architect/push-to-docker:
           context: "architect"
           name: push-net-exporter-to-aliyun
-          image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/net-exporter"
+          image: "giantswarm-registry.cn-shanghai.cr.aliyuncs.com/giantswarm/net-exporter"
           username_envar: "ALIYUN_USERNAME"
           password_envar: "ALIYUN_PASSWORD"
           requires:
