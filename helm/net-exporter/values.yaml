@@ -46,3 +46,6 @@ NetExporter:
   DNSCheck:
     TCP:
       Disabled: false
+
+ciliumNetworkPolicy:
+  enabled: false

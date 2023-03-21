@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Added
+
+- Add `Cilium Network Policy` to net-exporter.
+
 ### Changed
 
 - Don't push net-exporter to capa-app-collection because it's already a default app.
