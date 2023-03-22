@@ -15,4 +15,7 @@ spec:
         - kube-apiserver
         - cluster
         - world
+  ingress:
+    - fromEntites:
+        - cluster
 {{ end }}
