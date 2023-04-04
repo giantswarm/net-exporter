@@ -1,0 +1,21 @@
+{{ if .Values.ciliumNetworkPolicy.enabled }}
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Values.name }}
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+spec:
+  endpointSelector:
+    matchLabels:
+      {{- include "labels.selector" . | nindent 6 }}
+  egress:
+    - toEntities:
+       - kube-apiserver
+       - cluster
+       - world
+  ingress:
+    - fromEntities:
+       - cluster
+{{ end }}
