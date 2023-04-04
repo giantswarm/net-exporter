@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.14.0] - 2023-04-04
+
 ### Added
 
 - Add `Cilium Network Policy` to net-exporter.
@@ -179,7 +181,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.13.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/giantswarm/net-exporter/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/giantswarm/net-exporter/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/giantswarm/net-exporter/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/giantswarm/net-exporter/compare/v1.10.3...v1.11.0
