@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.14.1] - 2023-04-24
+
 ### Changed
 
 - Update icon.
@@ -185,7 +187,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.14.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.14.1...HEAD
+[1.14.1]: https://github.com/giantswarm/net-exporter/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/giantswarm/net-exporter/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/giantswarm/net-exporter/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/giantswarm/net-exporter/compare/v1.11.0...v1.12.0
