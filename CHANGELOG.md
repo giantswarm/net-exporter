@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Allow requests from the api-server.
+
 ## [1.14.1] - 2023-04-24
 
 ### Changed
