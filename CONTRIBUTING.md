@@ -36,7 +36,7 @@ We might ask you for further information to locate a bug. A duplicated bug repor
 
 This is a rough outline of what a contributor's workflow looks like:
 
-- Create a feature branch from where you want to base your work. This is usually master.
+- Create a feature branch from where you want to base your work. This is usually main.
 - Make commits of logical units.
 - Make sure your commit messages are in the proper format (see below).
 - Push your changes to a topic branch in your fork of the repository.
