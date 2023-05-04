@@ -7,9 +7,11 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+
 ### Changed
 
 - Allow requests from the api-server.
+- Disable PSPs for k8s 1.25 and newer.
 
 ## [1.14.1] - 2023-04-24
 
