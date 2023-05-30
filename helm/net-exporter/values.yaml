@@ -47,5 +47,14 @@ NetExporter:
     TCP:
       Disabled: false
 
+resources:
+  # cpu limits removed so that throttling doesn't cause any unwanted
+  # side-effects to measurements.
+  requests:
+    cpu: 50m
+    memory: 75Mi
+  limits:
+    memory: 150Mi
+
 ciliumNetworkPolicy:
   enabled: false

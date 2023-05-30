@@ -66,14 +66,10 @@ spec:
             port: 8000
             scheme: HTTP
           initialDelaySeconds: 5
+        {{- with .Values.resources }}
         resources:
-          # cpu limits removed so that throttling doesn't cause any unwanted
-          # side-effects to measurements.
-          requests:
-            cpu: 50m
-            memory: 75Mi
-          limits:
-            memory: 150Mi
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
       serviceAccountName: net-exporter
       securityContext:
         runAsUser: {{ .Values.userID }}
