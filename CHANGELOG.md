@@ -7,8 +7,11 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
-## [1.15.0] - 2023-05-04
+### Added
 
+- Add values for the daemonset resources ([#280](https://github.com/giantswarm/net-exporter/pull/280)).
+
+## [1.15.0] - 2023-05-04
 
 ### Changed
 

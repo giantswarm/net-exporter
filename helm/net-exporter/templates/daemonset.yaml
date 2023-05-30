@@ -68,7 +68,7 @@ spec:
           initialDelaySeconds: 5
         {{- with .Values.resources }}
         resources:
-          {{ toYaml . | nindent 10 }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
       serviceAccountName: net-exporter
       securityContext:
