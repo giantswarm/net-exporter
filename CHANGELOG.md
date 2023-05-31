@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.16.0] - 2023-05-31
+
 ### Added
 
 - Add values for the daemonset resources ([#280](https://github.com/giantswarm/net-exporter/pull/280)).
@@ -198,7 +200,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.15.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.16.0...HEAD
+[1.16.0]: https://github.com/giantswarm/net-exporter/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/giantswarm/net-exporter/compare/v1.14.1...v1.15.0
 [1.14.1]: https://github.com/giantswarm/net-exporter/compare/v1.14.0...v1.14.1
 [1.14.0]: https://github.com/giantswarm/net-exporter/compare/v1.13.0...v1.14.0
