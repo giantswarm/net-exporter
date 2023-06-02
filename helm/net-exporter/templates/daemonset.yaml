@@ -54,6 +54,9 @@ spec:
           {{- if (.Values.NetExporter.DNSCheck.TCP.Disabled) }}
           - "-disable-dns-tcp-check={{ .Values.NetExporter.DNSCheck.TCP.Disabled }}"
           {{- end }}
+        ports:
+          - containerPort: 8000
+            name: metrics
         livenessProbe:
           httpGet:
             path: /healthz

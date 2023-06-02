@@ -7,3 +7,4 @@ appVersion: "[[ .AppVersion ]]"
 icon: https://s.giantswarm.io/app-icons/prometheus/1/light.svg
 annotations:
   config.giantswarm.io/version: 1.x.x
+  application.giantswarm.io/team: "cabbage"
