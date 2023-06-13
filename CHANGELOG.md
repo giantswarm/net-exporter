@@ -9,6 +9,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [1.16.2] - 2023-06-13
 
+### Changed
+
+- Reduce CPU and Mem requests.
+
 ## [1.16.1] - 2023-06-02
 
 ### Added
