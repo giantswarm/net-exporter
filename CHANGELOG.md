@@ -7,6 +7,12 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.16.2] - 2023-06-13
+
+### Changed
+
+- Reduce CPU and Mem requests.
+
 ## [1.16.1] - 2023-06-02
 
 ### Added
@@ -206,7 +212,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.16.1...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.16.2...HEAD
+[1.16.2]: https://github.com/giantswarm/net-exporter/compare/v1.16.1...v1.16.2
 [1.16.1]: https://github.com/giantswarm/net-exporter/compare/v1.16.0...v1.16.1
 [1.16.0]: https://github.com/giantswarm/net-exporter/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/giantswarm/net-exporter/compare/v1.14.1...v1.15.0
