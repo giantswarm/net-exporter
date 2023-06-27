@@ -65,3 +65,16 @@ serviceMonitor:
   interval: "60s"
   # -- (duration) Prometheus scrape timeout.
   scrapeTimeout: "45s"
+
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  seccompProfile:
+    type: RuntimeDefault

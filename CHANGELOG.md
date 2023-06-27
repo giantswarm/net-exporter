@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Add security context values to make chart comply to PodSecurityStandard restricted profile.
+
 ## [1.16.2] - 2023-06-13
 
 ### Changed

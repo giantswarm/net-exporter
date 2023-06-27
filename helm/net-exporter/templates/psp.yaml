@@ -5,6 +5,8 @@ metadata:
   name: {{ .Values.name }}
   labels:
     {{- include "labels.common" . | nindent 4 }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'runtime/default'
 spec:
   privileged: false
   runAsUser:
