@@ -1,4 +1,5 @@
-[![CircleCI](https://circleci.com/gh/giantswarm/net-exporter.svg?&style=shield)](https://circleci.com/gh/giantswarm/net-exporter) [![Go Report Card](https://goreportcard.com/badge/github.com/giantswarm/net-exporter)](https://goreportcard.com/report/github.com/giantswarm/net-exporter)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/giantswarm/net-exporter/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/giantswarm/net-exporter/tree/main)
+[![Go Report Card](https://goreportcard.com/badge/github.com/giantswarm/net-exporter)](https://goreportcard.com/report/github.com/giantswarm/net-exporter)
 
 # net-exporter
 
