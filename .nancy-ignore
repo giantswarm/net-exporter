@@ -19,3 +19,6 @@ CVE-2022-28357
 CVE-2022-29946
 CVE-2022-42709
 CVE-2022-42708
+
+# pkg:golang/golang.org/x/net@v0.9.0
+CVE-2023-3978
