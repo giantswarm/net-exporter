@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix kubernetes network policy to allow scraping on cilium-less clusters.
+
 ## [1.17.0] - 2023-06-27
 
 ### Changed
