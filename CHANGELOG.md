@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.17.1] - 2023-09-20
+
 ### Fixed
 
 - Fix kubernetes network policy to allow scraping on cilium-less clusters.
@@ -222,7 +224,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.17.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.17.1...HEAD
+[1.17.1]: https://github.com/giantswarm/net-exporter/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/giantswarm/net-exporter/compare/v1.16.2...v1.17.0
 [1.16.2]: https://github.com/giantswarm/net-exporter/compare/v1.16.1...v1.16.2
 [1.16.1]: https://github.com/giantswarm/net-exporter/compare/v1.16.0...v1.16.1
