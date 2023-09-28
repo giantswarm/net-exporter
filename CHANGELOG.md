@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Enable PSP resource deployment based on global value.
+
 ## [1.17.1] - 2023-09-20
 
 ### Fixed
