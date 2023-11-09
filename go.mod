@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/beevik/ntp v1.3.0
 	github.com/giantswarm/exporterkit v1.1.0
-	github.com/giantswarm/k8sclient/v7 v7.1.0
+	github.com/giantswarm/k8sclient/v7 v7.2.0
 	github.com/giantswarm/microerror v0.4.1
 	github.com/giantswarm/micrologger v1.1.1
 	github.com/google/go-cmp v0.6.0
