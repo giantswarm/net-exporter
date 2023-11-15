@@ -9,7 +9,7 @@ require (
 	github.com/giantswarm/microerror v0.4.1
 	github.com/giantswarm/micrologger v1.1.1
 	github.com/google/go-cmp v0.6.0
-	github.com/miekg/dns v1.1.56
+	github.com/miekg/dns v1.1.57
 	github.com/prometheus/client_golang v1.17.0
 	k8s.io/api v0.28.3
 	k8s.io/apimachinery v0.28.3
