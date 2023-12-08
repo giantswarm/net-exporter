@@ -92,7 +92,7 @@ replace (
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/gogo/protobuf v1.3.1 => github.com/gogo/protobuf v1.3.2
 	github.com/gorilla/websocket v1.4.0 => github.com/gorilla/websocket v1.4.2
-	github.com/spf13/viper => github.com/spf13/viper v1.18.0
+	github.com/spf13/viper => github.com/spf13/viper v1.18.1
 	go.mongodb.org/mongo-driver v1.1.2 => go.mongodb.org/mongo-driver v1.9.1
 	google.golang.org/grpc => google.golang.org/grpc v1.59.0
 )
