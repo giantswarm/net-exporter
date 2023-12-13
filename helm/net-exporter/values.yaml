@@ -23,13 +23,13 @@ cluster:
 timeout: 5s
 
 image:
-  registry: docker.io
+  registry: gsoci.azurecr.io
   name: giantswarm/net-exporter
   tag: "[[ .Version ]]"
 
 kubectl:
   image:
-    registry: docker.io
+    registry: gsoci.azurecr.io
     name: giantswarm/docker-kubectl
     tag: 1.25.4
 
@@ -75,7 +75,7 @@ securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop:
-    - ALL
+      - ALL
   seccompProfile:
     type: RuntimeDefault
 
