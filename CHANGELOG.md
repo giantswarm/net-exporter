@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.18.2] - 2023-12-13
+
 ### Changed
 
 - Configure `gsoci.azurecr.io` as the default container image registry.
@@ -240,7 +242,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.18.1...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.18.2...HEAD
+[1.18.2]: https://github.com/giantswarm/net-exporter/compare/v1.18.1...v1.18.2
 [1.18.1]: https://github.com/giantswarm/net-exporter/compare/v1.18.0...v1.18.1
 [1.18.0]: https://github.com/giantswarm/net-exporter/compare/v1.17.1...v1.18.0
 [1.17.1]: https://github.com/giantswarm/net-exporter/compare/v1.17.0...v1.17.1
