@@ -1,4 +1,4 @@
-FROM quay.io/giantswarm/alpine:3.19.0-giantswarm
+FROM quay.io/giantswarm/alpine:3.19.1-giantswarm
 FROM scratch
 
 COPY --from=0 /etc/passwd /etc/passwd
