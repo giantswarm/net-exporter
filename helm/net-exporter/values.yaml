@@ -39,15 +39,15 @@ daemonset:
 # Container resource requests and limits.
 resources:
   requests:
-    cpu: 50m
-    memory: 75Mi
+    cpu: 30m
+    memory: 60Mi
 
 # Lower and upper bounds for vertical autoscaling.
 verticalPodAutoscaler:
   enabled: true
   minAllowed:
-    cpu: 50m
-    memory: 75Mi
+    cpu: 30m
+    memory: 60Mi
   maxAllowed:
     memory: 150Mi
 
@@ -61,15 +61,6 @@ NetExporter:
   DNSCheck:
     TCP:
       Disabled: false
-
-resources:
-  # cpu limits removed so that throttling doesn't cause any unwanted
-  # side-effects to measurements.
-  requests:
-    cpu: 30m
-    memory: 60Mi
-  limits:
-    memory: 150Mi
 
 ciliumNetworkPolicy:
   enabled: false
