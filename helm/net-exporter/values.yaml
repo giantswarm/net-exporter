@@ -36,6 +36,21 @@ kubectl:
 daemonset:
   priorityClassName: system-node-critical
 
+# Container resource requests and limits.
+resources:
+  requests:
+    cpu: 50m
+    memory: 75Mi
+
+# Lower and upper bounds for vertical autoscaling.
+verticalPodAutoscaler:
+  enabled: true
+  minAllowed:
+    cpu: 50m
+    memory: 75Mi
+  maxAllowed:
+    memory: 150Mi
+
 # Control-plane subnets used to generate network policies
 # for managed applications.
 controlPlaneSubnets: []

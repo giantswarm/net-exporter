@@ -1,0 +1,28 @@
+{{ if .Capabilities.APIVersions.Has "autoscaling.k8s.io/v1" }}
+{{ if .Values.verticalPodAutoscaler.enabled }}
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+spec:
+  resourcePolicy:
+    containerPolicies:
+    - containerName: {{ .Chart.Name }}
+      controlledValues: RequestsAndLimits
+      mode: Auto
+      minAllowed:
+        cpu: {{ .Values.verticalPodAutoscaler.minAllowed.cpu }}
+        memory: {{ .Values.verticalPodAutoscaler.minAllowed.memory }}
+      maxAllowed:
+        memory: "{{ .Values.verticalPodAutoscaler.maxAllowed.memory }}"
+  targetRef:
+    apiVersion: apps/v1
+    kind: DaemonSet
+    name: {{ .Values.name }}
+  updatePolicy:
+    updateMode: Auto
+{{ end }}
+{{ end }}

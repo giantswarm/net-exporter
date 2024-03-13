@@ -11,6 +11,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 - Don't push net-exporter to capa-app-collection because it's already a default app.
 - Don't push net-exporter to cloud-director-app-collection and vsphere-app-collection because it's already in default app bundles.
+- Adjust VPA resources.
 
 ## [1.13.0] - 2022-12-19
 
