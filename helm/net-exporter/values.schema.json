@@ -26,6 +26,14 @@
                 }
             }
         },
+        "ciliumNetworkPolicy": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                }
+            }
+        },
         "cluster": {
             "type": "object",
             "properties": {
@@ -80,6 +88,19 @@
                 }
             }
         },
+        "global": {
+            "type": "object",
+            "properties": {
+                "podSecurityStandards": {
+                    "type": "object",
+                    "properties": {
+                        "enforced": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
         "groupID": {
             "type": "integer"
         },
@@ -119,12 +140,23 @@
         "name": {
             "type": "string"
         },
+        "podSecurityContext": {
+            "type": "object"
+        },
         "port": {
             "type": "integer"
         },
         "resources": {
             "type": "object",
             "properties": {
+                "limits": {
+                    "type": "object",
+                    "properties": {
+                        "memory": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "requests": {
                     "type": "object",
                     "properties": {
@@ -135,6 +167,23 @@
                             "type": "string"
                         }
                     }
+                }
+            }
+        },
+        "securityContext": {
+            "type": "object"
+        },
+        "serviceMonitor": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "interval": {
+                    "type": "string"
+                },
+                "scrapeTimeout": {
+                    "type": "string"
                 }
             }
         },

@@ -30,6 +30,9 @@ spec:
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
+          {{- with .Values.securityContext }}
+            {{- . | toYaml | nindent 10 }}
+          {{- end }}
       ## In our Control Plane net-exporter runs on monitoring ns
       ## By design Kubernetes does not allow to run critical pods
       ## having Priority Class like system-node-critical out of
@@ -54,6 +57,9 @@ spec:
           {{- if (.Values.NetExporter.DNSCheck.TCP.Disabled) }}
           - "-disable-dns-tcp-check={{ .Values.NetExporter.DNSCheck.TCP.Disabled }}"
           {{- end }}
+        ports:
+          - containerPort: 8000
+            name: metrics
         livenessProbe:
           httpGet:
             path: /healthz
@@ -66,18 +72,21 @@ spec:
             port: 8000
             scheme: HTTP
           initialDelaySeconds: 5
+        {{- with .Values.resources }}
         resources:
-          # cpu limits removed so that throttling doesn't cause any unwanted
-          # side-effects to measurements.
-          requests:
-            cpu: 50m
-            memory: 75Mi
-          limits:
-            memory: 150Mi
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        securityContext:
+          {{- with .Values.securityContext }}
+            {{- . | toYaml | nindent 10 }}
+          {{- end }}
       serviceAccountName: net-exporter
       securityContext:
         runAsUser: {{ .Values.userID }}
         runAsGroup: {{ .Values.groupID }}
+        {{- with .Values.podSecurityContext }}
+          {{- . | toYaml | nindent 8 }}
+        {{- end }}
       tolerations:
       # Tolerate all taints for observability
       - operator: "Exists"

@@ -4,6 +4,7 @@ description: "Helm chart for net-exporter."
 home: "https://github.com/giantswarm/net-exporter"
 version: "[[ .Version ]]"
 appVersion: "[[ .AppVersion ]]"
-icon: https://s.giantswarm.io/app-icons/prometheus-operator/2/dark.svg
+icon: https://s.giantswarm.io/app-icons/prometheus/1/light.svg
 annotations:
   config.giantswarm.io/version: 1.x.x
+  application.giantswarm.io/team: "cabbage"

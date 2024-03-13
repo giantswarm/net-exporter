@@ -1,9 +1,12 @@
+{{- if not .Values.global.podSecurityStandards.enforced }}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: {{ .Values.name }}
   labels:
     {{- include "labels.common" . | nindent 4 }}
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'runtime/default'
 spec:
   privileged: false
   runAsUser:
@@ -26,3 +29,4 @@ spec:
       - min: 1
         max: 65535
   readOnlyRootFilesystem: false
+{{- end }}

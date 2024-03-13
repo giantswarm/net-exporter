@@ -23,13 +23,13 @@ cluster:
 timeout: 5s
 
 image:
-  registry: docker.io
+  registry: gsoci.azurecr.io
   name: giantswarm/net-exporter
   tag: "[[ .Version ]]"
 
 kubectl:
   image:
-    registry: docker.io
+    registry: gsoci.azurecr.io
     name: giantswarm/docker-kubectl
     tag: 1.25.4
 
@@ -61,3 +61,39 @@ NetExporter:
   DNSCheck:
     TCP:
       Disabled: false
+
+resources:
+  # cpu limits removed so that throttling doesn't cause any unwanted
+  # side-effects to measurements.
+  requests:
+    cpu: 30m
+    memory: 60Mi
+  limits:
+    memory: 150Mi
+
+ciliumNetworkPolicy:
+  enabled: false
+
+serviceMonitor:
+  enabled: true
+  # -- (duration) Prometheus scrape interval.
+  interval: "60s"
+  # -- (duration) Prometheus scrape timeout.
+  scrapeTimeout: "45s"
+
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
+
+global:
+  podSecurityStandards:
+    enforced: false

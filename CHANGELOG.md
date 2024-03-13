@@ -7,6 +7,73 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.18.2] - 2023-12-13
+
+### Changed
+
+- Configure `gsoci.azurecr.io` as the default container image registry.
+
+## [1.18.1] - 2023-12-01
+
+### Changed
+
+- Update quay.io/giantswarm/alpine Docker tag to v3.18.5 ([#319](https://github.com/giantswarm/net-exporter/pull/319))
+
+## [1.18.0] - 2023-09-28
+
+### Changed
+
+- Enable PSP resource deployment based on global value.
+
+## [1.17.1] - 2023-09-20
+
+### Fixed
+
+- Fix kubernetes network policy to allow scraping on cilium-less clusters.
+
+## [1.17.0] - 2023-06-27
+
+### Changed
+
+- Add security context values to make chart comply to PodSecurityStandard restricted profile.
+
+## [1.16.2] - 2023-06-13
+
+### Changed
+
+- Reduce CPU and Mem requests.
+
+## [1.16.1] - 2023-06-02
+
+### Added
+
+- Add service monitor to be scraped by Prometheus Agent.
+
+## [1.16.0] - 2023-05-31
+
+### Added
+
+- Add values for the daemonset resources ([#280](https://github.com/giantswarm/net-exporter/pull/280)).
+
+## [1.15.0] - 2023-05-04
+
+### Changed
+
+- Allow requests from the api-server.
+- Disable PSPs for k8s 1.25 and newer.
+
+## [1.14.1] - 2023-04-24
+
+### Changed
+
+- Update icon.
+
+## [1.14.0] - 2023-04-04
+
+### Added
+
+- Add `Cilium Network Policy` to net-exporter.
+
 ### Changed
 
 - Don't push net-exporter to capa-app-collection because it's already a default app.
@@ -176,7 +243,18 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.13.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.18.2...HEAD
+[1.18.2]: https://github.com/giantswarm/net-exporter/compare/v1.18.1...v1.18.2
+[1.18.1]: https://github.com/giantswarm/net-exporter/compare/v1.18.0...v1.18.1
+[1.18.0]: https://github.com/giantswarm/net-exporter/compare/v1.17.1...v1.18.0
+[1.17.1]: https://github.com/giantswarm/net-exporter/compare/v1.17.0...v1.17.1
+[1.17.0]: https://github.com/giantswarm/net-exporter/compare/v1.16.2...v1.17.0
+[1.16.2]: https://github.com/giantswarm/net-exporter/compare/v1.16.1...v1.16.2
+[1.16.1]: https://github.com/giantswarm/net-exporter/compare/v1.16.0...v1.16.1
+[1.16.0]: https://github.com/giantswarm/net-exporter/compare/v1.15.0...v1.16.0
+[1.15.0]: https://github.com/giantswarm/net-exporter/compare/v1.14.1...v1.15.0
+[1.14.1]: https://github.com/giantswarm/net-exporter/compare/v1.14.0...v1.14.1
+[1.14.0]: https://github.com/giantswarm/net-exporter/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/giantswarm/net-exporter/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/giantswarm/net-exporter/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/giantswarm/net-exporter/compare/v1.10.3...v1.11.0
