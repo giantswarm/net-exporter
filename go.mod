@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/beevik/ntp v1.3.1
-	github.com/giantswarm/exporterkit v1.1.1-0.20240419163704-650ad345a19b
+	github.com/giantswarm/exporterkit v1.2.0
 	github.com/giantswarm/k8sclient/v7 v7.2.0
 	github.com/giantswarm/microerror v0.4.1
 	github.com/giantswarm/microkit v1.0.1

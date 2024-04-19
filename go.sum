@@ -14,8 +14,8 @@ github.com/emicklei/go-restful/v3 v3.11.0/go.mod h1:6n3XBCmQQb25CM2LCACGz8ukIrRr
 github.com/frankban/quicktest v1.14.6 h1:7Xjx+VpznH+oBnejlPUj8oUpdxnVs4f8XU8WnHkI4W8=
 github.com/fsnotify/fsnotify v1.7.0 h1:8JEhPFa5W2WU7YfeZzPNqzMP6Lwt7L2715Ggo0nosvA=
 github.com/fsnotify/fsnotify v1.7.0/go.mod h1:40Bi/Hjc2AVfZrqy+aj+yEI+/bRxZnMJyTJwOpGvigM=
-github.com/giantswarm/exporterkit v1.1.1-0.20240419163704-650ad345a19b h1:eUBW1lReqrzPwGSnWLF1ssOX6s346yAQOEFDE84LwfE=
-github.com/giantswarm/exporterkit v1.1.1-0.20240419163704-650ad345a19b/go.mod h1:VdqjEfCLt80DDqC1dI5J6Zf8cjBWiRZgYfqOovKfwQ0=
+github.com/giantswarm/exporterkit v1.2.0 h1:nUd/mjwKv+4x4suqvtRFhqy4fegP1tfF/anvZdjcppM=
+github.com/giantswarm/exporterkit v1.2.0/go.mod h1:VdqjEfCLt80DDqC1dI5J6Zf8cjBWiRZgYfqOovKfwQ0=
 github.com/giantswarm/k8sclient/v7 v7.2.0 h1:twh4egNcuTJEH7R/hYVhs8nwEXPlr0u/o9CB1Kv9H9A=
 github.com/giantswarm/k8sclient/v7 v7.2.0/go.mod h1:kZGRtOqe4vAKXtWm69tsj2Q9CpWlwzpa1uP1lfDtjlE=
 github.com/giantswarm/microendpoint v1.1.0 h1:z2MUbN/BJ5ME92v93TidfV2JjftfOaJa7rKFdPb6vRU=
