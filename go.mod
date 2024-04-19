@@ -7,7 +7,9 @@ require (
 	github.com/giantswarm/exporterkit v1.1.1-0.20240419163704-650ad345a19b
 	github.com/giantswarm/k8sclient/v7 v7.2.0
 	github.com/giantswarm/microerror v0.4.1
+	github.com/giantswarm/microkit v1.0.1
 	github.com/giantswarm/micrologger v1.1.1
+	github.com/go-kit/kit v0.13.0
 	github.com/google/go-cmp v0.6.0
 	github.com/miekg/dns v1.1.58
 	github.com/prometheus/client_golang v1.19.0
@@ -23,8 +25,6 @@ require (
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/giantswarm/microendpoint v1.1.0 // indirect
-	github.com/giantswarm/microkit v1.0.1 // indirect
-	github.com/go-kit/kit v0.13.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-logr/logr v1.3.0 // indirect
