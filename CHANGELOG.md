@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Added
+
+- Add `/blackbox` endpoint.
+
 ## [1.18.2] - 2023-12-13
 
 ### Changed

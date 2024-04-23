@@ -10,6 +10,7 @@ import (
 
 	"github.com/giantswarm/exporterkit"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8srestconfig"
+	"github.com/giantswarm/microkit/server"
 	"github.com/giantswarm/micrologger"
 	dnsclient "github.com/miekg/dns"
 	"github.com/prometheus/client_golang/prometheus"
@@ -19,6 +20,7 @@ import (
 	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/net-exporter/dns"
+	"github.com/giantswarm/net-exporter/endpoints"
 	"github.com/giantswarm/net-exporter/network"
 	"github.com/giantswarm/net-exporter/ntp"
 )
@@ -148,6 +150,16 @@ func main() {
 		}
 	}
 
+	var extraEndpoints []server.Endpoint
+	{
+		blackboxEndpoint, err := endpoints.NewBlackbox(endpoints.BlackboxConfig{})
+		if err != nil {
+			panic(fmt.Sprintf("%#v\n", err))
+		}
+
+		extraEndpoints = []server.Endpoint{blackboxEndpoint}
+	}
+
 	var exporter *exporterkit.Exporter
 	{
 		c := exporterkit.Config{
@@ -156,7 +168,8 @@ func main() {
 				networkCollector,
 				ntpCollector,
 			},
-			Logger: logger,
+			ExtraEndpoints: extraEndpoints,
+			Logger:         logger,
 		}
 
 		exporter, err = exporterkit.New(c)
