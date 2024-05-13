@@ -12,7 +12,7 @@ require (
 	github.com/go-kit/kit v0.13.0
 	github.com/google/go-cmp v0.6.0
 	github.com/miekg/dns v1.1.59
-	github.com/prometheus/client_golang v1.19.0
+	github.com/prometheus/client_golang v1.19.1
 	k8s.io/api v0.28.3
 	k8s.io/apimachinery v0.28.3
 	k8s.io/client-go v0.28.3
