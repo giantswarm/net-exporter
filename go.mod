@@ -3,7 +3,7 @@ module github.com/giantswarm/net-exporter
 go 1.18
 
 require (
-	github.com/beevik/ntp v1.3.1
+	github.com/beevik/ntp v1.4.3
 	github.com/giantswarm/exporterkit v1.2.0
 	github.com/giantswarm/k8sclient/v7 v7.2.0
 	github.com/giantswarm/microerror v0.4.1
