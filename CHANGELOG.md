@@ -7,6 +7,11 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Add `node` and `app` labels in ServiceMonitor.
+
+
 ## [1.19.0] - 2024-04-23
 
 ### Added

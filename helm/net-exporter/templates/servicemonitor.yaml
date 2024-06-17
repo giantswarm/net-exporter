@@ -12,6 +12,15 @@ spec:
       path: /metrics
       port: metrics
       scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+      relabelings:
+        - action: replace
+          sourceLabels:
+          - __meta_kubernetes_pod_label_app
+          targetLabel: app
+        - action: replace
+          sourceLabels:
+          - __meta_kubernetes_pod_node_name
+          targetLabel: node
   selector:
     matchLabels:
       {{- include "labels.selector" . | nindent 6 }}
