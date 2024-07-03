@@ -1,6 +1,6 @@
 module github.com/giantswarm/net-exporter
 
-go 1.18
+go 1.22
 
 require (
 	github.com/beevik/ntp v1.4.3
