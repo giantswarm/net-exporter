@@ -7,6 +7,13 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Enable readOnlyRootFilesystem in securityContext (#376)[https://github.com/giantswarm/net-exporter/pull/376].
+- Update module google.golang.org/grpc to v1.65.0 (#373).
+- Update k8s modules to v0.30.2 (#375).
+- Update quay.io/giantswarm/alpine Docker tag to v3.20.1 (#372).
+
 ## [1.20.0] - 2024-06-17
 
 ### Changed
