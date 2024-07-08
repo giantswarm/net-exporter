@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.21.0] - 2024-07-08
+
 ### Changed
 
 - Enable readOnlyRootFilesystem in securityContext (#376)[https://github.com/giantswarm/net-exporter/pull/376].
@@ -263,7 +265,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.20.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.21.0...HEAD
+[1.21.0]: https://github.com/giantswarm/net-exporter/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/giantswarm/net-exporter/compare/v1.19.0...v1.20.0
 [1.19.0]: https://github.com/giantswarm/net-exporter/compare/v1.18.2...v1.19.0
 [1.18.2]: https://github.com/giantswarm/net-exporter/compare/v1.18.1...v1.18.2
