@@ -25,3 +25,6 @@ CVE-2023-3978
 
 # pkg:golang/google.golang.org/protobuf@v1.32.0
 CVE-2024-24786
+
+# golang.org/x/net - Denial of Service (DoS)
+CVE-2024-8421
