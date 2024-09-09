@@ -20,8 +20,8 @@ CVE-2022-29946
 CVE-2022-42709
 CVE-2022-42708
 
-# pkg:golang/golang.org/x/net@v0.9.0
-CVE-2023-3978
+# pkg:golang/golang.org/x/net@v0.27.0
+CVE-2024-8421
 
 # pkg:golang/google.golang.org/protobuf@v1.32.0
 CVE-2024-24786
