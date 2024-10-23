@@ -19,8 +19,8 @@ github.com/fxamacker/cbor/v2 v2.7.0 h1:iM5WgngdRBanHcxugY4JySA0nk1wZorNOpTgCMedv
 github.com/fxamacker/cbor/v2 v2.7.0/go.mod h1:pxXPTn3joSm21Gbwsv0w9OSA2y1HFR9qXEeXQVeNoDQ=
 github.com/giantswarm/exporterkit v1.2.0 h1:nUd/mjwKv+4x4suqvtRFhqy4fegP1tfF/anvZdjcppM=
 github.com/giantswarm/exporterkit v1.2.0/go.mod h1:VdqjEfCLt80DDqC1dI5J6Zf8cjBWiRZgYfqOovKfwQ0=
-github.com/giantswarm/k8sclient/v7 v7.2.0 h1:twh4egNcuTJEH7R/hYVhs8nwEXPlr0u/o9CB1Kv9H9A=
-github.com/giantswarm/k8sclient/v7 v7.2.0/go.mod h1:kZGRtOqe4vAKXtWm69tsj2Q9CpWlwzpa1uP1lfDtjlE=
+github.com/giantswarm/k8sclient/v8 v8.0.0 h1:dCj/m0tveyfkGIwaJnE0yKKVG4YbSpQklAprJhbHS5Y=
+github.com/giantswarm/k8sclient/v8 v8.0.0/go.mod h1:MTFn4PU5rTySvM6S++yReSJHtKFoqbxpOj1L0vXTAdk=
 github.com/giantswarm/microendpoint v1.1.0 h1:z2MUbN/BJ5ME92v93TidfV2JjftfOaJa7rKFdPb6vRU=
 github.com/giantswarm/microendpoint v1.1.0/go.mod h1:Zpelq95t2I4Pa8Fvaz8/Ttr3xeeCEgEPIilGUzXwXDY=
 github.com/giantswarm/microerror v0.4.1 h1:WMiD7HQASoUA9lZzPlPK+erCEOJ0uT4cyo18VfCXHD0=
