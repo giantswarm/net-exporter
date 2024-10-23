@@ -15,9 +15,9 @@ require (
 	github.com/google/go-cmp v0.6.0
 	github.com/miekg/dns v1.1.62
 	github.com/prometheus/client_golang v1.20.5
-	k8s.io/api v0.31.1
-	k8s.io/apimachinery v0.31.1
-	k8s.io/client-go v0.31.1
+	k8s.io/api v0.31.2
+	k8s.io/apimachinery v0.31.2
+	k8s.io/client-go v0.31.2
 )
 
 require (
