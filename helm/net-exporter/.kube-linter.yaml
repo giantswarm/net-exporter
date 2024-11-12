@@ -1,0 +1,4 @@
+checks:
+  exclude:
+  - "unset-cpu-requirements"
+  - "unset-memory-requirements"

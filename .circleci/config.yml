@@ -27,6 +27,7 @@ workflows:
             - main
             - master
     - architect/push-to-app-catalog:
+        executor: app-build-suite
         context: architect
         name: push-net-exporter-to-control-plane-app-catalog
         app_catalog: control-plane-catalog
@@ -43,6 +44,7 @@ workflows:
             - main
             - master
     - architect/push-to-app-catalog:
+        executor: app-build-suite
         context: architect
         name: push-net-exporter-to-default-app-catalog
         app_catalog: default-catalog

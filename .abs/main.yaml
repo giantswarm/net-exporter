@@ -1,0 +1,7 @@
+chart-dir: ./helm/net-exporter
+replace-chart-version-with-git: true
+replace-app-version-with-git: true
+generate-metadata: true
+destination: ./build
+# CI overwrites this, check .circleci/config.yaml
+catalog-base-url: https://giantswarm.github.io/default-catalog/

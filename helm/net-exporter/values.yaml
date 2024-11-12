@@ -25,7 +25,7 @@ timeout: 5s
 image:
   registry: gsoci.azurecr.io
   name: giantswarm/net-exporter
-  tag: "[[ .Version ]]"
+  tag: ""
 
 kubectl:
   image:
