@@ -42,7 +42,7 @@ spec:
       priorityClassName: {{ .Values.daemonset.priorityClassName }}
       containers:
       - name: net-exporter
-        image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.image.name }}:{{ include "image.tag" . }}"
         args:
           - "-namespace={{ .Release.Namespace }}"
           - "-timeout={{ .Values.timeout }}"
