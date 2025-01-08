@@ -9,7 +9,7 @@ require (
 	github.com/giantswarm/exporterkit v1.2.0
 	github.com/giantswarm/k8sclient/v8 v8.0.0
 	github.com/giantswarm/microerror v0.4.1
-	github.com/giantswarm/microkit v1.0.1
+	github.com/giantswarm/microkit v1.0.2
 	github.com/giantswarm/micrologger v1.1.1
 	github.com/go-kit/kit v0.13.0
 	github.com/google/go-cmp v0.6.0
@@ -62,7 +62,7 @@ require (
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.18.2 // indirect
+	github.com/spf13/viper v1.19.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
