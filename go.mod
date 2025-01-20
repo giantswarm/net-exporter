@@ -99,5 +99,5 @@ replace (
 	github.com/spf13/viper => github.com/spf13/viper v1.19.0
 	go.mongodb.org/mongo-driver v1.1.2 => go.mongodb.org/mongo-driver v1.9.1
 	golang.org/x/net => golang.org/x/net v0.34.0
-	google.golang.org/grpc => google.golang.org/grpc v1.69.2
+	google.golang.org/grpc => google.golang.org/grpc v1.69.4
 )
