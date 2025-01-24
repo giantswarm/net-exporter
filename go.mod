@@ -13,7 +13,7 @@ require (
 	github.com/giantswarm/micrologger v1.1.2
 	github.com/go-kit/kit v0.13.0
 	github.com/google/go-cmp v0.6.0
-	github.com/miekg/dns v1.1.62
+	github.com/miekg/dns v1.1.63
 	github.com/prometheus/client_golang v1.20.5
 	k8s.io/api v0.32.1
 	k8s.io/apimachinery v0.32.1
@@ -68,7 +68,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20231108232855-2478ac86f678 // indirect
 	golang.org/x/mod v0.21.0 // indirect
-	golang.org/x/net v0.30.0 // indirect
+	golang.org/x/net v0.31.0 // indirect
 	golang.org/x/oauth2 v0.23.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
