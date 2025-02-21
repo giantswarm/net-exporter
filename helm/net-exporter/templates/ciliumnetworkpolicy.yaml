@@ -12,10 +12,21 @@ spec:
       {{- include "labels.selector" . | nindent 6 }}
   egress:
     - toEntities:
-       - kube-apiserver
-       - cluster
-       - world
+      - kube-apiserver
+      - world
+    - toEndpoints:
+      - matchLabels:
+          app.kubernetes.io/name: net-exporter
+      toPorts:
+      - port: {{ .Values.port }}
+        protocol: TCP
   ingress:
-    - fromEntities:
-       - cluster
+    - fromEndpoints:
+      - matchLabels:
+          app.kubernetes.io/name: alloy
+      - matchLabels:
+          app.kubernetes.io/name: net-exporter
+      toPorts:
+      - port: {{ .Values.port }}
+        protocol: TCP
 {{ end }}
