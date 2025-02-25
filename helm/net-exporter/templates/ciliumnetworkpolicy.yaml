@@ -18,8 +18,9 @@ spec:
       - matchLabels:
           app.kubernetes.io/name: net-exporter
       toPorts:
-      - port: {{ .Values.port }}
-        protocol: TCP
+      - ports:
+        - port: {{ .Values.port }}
+          protocol: TCP
   ingress:
     - fromEndpoints:
       - matchLabels:
@@ -27,6 +28,7 @@ spec:
       - matchLabels:
           app.kubernetes.io/name: net-exporter
       toPorts:
-      - port: {{ .Values.port }}
-        protocol: TCP
+      - ports:
+        - port: {{ .Values.port }}
+          protocol: TCP
 {{ end }}
