@@ -7,6 +7,14 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Narrow down CiliumNetworkPolicy to allow desired traffic only.
+
+### Removed
+
+- Remove NetworkPolicy resource and rely on CiliumNetworkPolicy only.
+
 ## [1.21.0] - 2024-07-08
 
 ### Changed
