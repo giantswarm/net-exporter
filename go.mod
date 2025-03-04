@@ -98,6 +98,6 @@ replace (
 	github.com/gorilla/websocket v1.4.0 => github.com/gorilla/websocket v1.4.2
 	github.com/spf13/viper => github.com/spf13/viper v1.19.0
 	go.mongodb.org/mongo-driver v1.1.2 => go.mongodb.org/mongo-driver v1.9.1
-	golang.org/x/net => golang.org/x/net v0.35.0
+	golang.org/x/net => golang.org/x/net v0.36.0
 	google.golang.org/grpc => google.golang.org/grpc v1.70.0
 )
