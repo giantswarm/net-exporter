@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Check for errors when closing connections.
+
 ## [1.22.0] - 2025-02-26
 
 ### Changed
