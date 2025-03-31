@@ -214,7 +214,11 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 				return
 			}
-			defer conn.Close()
+			defer func() {
+				if err := conn.Close(); err != nil {
+					c.logger.Log("level", "error", "message", fmt.Sprintf("failed to close connection for host %#q", host), "stack", microerror.JSON(err))
+				}
+			}()
 
 			err = c.latencyHistogramVec.Add(host, elapsed.Seconds())
 			if err != nil {
@@ -244,7 +248,11 @@ func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset) ([]string,
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	defer conn.Close()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			c.logger.Log("level", "error", "message", "failed to close connection", "stack", microerror.JSON(err))
+		}
+	}()
 	ip := conn.LocalAddr().(*net.UDPAddr).IP.String()
 
 	// Get all other net-exporter IPs, and sort them.
