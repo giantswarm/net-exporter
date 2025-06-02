@@ -10,6 +10,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Changed
 
 - Check for errors when closing connections.
+- Switch from Endpoints to EndpointSlices for neighbors discovery.
 
 ## [1.22.0] - 2025-02-26
 

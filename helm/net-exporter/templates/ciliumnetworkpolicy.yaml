@@ -17,6 +17,7 @@ spec:
     - toEndpoints:
       - matchLabels:
           app.kubernetes.io/name: net-exporter
+          io.kubernetes.pod.namespace: kube-system
       toPorts:
       - ports:
         - port: {{ .Values.port | quote }}
@@ -25,8 +26,10 @@ spec:
     - fromEndpoints:
       - matchLabels:
           app.kubernetes.io/name: alloy
+          io.kubernetes.pod.namespace: kube-system
       - matchLabels:
           app.kubernetes.io/name: net-exporter
+          io.kubernetes.pod.namespace: kube-system
       toPorts:
       - ports:
         - port: {{ .Values.port | quote }}

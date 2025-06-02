@@ -13,7 +13,6 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
-	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 )
@@ -152,17 +151,28 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 
-	endpoints, err := c.k8sClient.CoreV1().Endpoints(c.namespace).Get(ctx, c.service, metav1.GetOptions{})
+	// Use EndpointSlices instead of Endpoints, filtering by label
+	endpointSliceList, err := c.k8sClient.DiscoveryV1().EndpointSlices(c.namespace).List(ctx, metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("kubernetes.io/service-name=%s", c.service),
+	})
 	if err != nil {
-		c.logger.Log("level", "error", "message", "could not collect endpoints for service from kubernetes api ", "service", c.service, "stack", microerror.JSON(err))
+		c.logger.Log("level", "error", "message", "could not collect endpointslices for service from kubernetes api", "service", c.service, "stack", microerror.JSON(err))
 		c.errorCount.Inc()
 		return
+	}
+
+	// Aggregate all data from EndpointSlices.
+	var allAddresses []string
+	for _, es := range endpointSliceList.Items {
+		for _, endpoint := range es.Endpoints {
+			allAddresses = append(allAddresses, endpoint.Addresses...)
+		}
 	}
 
 	hosts := []string{}
 	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
 
-	neighbours, err := c.getNeighbours(numNeighbours, endpoints.Subsets)
+	neighbours, err := c.getNeighbours(numNeighbours, allAddresses)
 	if err != nil {
 		c.logger.Log("level", "error", "message", "could not get neighbours", "service", c.service, "stack", microerror.JSON(err))
 		c.errorCount.Inc()
@@ -242,7 +252,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	}
 }
 
-func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset) ([]string, error) {
+func (c *Collector) getNeighbours(n int, addresses []string) ([]string, error) {
 	// Find our IP - note: this does not open a connection, due to UDP.
 	conn, err := net.Dial("udp", "8.8.8.8:80")
 	if err != nil {
@@ -254,14 +264,6 @@ func (c *Collector) getNeighbours(n int, subsets []v1.EndpointSubset) ([]string,
 		}
 	}()
 	ip := conn.LocalAddr().(*net.UDPAddr).IP.String()
-
-	// Get all other net-exporter IPs, and sort them.
-	addresses := []string{}
-	for _, endpointSubset := range subsets {
-		for _, address := range endpointSubset.Addresses {
-			addresses = append(addresses, address.IP)
-		}
-	}
 
 	// Calculate n neighbours, given our local IP and all other net-exporter IPs.
 	neighbours := c.calculateNeighbours(n, ip, addresses)
