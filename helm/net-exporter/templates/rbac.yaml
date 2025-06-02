@@ -9,7 +9,6 @@ rules:
   - ""
   resources:
   - services
-  - endpoints
   resourceNames:
   - net-exporter
   - {{ .Values.dns.service }}
@@ -29,6 +28,13 @@ rules:
   - ""
   resources:
   - pods
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - "discovery.k8s.io"
+  resources:
+  - endpointslices
   verbs:
   - get
   - list
