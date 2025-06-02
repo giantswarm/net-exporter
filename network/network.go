@@ -161,7 +161,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 
-	// Aggregate all EndpointSubset-like data from EndpointSlices
+	// Aggregate all data from EndpointSlices.
 	var allAddresses []string
 	for _, es := range endpointSliceList.Items {
 		for _, endpoint := range es.Endpoints {
