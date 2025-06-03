@@ -3,7 +3,7 @@ name: net-exporter
 description: "Helm chart for net-exporter."
 home: "https://github.com/giantswarm/net-exporter"
 version: "1.23.0"
-appVersion: "1.21.0"
+appVersion: "1.23.0"
 icon: https://s.giantswarm.io/app-icons/prometheus/1/light.svg
 annotations:
   config.giantswarm.io/version: 1.x.x
