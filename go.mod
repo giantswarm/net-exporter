@@ -13,7 +13,7 @@ require (
 	github.com/giantswarm/micrologger v1.1.2
 	github.com/go-kit/kit v0.13.0
 	github.com/google/go-cmp v0.7.0
-	github.com/miekg/dns v1.1.66
+	github.com/miekg/dns v1.1.67
 	github.com/prometheus/client_golang v1.22.0
 	k8s.io/apimachinery v0.33.2
 	k8s.io/client-go v0.33.2
