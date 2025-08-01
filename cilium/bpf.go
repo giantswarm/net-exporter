@@ -1,7 +1,6 @@
 package cilium
 
 import (
-	"fmt"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -19,7 +18,7 @@ type policyMap struct {
 	Size       int
 }
 
-func mapContent(file string) (policymap.PolicyEntriesDump, error) {
+func (c *Collector) mapContent(file string) (policymap.PolicyEntriesDump, error) {
 	m, err := policymap.OpenPolicyMap(nil, file)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -35,7 +34,7 @@ func mapContent(file string) (policymap.PolicyEntriesDump, error) {
 	return statsMap, nil
 }
 
-func listAllMaps() ([]policyMap, error) {
+func (c *Collector) listAllMaps() ([]policyMap, error) {
 	mapRootPrefixPath := bpf.TCGlobalsPath()
 	mapMatchExpr := filepath.Join(mapRootPrefixPath, "cilium_policy_*")
 
@@ -45,7 +44,7 @@ func listAllMaps() ([]policyMap, error) {
 	}
 
 	if len(matchFiles) == 0 {
-		fmt.Println("no maps found")
+		c.logger.Log("level", "info", "message", "no maps found", "path", mapMatchExpr)
 		return nil, nil
 	}
 
@@ -53,7 +52,7 @@ func listAllMaps() ([]policyMap, error) {
 	for _, file := range matchFiles {
 		endpointSplit := strings.Split(file, "_")
 		endpoint := strings.TrimLeft(endpointSplit[len(endpointSplit)-1], "0")
-		mcontent, err := mapContent(file)
+		mcontent, err := c.mapContent(file)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

@@ -62,7 +62,7 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 // Collect implements the Collect method of the Collector interface.
 func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	// TODO: Implement metric collection
-	policyMaps, _ := listAllMaps()
+	policyMaps, _ := c.listAllMaps()
 	for _, policyMap := range policyMaps {
 		c.policyMaps.WithLabelValues(policyMap.EndpointID).Set(float64(policyMap.Size))
 	}
