@@ -19,6 +19,7 @@ type policyMap struct {
 }
 
 func (c *Collector) mapContent(file string) (policymap.PolicyEntriesDump, error) {
+
 	m, err := policymap.OpenPolicyMap(nil, file)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -62,7 +63,7 @@ func (c *Collector) listAllMaps() ([]policyMap, error) {
 			Content:    mcontent,
 			Size:       len(mcontent),
 		})
-		c.logger.Log("level", "debug", "message", "processed policy map file", "file", file, "endpoint", endpoint, "size", len(mcontent))
+		c.logger.Log("level", "info", "message", "processed policy map file", "file", file, "endpoint", endpoint, "size", len(mcontent))
 	}
 
 	return maps, nil
