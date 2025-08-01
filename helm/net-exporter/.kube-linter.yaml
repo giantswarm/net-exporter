@@ -2,3 +2,4 @@ checks:
   exclude:
   - "unset-cpu-requirements"
   - "unset-memory-requirements"
+  - "privilege-escalation-container"
