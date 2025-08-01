@@ -66,4 +66,5 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	for _, policyMap := range policyMaps {
 		c.policyMaps.WithLabelValues(policyMap.EndpointID).Set(float64(policyMap.Size))
 	}
+	c.policyMaps.Collect(ch)
 }
