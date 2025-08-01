@@ -19,7 +19,7 @@ type policyMap struct {
 }
 
 func (c *Collector) mapContent(file string) (policymap.PolicyEntriesDump, error) {
-
+	c.logger.Log("level", "info", "message", "opening policy map", "file", file)
 	m, err := policymap.OpenPolicyMap(nil, file)
 	if err != nil {
 		return nil, microerror.Mask(err)
