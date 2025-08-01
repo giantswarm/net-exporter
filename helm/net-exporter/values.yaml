@@ -85,6 +85,12 @@ securityContext:
   capabilities:
     drop:
       - ALL
+    add:
+      - NET_ADMIN  # Needed for reading conntrack.
+      - SYS_PTRACE # Needed for reading conntrack.
+      - SYS_ADMIN  # Needed for reading conntrack and ebpf.
+      - BPF        # Needed for reading ebpf.
+      - PERFMON    # Needed for reading ebpf.
   seccompProfile:
     type: RuntimeDefault
 
