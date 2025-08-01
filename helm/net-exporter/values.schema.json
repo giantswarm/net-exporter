@@ -23,6 +23,14 @@
                 },
                 "NTPServers": {
                     "type": "string"
+                },
+                "Cilium": {
+                    "type": "object",
+                    "properties": {
+                        "Enabled": {
+                            "type": "boolean"
+                        }
+                    }
                 }
             }
         },

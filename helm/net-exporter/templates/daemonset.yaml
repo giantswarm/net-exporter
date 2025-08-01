@@ -57,6 +57,9 @@ spec:
           {{- if (.Values.NetExporter.DNSCheck.TCP.Disabled) }}
           - "-disable-dns-tcp-check={{ .Values.NetExporter.DNSCheck.TCP.Disabled }}"
           {{- end }}
+          {{- if (.Values.NetExporter.Cilium.Enabled) }}
+          - "-cilium-enabled={{ .Values.NetExporter.Cilium.Enabled }}"
+          {{- end }}
         ports:
           - containerPort: 8000
             name: metrics
@@ -80,6 +83,12 @@ spec:
           {{- with .Values.securityContext }}
             {{- . | toYaml | nindent 10 }}
           {{- end }}
+        {{- if .Values.NetExporter.Cilium.Enabled }}
+        volumeMounts:
+        - mountPath: /sys/fs/bpf
+          mountPropagation: HostToContainer
+          name: cilium-bpf-maps
+        {{- end }}
       serviceAccountName: net-exporter
       securityContext:
         runAsUser: {{ .Values.userID }}
@@ -90,3 +99,10 @@ spec:
       tolerations:
       # Tolerate all taints for observability
       - operator: "Exists"
+      {{- if .Values.NetExporter.Cilium.Enabled }}
+      volumes:
+        - name: cilium-bpf-maps
+          hostPath:
+            path: /sys/fs/bpf
+            type: DirectoryOrCreate
+      {{- end }}
