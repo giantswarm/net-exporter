@@ -55,7 +55,8 @@ func (c *Collector) listAllMaps() ([]policyMap, error) {
 		endpoint := strings.TrimLeft(endpointSplit[len(endpointSplit)-1], "0")
 		mcontent, err := c.mapContent(file)
 		if err != nil {
-			return nil, microerror.Mask(err)
+			c.logger.Log("level", "info", "message", "no map found", "path", file, "error", err)
+			continue
 		}
 		maps = append(maps, policyMap{
 			EndpointID: endpoint,
