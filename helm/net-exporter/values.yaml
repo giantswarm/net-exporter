@@ -81,14 +81,9 @@ podSecurityContext:
 
 securityContext:
   readOnlyRootFilesystem: true
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-      - ALL
-    add:
-      - SYS_ADMIN
-      - BPF
-      - PERFMON
+  allowPrivilegeEscalation: true
+  runAsNonRoot: false
+  privileged: false
   seccompProfile:
     type: RuntimeDefault
 
