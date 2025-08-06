@@ -83,7 +83,7 @@ securityContext:
   readOnlyRootFilesystem: true
   allowPrivilegeEscalation: true
   runAsNonRoot: false
-  privileged: false
+  privileged: true
   seccompProfile:
     type: RuntimeDefault
 
