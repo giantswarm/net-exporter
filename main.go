@@ -19,6 +19,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 
+	"github.com/giantswarm/net-exporter/cilium"
 	"github.com/giantswarm/net-exporter/dns"
 	"github.com/giantswarm/net-exporter/endpoints"
 	"github.com/giantswarm/net-exporter/network"
@@ -26,6 +27,7 @@ import (
 )
 
 var (
+	ciliumEnabled      bool
 	disableDNSTCPCheck bool
 	hosts              string
 	dnsService         string
@@ -38,6 +40,7 @@ var (
 )
 
 func init() {
+	flag.BoolVar(&ciliumEnabled, "cilium-enabled", false, "Enable Cilium collector")
 	flag.BoolVar(&disableDNSTCPCheck, "disable-dns-tcp-check", false, "Disable DNS TCP check")
 	flag.StringVar(&hosts, "hosts", "giantswarm.io.,kubernetes.default.svc.cluster.local.", "DNS hosts to resolve")
 	flag.StringVar(&dnsService, "dns-service", "coredns", "Name of DNS service")
@@ -150,6 +153,21 @@ func main() {
 		}
 	}
 
+	var ciliumCollector prometheus.Collector
+	{
+		if ciliumEnabled {
+			c := cilium.Config{
+				K8sClient: k8sClient,
+				Logger:    logger,
+			}
+
+			ciliumCollector, err = cilium.New(c)
+			if err != nil {
+				panic(fmt.Sprintf("%#v\n", err))
+			}
+		}
+	}
+
 	var extraEndpoints []server.Endpoint
 	{
 		blackboxEndpoint, err := endpoints.NewBlackbox(endpoints.BlackboxConfig{})
@@ -162,12 +180,18 @@ func main() {
 
 	var exporter *exporterkit.Exporter
 	{
+		collectors := []prometheus.Collector{
+			dnsCollector,
+			networkCollector,
+			ntpCollector,
+		}
+
+		if ciliumEnabled {
+			collectors = append(collectors, ciliumCollector)
+		}
+
 		c := exporterkit.Config{
-			Collectors: []prometheus.Collector{
-				dnsCollector,
-				networkCollector,
-				ntpCollector,
-			},
+			Collectors:     collectors,
 			ExtraEndpoints: extraEndpoints,
 			Logger:         logger,
 		}

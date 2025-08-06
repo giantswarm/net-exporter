@@ -61,6 +61,8 @@ NetExporter:
   DNSCheck:
     TCP:
       Disabled: false
+  Cilium:
+    Enabled: false
 
 ciliumNetworkPolicy:
   enabled: false
@@ -79,10 +81,9 @@ podSecurityContext:
 
 securityContext:
   readOnlyRootFilesystem: true
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-      - ALL
+  allowPrivilegeEscalation: true
+  runAsNonRoot: false
+  privileged: true
   seccompProfile:
     type: RuntimeDefault
 
