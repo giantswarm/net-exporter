@@ -1,6 +1,8 @@
 package cilium
 
 import (
+	"log/slog"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -18,9 +20,9 @@ type policyMap struct {
 	Size       int
 }
 
-func (c *Collector) mapContent(file string) (policymap.PolicyEntriesDump, error) {
+func (c *Collector) mapContent(logger *slog.Logger, file string) (policymap.PolicyEntriesDump, error) {
 	c.logger.Log("level", "info", "message", "opening policy map", "file", file)
-	m, err := policymap.OpenPolicyMap(nil, file)
+	m, err := policymap.OpenPolicyMap(logger, file)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -36,6 +38,10 @@ func (c *Collector) mapContent(file string) (policymap.PolicyEntriesDump, error)
 }
 
 func (c *Collector) listAllMaps() ([]policyMap, error) {
+	log := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+
 	mapRootPrefixPath := bpf.TCGlobalsPath()
 	mapMatchExpr := filepath.Join(mapRootPrefixPath, "cilium_policy_*")
 
@@ -53,7 +59,7 @@ func (c *Collector) listAllMaps() ([]policyMap, error) {
 	for _, file := range matchFiles {
 		endpointSplit := strings.Split(file, "_")
 		endpoint := strings.TrimLeft(endpointSplit[len(endpointSplit)-1], "0")
-		mcontent, err := c.mapContent(file)
+		mcontent, err := c.mapContent(log, file)
 		if err != nil {
 			c.logger.Log("level", "info", "message", "no map found", "path", file, "error", err)
 			continue
