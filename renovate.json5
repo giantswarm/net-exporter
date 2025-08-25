@@ -5,4 +5,11 @@
     // Go specific config - https://github.com/giantswarm/renovate-presets/blob/main/lang-go.json5
     "github>giantswarm/renovate-presets:lang-go.json5",
   ],
+  "packageRules": [
+    {
+      "description": "Group dependencies from go.mod",
+      "matchFileNames": ["go.mod"],
+      "groupName": "All go deps"
+    }
+  ],
 }
