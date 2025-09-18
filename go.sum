@@ -16,12 +16,12 @@ github.com/fsnotify/fsnotify v1.9.0 h1:2Ml+OJNzbYCTzsxtv8vKSFD9PbJjmhYF14k/jKC7S
 github.com/fsnotify/fsnotify v1.9.0/go.mod h1:8jBTzvmWwFyi3Pb8djgCCO5IBqzKJ/Jwo8TRcHyHii0=
 github.com/fxamacker/cbor/v2 v2.9.0 h1:NpKPmjDBgUfBms6tr6JZkTHtfFGcMKsw3eGcmD/sapM=
 github.com/fxamacker/cbor/v2 v2.9.0/go.mod h1:vM4b+DJCtHn+zz7h3FFp/hDAI9WNWCsZj23V5ytsSxQ=
-github.com/giantswarm/exporterkit v1.2.0 h1:nUd/mjwKv+4x4suqvtRFhqy4fegP1tfF/anvZdjcppM=
-github.com/giantswarm/exporterkit v1.2.0/go.mod h1:VdqjEfCLt80DDqC1dI5J6Zf8cjBWiRZgYfqOovKfwQ0=
+github.com/giantswarm/exporterkit v1.3.0 h1:AVIJD5R277/m8eDl4agxLXg35KvW2jJWb1W6+jKNAUg=
+github.com/giantswarm/exporterkit v1.3.0/go.mod h1:kf12lufEax8PoU4l2F5HJnlU7dDtarqSTfkIyuQ4QvY=
 github.com/giantswarm/k8sclient/v8 v8.1.0 h1:29pRG4TAdKn4lw+O6hBVvHIPDjrn/ikA8SgHb2TJPGE=
 github.com/giantswarm/k8sclient/v8 v8.1.0/go.mod h1:C588tvPnMQx2VzQ0WGHTXoN4wzcS0LaYr2SUzGJmzq0=
-github.com/giantswarm/microendpoint v1.1.0 h1:z2MUbN/BJ5ME92v93TidfV2JjftfOaJa7rKFdPb6vRU=
-github.com/giantswarm/microendpoint v1.1.0/go.mod h1:Zpelq95t2I4Pa8Fvaz8/Ttr3xeeCEgEPIilGUzXwXDY=
+github.com/giantswarm/microendpoint v1.1.2 h1:bytvCjpfDJEPJcu4J6O93ezIBQRLcETlP3buHSlQr4M=
+github.com/giantswarm/microendpoint v1.1.2/go.mod h1:TBpoe5c4FGJwHUfuaQ9UJyPJ47yn3dt9R2ZIvawKDpM=
 github.com/giantswarm/microerror v0.4.1 h1:WMiD7HQASoUA9lZzPlPK+erCEOJ0uT4cyo18VfCXHD0=
 github.com/giantswarm/microerror v0.4.1/go.mod h1:URFj0gFCmZihjya6saQCXxslBrgctXb4NsXYHB5JdrI=
 github.com/giantswarm/microkit v1.0.4 h1:BZjjoNpBwDpRScS+BlqA/gS8M6BE5udq8WYnnhCgUpc=
