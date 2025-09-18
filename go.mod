@@ -6,7 +6,7 @@ toolchain go1.25.1
 
 require (
 	github.com/beevik/ntp v1.4.3
-	github.com/giantswarm/exporterkit v1.2.0
+	github.com/giantswarm/exporterkit v1.3.0
 	github.com/giantswarm/k8sclient/v8 v8.1.0
 	github.com/giantswarm/microerror v0.4.1
 	github.com/giantswarm/microkit v1.0.4
@@ -26,7 +26,7 @@ require (
 	github.com/emicklei/go-restful/v3 v3.12.2 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
-	github.com/giantswarm/microendpoint v1.1.0 // indirect
+	github.com/giantswarm/microendpoint v1.1.2 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
