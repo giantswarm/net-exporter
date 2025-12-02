@@ -2,7 +2,7 @@ module github.com/giantswarm/net-exporter
 
 go 1.24.3
 
-toolchain go1.25.4
+toolchain go1.25.5
 
 require (
 	github.com/beevik/ntp v1.5.0
