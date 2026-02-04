@@ -2,7 +2,7 @@ module github.com/giantswarm/net-exporter
 
 go 1.25.0
 
-toolchain go1.25.6
+toolchain go1.25.7
 
 require (
 	github.com/beevik/ntp v1.5.0
@@ -13,7 +13,7 @@ require (
 	github.com/giantswarm/micrologger v1.1.2
 	github.com/go-kit/kit v0.13.0
 	github.com/google/go-cmp v0.7.0
-	github.com/miekg/dns v1.1.70
+	github.com/miekg/dns v1.1.72
 	github.com/prometheus/client_golang v1.23.2
 	k8s.io/apimachinery v0.35.0
 	k8s.io/client-go v0.35.0
