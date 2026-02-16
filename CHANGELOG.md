@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.23.1] - 2026-02-16
+
 ### Removed
 
 - Removed `PodSecurityPolicy`.
@@ -287,7 +289,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.23.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.23.1...HEAD
+[1.23.1]: https://github.com/giantswarm/net-exporter/compare/v1.23.0...v1.23.1
 [1.23.0]: https://github.com/giantswarm/net-exporter/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/giantswarm/net-exporter/compare/v1.21.0...v1.22.0
 [1.21.0]: https://github.com/giantswarm/net-exporter/compare/v1.20.0...v1.21.0
