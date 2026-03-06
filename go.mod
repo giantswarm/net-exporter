@@ -2,7 +2,7 @@ module github.com/giantswarm/net-exporter
 
 go 1.25.0
 
-toolchain go1.26.0
+toolchain go1.26.1
 
 require (
 	github.com/beevik/ntp v1.5.0
@@ -91,5 +91,5 @@ replace (
 	github.com/spf13/viper => github.com/spf13/viper v1.21.0
 	go.mongodb.org/mongo-driver v1.1.2 => go.mongodb.org/mongo-driver v1.9.1
 	golang.org/x/net => golang.org/x/net v0.51.0
-	google.golang.org/grpc => google.golang.org/grpc v1.79.1
+	google.golang.org/grpc => google.golang.org/grpc v1.79.2
 )
