@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.24.0] - 2026-05-10
+
 ### Changed
 
 - Build and publish a multi-arch (linux/amd64 + linux/arm64) container image. Required so the net-exporter daemonset can run on Graviton/arm64 nodepools without `exec format error`.
@@ -294,7 +296,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.23.1...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.24.0...HEAD
+[1.24.0]: https://github.com/giantswarm/net-exporter/compare/v1.23.1...v1.24.0
 [1.23.1]: https://github.com/giantswarm/net-exporter/compare/v1.23.0...v1.23.1
 [1.23.0]: https://github.com/giantswarm/net-exporter/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/giantswarm/net-exporter/compare/v1.21.0...v1.22.0
