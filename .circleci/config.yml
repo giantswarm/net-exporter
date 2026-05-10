@@ -9,6 +9,7 @@ workflows:
         matrix:
           parameters:
             architecture: ["linux/amd64", "linux/arm64"]
+        name: go-build-net-exporter-<<matrix.architecture>>
         binary: net-exporter
         filters:
             # Trigger the job also on git tag.
@@ -20,7 +21,8 @@ workflows:
         name: push-to-registries
         multiarch: true
         requires:
-        - architect/go-build
+        - go-build-net-exporter-linux/amd64
+        - go-build-net-exporter-linux/arm64
         filters:
           tags:
             only: /^v.*/
