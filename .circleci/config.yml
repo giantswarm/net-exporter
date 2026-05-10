@@ -6,7 +6,9 @@ workflows:
   build:
     jobs:
     - architect/go-build:
-        name: go-build-net-exporter
+        matrix:
+          parameters:
+            architecture: ["linux/amd64", "linux/arm64"]
         binary: net-exporter
         filters:
             # Trigger the job also on git tag.
@@ -16,8 +18,9 @@ workflows:
     - architect/push-to-registries:
         context: architect
         name: push-to-registries
+        multiarch: true
         requires:
-        - go-build-net-exporter
+        - architect/go-build
         filters:
           tags:
             only: /^v.*/

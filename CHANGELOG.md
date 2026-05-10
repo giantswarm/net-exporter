@@ -7,6 +7,11 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Build and publish a multi-arch (linux/amd64 + linux/arm64) container image. Required so the net-exporter daemonset can run on Graviton/arm64 nodepools without `exec format error`.
+- Bump `docker-kubectl` init container from `1.25.4` to `1.37.0`. The `1.37.0` release is the first multi-arch tag of `giantswarm/docker-kubectl`; the previous tag was amd64-only and crashed the `label-kube-system-namespace` init container on arm64 nodes.
+
 ## [1.23.1] - 2026-02-16
 
 ### Removed
