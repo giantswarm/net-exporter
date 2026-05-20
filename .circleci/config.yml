@@ -7,6 +7,7 @@ workflows:
     jobs:
     - architect/go-build:
         name: go-build-net-exporter
+        context: architect
         binary: net-exporter
         architectures: "linux/amd64,linux/arm64"
         filters:
