@@ -1,12 +1,13 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@8.1.0
+  architect: giantswarm/architect@8.2.2
 
 workflows:
   build:
     jobs:
     - architect/go-build:
         name: go-build-net-exporter
+        context: architect
         binary: net-exporter
         architectures: "linux/amd64,linux/arm64"
         filters:
