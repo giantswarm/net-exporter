@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Replace `interface{}` with `any` and use for-range over integers (Go modernization).
+
 ## [1.24.0] - 2026-05-10
 
 ### Changed
