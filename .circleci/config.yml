@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@8.3.0
+  architect: giantswarm/architect@9.0.0
 
 workflows:
   build:
@@ -19,7 +19,6 @@ workflows:
         context: architect
         name: push-to-registries
         image: giantswarm/net-exporter
-        multiarch: true
         requires:
         - go-build-net-exporter
         filters:
