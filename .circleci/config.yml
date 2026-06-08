@@ -9,7 +9,6 @@ workflows:
         name: go-build-net-exporter
         context: architect
         binary: net-exporter
-        architectures: "linux/amd64,linux/arm64"
         filters:
             # Trigger the job also on git tag.
           tags:
@@ -19,7 +18,6 @@ workflows:
         context: architect
         name: push-to-registries
         image: giantswarm/net-exporter
-        multiarch: true
         requires:
         - go-build-net-exporter
         filters:
