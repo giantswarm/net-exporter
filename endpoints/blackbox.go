@@ -29,13 +29,13 @@ type Blackbox struct {
 }
 
 func (b *Blackbox) Decoder() kithttp.DecodeRequestFunc {
-	return func(ctx context.Context, r *http.Request) (interface{}, error) {
+	return func(ctx context.Context, r *http.Request) (any, error) {
 		return nil, nil
 	}
 }
 
 func (b *Blackbox) Encoder() kithttp.EncodeResponseFunc {
-	return func(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, response any) error {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		_, err := w.Write([]byte("ok"))
 		return microerror.Mask(err)
@@ -43,7 +43,7 @@ func (b *Blackbox) Encoder() kithttp.EncodeResponseFunc {
 }
 
 func (b *Blackbox) Endpoint() kitendpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (interface{}, error) {
+	return func(ctx context.Context, request any) (any, error) {
 		return nil, nil
 	}
 }

@@ -282,7 +282,7 @@ func (c *Collector) calculateNeighbours(n int, ip string, addresses []string) []
 		n = len(addresses)
 	}
 
-	for i := 0; i < len(addresses); i++ {
+	for i := range addresses {
 		if addresses[i] == ip {
 			for j := 1; j < n+1; j++ {
 				k := i + j
