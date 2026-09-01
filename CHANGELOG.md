@@ -10,6 +10,15 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Changed
 
 - Replace `interface{}` with `any` and use for-range over integers (Go modernization).
+- Move the team annotation from the legacy `application.giantswarm.io/team` key to
+  `io.giantswarm.application.team`, and point `_helpers.tpl` at the new key. The emitted label key and
+  its value are unchanged; rendered output is byte-for-byte identical.
+- Set `Chart.yaml` `apiVersion` to `v2`. The chart declares no dependencies and had no
+  `requirements.yaml`, so nothing else moves.
+
+### Added
+
+- Add `keywords` to `Chart.yaml`.
 
 ## [1.24.0] - 2026-05-10
 
