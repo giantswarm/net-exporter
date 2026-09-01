@@ -19,6 +19,11 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Added
 
 - Add `keywords` to `Chart.yaml`.
+- Add the `io.giantswarm.application.audience` (`all`) and `io.giantswarm.application.managed`
+  (`"true"`) annotations to `Chart.yaml`, completing the chart metadata standard for this chart.
+  `all` because net-exporter runs on customer workload clusters and is documented as a default app;
+  `"true"` because Giant Swarm operates it, with alerting rules and a runbook. As a consequence the
+  chart will be published to the Backstage chart catalog, alongside the other Cabbage cluster apps.
 
 ## [1.24.0] - 2026-05-10
 
