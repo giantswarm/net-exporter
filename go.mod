@@ -96,3 +96,7 @@ replace github.com/nats-io/nats-server/v2 v2.8.4 => github.com/nats-io/nats-serv
 replace github.com/sirupsen/logrus v1.8.1 => github.com/sirupsen/logrus v1.9.4
 
 replace github.com/yuin/goldmark v1.4.13 => github.com/yuin/goldmark v1.8.2
+
+replace github.com/rabbitmq/amqp091-go v1.2.0 => github.com/rabbitmq/amqp091-go v1.14.0
+
+replace golang.org/x/mod v0.38.0 => golang.org/x/mod v0.40.0
