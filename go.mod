@@ -96,7 +96,7 @@ replace (
 	github.com/spf13/viper => github.com/spf13/viper v1.21.0
 	go.mongodb.org/mongo-driver v1.1.2 => go.mongodb.org/mongo-driver v1.9.1
 	golang.org/x/net => golang.org/x/net v0.59.0
-	google.golang.org/grpc => google.golang.org/grpc v1.83.2
+	google.golang.org/grpc => google.golang.org/grpc v1.84.0
 )
 
 replace github.com/nats-io/nats-server/v2 v2.8.4 => github.com/nats-io/nats-server/v2 v2.14.2
