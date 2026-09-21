@@ -2,7 +2,7 @@ module github.com/giantswarm/net-exporter
 
 go 1.26.0
 
-toolchain go1.27.0
+toolchain go1.27.1
 
 require (
 	github.com/beevik/ntp v1.5.0
@@ -69,9 +69,9 @@ require (
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/term v0.45.0 // indirect
-	golang.org/x/text v0.41.0 // indirect
+	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/term v0.46.0 // indirect
+	golang.org/x/text v0.42.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
 	google.golang.org/protobuf v1.36.12-0.20260120151049-f2248ac996af // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.13.0 // indirect
@@ -95,7 +95,7 @@ replace (
 	github.com/gorilla/websocket v1.4.0 => github.com/gorilla/websocket v1.4.2
 	github.com/spf13/viper => github.com/spf13/viper v1.21.0
 	go.mongodb.org/mongo-driver v1.1.2 => go.mongodb.org/mongo-driver v1.9.1
-	golang.org/x/net => golang.org/x/net v0.58.0
+	golang.org/x/net => golang.org/x/net v0.59.0
 	google.golang.org/grpc => google.golang.org/grpc v1.83.2
 )
 
