@@ -11,4 +11,6 @@ keywords:
   - observability
 annotations:
   config.giantswarm.io/version: 1.x.x
+  io.giantswarm.application.audience: all
+  io.giantswarm.application.managed: "true"
   io.giantswarm.application.team: "cabbage"
