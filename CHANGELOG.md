@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.24.1] - 2026-09-28
+
 ### Fixed
 
 - The `helm.sh/chart` label is valid for long chart versions: the 63-character cut trims the whole trailing run of `-`, `.` and `_`.
@@ -318,7 +320,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.24.0...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.24.1...HEAD
+[1.24.1]: https://github.com/giantswarm/net-exporter/compare/v1.24.0...v1.24.1
 [1.24.0]: https://github.com/giantswarm/net-exporter/compare/v1.23.1...v1.24.0
 [1.23.1]: https://github.com/giantswarm/net-exporter/compare/v1.23.0...v1.23.1
 [1.23.0]: https://github.com/giantswarm/net-exporter/compare/v1.22.0...v1.23.0
