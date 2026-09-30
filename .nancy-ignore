@@ -7,3 +7,4 @@ CVE-2026-58210 until=2026-10-01 # github.com/nats-io/nats-server/v2@v2.14.2
 CVE-2026-58214 until=2026-10-01 # github.com/nats-io/nats-server/v2@v2.14.2
 CVE-2026-58254 until=2026-10-01 # github.com/nats-io/nats-server/v2@v2.14.2
 CVE-2026-58211 until=2026-10-01 # github.com/nats-io/nats-server/v2@v2.14.2
+CVE-2026-84445 until=2026-10-30 # google.golang.org/grpc@v1.84.0
