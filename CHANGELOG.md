@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Update architect to v10.12.0 (giantswarm/net-exporter#598)
+
 ## [1.24.1] - 2026-09-28
 
 ### Fixed
