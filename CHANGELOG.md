@@ -11,6 +11,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 - Update architect to v10.12.0 (giantswarm/net-exporter#598)
 
+### Fixed
+
+- Bump `golang.org/x/net` to v0.61.0 to fix CVE-2026-78663.
+
 ## [1.24.1] - 2026-09-28
 
 ### Fixed
