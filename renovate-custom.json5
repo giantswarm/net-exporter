@@ -1,0 +1,9 @@
+{
+  packageRules: [
+    {
+      description: 'Group dependencies from go.mod',
+      matchFileNames: ['go.mod'],
+      groupName: 'All go deps',
+    },
+  ],
+}
