@@ -1,29 +1,49 @@
-# This file is maintained centrally at
-# https://github.com/giantswarm/github/blob/main/languages/go/.pre-commit-config.yaml
-
+# DO NOT EDIT. Generated with:
+#
+#    devctl
+#
+#    https://github.com/giantswarm/devctl/blob/8f633b8ebe3132677b60fc6b0a5fdee946339bc7/pkg/gen/input/precommit/internal/file/pre-commit-config.yaml.template
+#
 minimum_pre_commit_version: '2.17'
+default_install_hook_types: [pre-commit, commit-msg]
+# Protobuf-generated code (protoc, buf: *_pb.ts, *_pb.js, *_pb2.py,
+# *_pb2_grpc.py, *.pb.go, *_grpc.pb.go) belongs to its generator: a hook that
+# rewrote it (end-of-file-fixer, go-imports, ruff --fix) would be undone by
+# the next generation, so no hook reads it.
+exclude: "(_pb2?|\\.pb)(_grpc)?\\.[^/]+$"
 repos:
-  # shell scripts
-  - repo: https://github.com/detailyang/pre-commit-shell
-    rev: '1.0.5'
-    hooks:
-      - id: shell-lint
-        args: [ --format=json ]
-        exclude: ".*\\.template"
-
+  # base hooks
+  #
+  # helm/<chart>/charts/ holds vendored upstream subcharts (vendir-synced).
+  # Those files are not repo-authored: the auto-fixing hooks would rewrite
+  # them on every vendir bump and the next vendir sync would revert the fix,
+  # so the whitespace/shebang/private-key hooks skip the vendored subtree.
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
-      - id: check-added-large-files
       - id: check-merge-conflict
       - id: check-shebang-scripts-are-executable
+        exclude: "^helm/[^/]+/charts/.*"
       - id: detect-private-key
+        # Upstream charts document key formats with placeholder PEM headers
+        # (redis-ha's restore.ssh.key example) that the hook cannot tell from
+        # a key; gitleaks stays the scanner of record for the vendored subtree.
+        exclude: "^helm/[^/]+/charts/.*"
       - id: end-of-file-fixer
-        exclude: ".*testdata/.*"
+        exclude: "(.*testdata/.*|^\\.yarn/.*|^helm/[^/]+/charts/.*|.*.patch)"
       - id: mixed-line-ending
+        exclude: "(^helm/[^/]+/charts/.*|.*.patch)"
       - id: trailing-whitespace
-        exclude: ".*testdata/.*"
+        exclude: "(.*testdata/.*|^\\.yarn/.*|^helm/[^/]+/charts/.*|.*.patch)"
 
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: [--strict]
+
+  # Go hooks
   - repo: https://github.com/dnephin/pre-commit-golang
     rev: v0.5.1
     hooks:
@@ -34,10 +54,113 @@ repos:
           - -E=gosec
           - -E=goconst
           - -E=govet
-          # timeout is needed for CI
-          - --timeout=300s
+          # No --timeout: golangci-lint v2 has none by default and a flag would
+          # override a repo's `run.timeout` in .golangci.yml, its place to set one.
           # List all issues found
           - --max-same-issues=0
           - --max-issues-per-linter=0
       - id: go-imports
         args: [ -local, github.com/giantswarm/net-exporter ]
+
+  # Renovate's gomod manager reads a require line's trailing comment as one
+  # word (`// indirect`); a line whose comment has more words is skipped
+  # without a PR or a dashboard entry, so the dependency silently stops being
+  # updated. The explanation goes on a comment line above the require instead.
+  - repo: local
+    hooks:
+      - id: go-mod-require-comment
+        name: "go.mod require comment is one word (Renovate skips the line otherwise; move the explanation to a comment line above it)"
+        language: pygrep
+        files: (^|/)go\.mod$
+        entry: '^\s*(require\s+)?[A-Za-z0-9][^\s,]*[./][^\s,]*\s+v[0-9]\S*\s*//\s*\S+\s+\S'
+
+  # Helm chart schema for net-exporter: verify helm/net-exporter/values.schema.json is up to date.
+  #
+  # `devctl gen precommit` now generates and writes helm/net-exporter/values.schema.json itself
+  # (running the same generate -> fix $ref -> normalize pipeline in-process, see
+  # giantswarm/devctl#2195), so this hook is READ-ONLY: it reproduces that pipeline to a
+  # scratch file and diffs it against the committed one, but never writes the committed
+  # file. A hook that regenerated files in place used to fight `schemalint-verify` and
+  # itself over key ordering, because pre-commit runs each hook independently against the
+  # file on disk and fails the run if any hook modifies it (giantswarm/giantswarm#37267);
+  # a read-only check has no resting format to fight over.
+  #
+  # The `$ref` step repairs a JSON Schema 2020-12 defect: `additionalProperties: false` as
+  # a sibling of a `$ref`. `additionalProperties` only sees sibling
+  # `properties`/`patternProperties` -- NOT properties pulled in through `$ref` -- so such
+  # a node rejects every field the referenced schema defines (e.g. `helm template` fails
+  # with "additional properties 'podAntiAffinity' not allowed" for a k8s Affinity). The
+  # correct keyword is `unevaluatedProperties`, which DOES consider $ref-evaluated
+  # properties. So for every object that has both `$ref` and `additionalProperties: false`
+  # we drop `additionalProperties` and set `unevaluatedProperties: false`.
+  #
+  # The generator itself no longer produces this. It did until v2.6.0, which shipped
+  # https://github.com/losisin/helm-values-schema-json/pull/378 (fixing #317): at draft
+  # 2019 or later, with `noAdditionalProperties: true`, it now closes applicator-bearing
+  # nodes with `unevaluatedProperties` instead. devctl sets `draft: 2020`, so that holds
+  # here. Under v2.6.0 the step is a no-op on generated output -- measured over every
+  # repository that DECLARES the `helmchart` pre-commit flavour. The hook reaches more
+  # repositories than that: `helmchart` is also the default flavour for any repository
+  # with a `helm/` directory, so re-measure over those too before you act on the number.
+  #
+  # It stays for schemas the generator BUNDLES rather than generates. `bundle: true`
+  # inlines a `# @schema $ref: <file>` target verbatim, defect included, and the tool
+  # cannot be expected to rewrite third-party content. One repo depends on this today:
+  # security-profiles-operator-app vendors the upstream chart's own `values.schema.json`,
+  # whose `daemon.tolerations` items close a `$ref`ed k8s Toleration with
+  # `additionalProperties: false` and so reject `value` and `tolerationSeconds`.
+  # Before removing this step, re-run that measurement -- do not assume it is dead.
+  #
+  # BOTH binaries are installed and pinned by the hook itself (`additional_dependencies`,
+  # hence `language: golang`), at the exact versions devctl's own go.mod requires (stamped
+  # in by the generator, not hardcoded here), so this reproduction runs the same versions
+  # devctl used to write the committed file.
+  #
+  # `helm-values-schema-json` is the module behind the `helm schema` plugin -- the very
+  # same binary, called directly, so nothing here depends on a helm plugin. It used to:
+  # the hook called a bare `helm schema`, resolved from whatever the developer had in
+  # their global helm plugin dir, while CI pinned a version in a different file. The old
+  # guard only checked that *a* plugin existed, never which version, so a wrong version
+  # printed "Passed" locally while rewriting the committed schema (v2.6.0 alone strips 41
+  # lines from hello-world-app's) and CI then rejected it.
+  - repo: local
+    hooks:
+      - id: helm-schema-net-exporter
+        name: "verify helm/net-exporter/values.schema.json is up to date"
+        language: golang
+        additional_dependencies: ['github.com/giantswarm/schemalint/v2@v2.6.3', 'github.com/losisin/helm-values-schema-json/v2@v2.6.0']
+        files: ^helm/net-exporter/(values\.yaml|\.schema\.yaml|values\.schema\.json|zz_generated\.app-platform\.values\.yaml)$
+        pass_filenames: false
+        require_serial: true
+        entry: sh -c
+        args:
+          - |
+            set -e
+            tmp=$(mktemp)
+            trap 'rm -f "$tmp"' EXIT
+            helm-values-schema-json --config helm/net-exporter/.schema.yaml -o "$tmp"
+            python3 -c 'import json,sys; h=lambda o: {**{k:v for k,v in o.items() if k!="additionalProperties"},"unevaluatedProperties":False} if ("$ref" in o and o.get("additionalProperties") is False) else o; p=sys.argv[1]; f=open(p,encoding="utf-8"); d=json.load(f,object_hook=h); f.close(); f=open(p,"w",encoding="utf-8"); json.dump(d,f); f.close()' "$tmp"
+            schemalint normalize "$tmp" -o "$tmp" --force
+            if ! diff -u helm/net-exporter/values.schema.json "$tmp"; then
+              echo "helm/net-exporter/values.schema.json is out of date -- run 'devctl gen precommit' and commit the result" >&2
+              exit 1
+            fi
+  - repo: https://github.com/giantswarm/schemalint
+    rev: v2.6.3
+    hooks:
+      - id: schemalint-verify
+        pass_filenames: false
+        args:
+          - helm/net-exporter/values.schema.json
+  # helm-docs finds every chart below helm/, the vendored subcharts under
+  # helm/<chart>/charts/ included; --chart-to-generate limits the README it
+  # writes to the repo's own charts, so the vendored subtree stays untouched
+  # like it does for the base hooks above.
+  - repo: https://github.com/norwoodj/helm-docs
+    rev: "v1.14.2"
+    hooks:
+      - id: helm-docs
+        args:
+          - --chart-search-root=helm
+          - --chart-to-generate=helm/net-exporter
+          - --sort-values-order=file
