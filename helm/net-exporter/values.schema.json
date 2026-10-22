@@ -1,15 +1,19 @@
 {
-    "$schema": "http://json-schema.org/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
+    "additionalProperties": false,
     "properties": {
         "NetExporter": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "DNSCheck": {
                     "type": "object",
+                    "additionalProperties": false,
                     "properties": {
                         "TCP": {
                             "type": "object",
+                            "additionalProperties": false,
                             "properties": {
                                 "Disabled": {
                                     "type": "boolean"
@@ -26,8 +30,20 @@
                 }
             }
         },
+        "baseDomain": {
+            "type": "string"
+        },
+        "bootstrapMode": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "chartOperator": {
+            "type": "object",
+            "additionalProperties": true
+        },
         "ciliumNetworkPolicy": {
             "type": "object",
+            "additionalProperties": true,
             "properties": {
                 "enabled": {
                     "type": "boolean"
@@ -36,12 +52,15 @@
         },
         "cluster": {
             "type": "object",
+            "additionalProperties": true,
             "properties": {
                 "kubernetes": {
                     "type": "object",
+                    "additionalProperties": false,
                     "properties": {
                         "DNS": {
                             "type": "object",
+                            "additionalProperties": false,
                             "properties": {
                                 "IP": {
                                     "type": "string"
@@ -52,11 +71,24 @@
                 }
             }
         },
+        "clusterCA": {
+            "type": "string"
+        },
+        "clusterCIDR": {
+            "type": "string"
+        },
+        "clusterDNSIP": {
+            "type": "string"
+        },
+        "clusterID": {
+            "type": "string"
+        },
         "controlPlaneSubnets": {
             "type": "array"
         },
         "daemonset": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "priorityClassName": {
                     "type": "string"
@@ -65,6 +97,7 @@
         },
         "dns": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "label": {
                     "type": "string"
@@ -82,17 +115,30 @@
         },
         "dnscache": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "port": {
                     "type": "integer"
                 }
             }
         },
+        "gcpProject": {
+            "type": "string"
+        },
+        "global": {
+            "type": [
+                "object",
+                "null"
+            ],
+            "description": "Global values shared between all subcharts",
+            "$comment": "Added automatically by 'helm schema' to allow this chart to be used as a Helm dependency, as this schema would otherwise not allow Helm's special 'global' values key."
+        },
         "groupID": {
             "type": "integer"
         },
         "image": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "name": {
                     "type": "string"
@@ -107,9 +153,11 @@
         },
         "kubectl": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "image": {
                     "type": "object",
+                    "additionalProperties": false,
                     "properties": {
                         "name": {
                             "type": "string"
@@ -128,24 +176,36 @@
             "type": "string"
         },
         "podSecurityContext": {
-            "type": "object"
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "runAsNonRoot": {
+                    "type": "boolean"
+                },
+                "seccompProfile": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         },
         "port": {
             "type": "integer"
         },
+        "provider": {
+            "type": "string"
+        },
         "resources": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
-                "limits": {
-                    "type": "object",
-                    "properties": {
-                        "memory": {
-                            "type": "string"
-                        }
-                    }
-                },
                 "requests": {
                     "type": "object",
+                    "additionalProperties": false,
                     "properties": {
                         "cpu": {
                             "type": "string"
@@ -158,23 +218,59 @@
             }
         },
         "securityContext": {
-            "type": "object"
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "allowPrivilegeEscalation": {
+                    "type": "boolean"
+                },
+                "capabilities": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "drop": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "readOnlyRootFilesystem": {
+                    "type": "boolean"
+                },
+                "seccompProfile": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "type": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         },
         "serviceMonitor": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "enabled": {
                     "type": "boolean"
                 },
                 "interval": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Prometheus scrape interval."
                 },
                 "scrapeTimeout": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Prometheus scrape timeout."
                 }
             }
         },
         "serviceType": {
+            "type": "string"
+        },
+        "subscriptionID": {
             "type": "string"
         },
         "timeout": {
@@ -185,12 +281,14 @@
         },
         "verticalPodAutoscaler": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "enabled": {
                     "type": "boolean"
                 },
                 "maxAllowed": {
                     "type": "object",
+                    "additionalProperties": false,
                     "properties": {
                         "memory": {
                             "type": "string"
@@ -199,6 +297,7 @@
                 },
                 "minAllowed": {
                     "type": "object",
+                    "additionalProperties": false,
                     "properties": {
                         "cpu": {
                             "type": "string"
