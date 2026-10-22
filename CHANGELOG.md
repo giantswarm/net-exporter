@@ -11,6 +11,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 - Update architect to v10.12.0 (giantswarm/net-exporter#598)
 - Move the image base to alpine 3.24.2.
+- Prepare for devctl-generated CI: keep the `control-plane-catalog` publish in `.circleci/custom.yml` and the go deps grouping in `renovate-custom.json5`.
 
 ### Fixed
 
