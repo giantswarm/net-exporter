@@ -77,7 +77,6 @@ Here, we expose the latency for the specific instance to resolve another instanc
 
 ## Contact
 
-- Mailing list: [giantswarm](https://groups.google.com/forum/!forum/giantswarm)
 - IRC: #[giantswarm](irc://irc.freenode.org:6667/#giantswarm) on freenode.org
 - Bugs: [issues](https://github.com/giantswarm/net-exporter/issues)
 
