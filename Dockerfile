@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM gsoci.azurecr.io/giantswarm/alpine:3.24.2 AS base
+FROM --platform=$BUILDPLATFORM gsoci.azurecr.io/giantswarm/alpine:3.24.3 AS base
 RUN addgroup -g 1000 giantswarm \
  && adduser -D -H -u 1000 -G giantswarm -s /sbin/nologin giantswarm
 
