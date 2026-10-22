@@ -17,6 +17,7 @@ import (
 
 const (
 	namespace = "dns"
+	hostLabel = "host"
 
 	bucketStart  = 0.001
 	bucketFactor = 2
@@ -113,7 +114,7 @@ func New(config Config) (*Collector, error) {
 			Name: prometheus.BuildFQName(namespace, "", "resolve_error_total"),
 			Help: "Total number of errors resolving hosts.",
 		},
-		[]string{"proto", "host"},
+		[]string{"proto", hostLabel},
 	)
 
 	prometheus.MustRegister(errorCount)
@@ -134,14 +135,14 @@ func New(config Config) (*Collector, error) {
 		tcpLatencyHistogramDesc: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "tcp_latency_seconds"),
 			"Histogram of latency of TCP DNS resolutions.",
-			[]string{"host"},
+			[]string{hostLabel},
 			nil,
 		),
 		udpLatencyHistogramVec: udpLatencyHistogramVec,
 		udpLatencyHistogramDesc: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, "", "udp_latency_seconds"),
 			"Histogram of latency of UDP DNS resolutions.",
-			[]string{"host"},
+			[]string{hostLabel},
 			nil,
 		),
 
