@@ -10,6 +10,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Changed
 
 - Update architect to v10.12.0 (giantswarm/net-exporter#598)
+- Move the image base to alpine 3.24.2 and ship its CA bundle.
 
 ### Fixed
 
