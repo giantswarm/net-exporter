@@ -8,3 +8,4 @@ CVE-2026-58207 until=2026-11-06 # github.com/nats-io/nats-server/v2@v2.14.2
 CVE-2026-58208 until=2026-11-06 # github.com/nats-io/nats-server/v2@v2.14.2
 CVE-2026-58209 until=2026-11-06 # github.com/nats-io/nats-server/v2@v2.14.2
 CVE-2026-58210 until=2026-11-06 # github.com/nats-io/nats-server/v2@v2.14.2
+CVE-2026-115804 until=2026-11-27 # github.com/hashicorp/consul/api@v1.14.0 since=2026-10-28
