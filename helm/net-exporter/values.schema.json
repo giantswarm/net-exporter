@@ -122,6 +122,9 @@
                 }
             }
         },
+        "externalDNSIP": {
+            "type": "string"
+        },
         "gcpProject": {
             "type": "string"
         },
@@ -130,11 +133,21 @@
                 "object",
                 "null"
             ],
-            "description": "Global values shared between all subcharts",
-            "$comment": "Added automatically by 'helm schema' to allow this chart to be used as a Helm dependency, as this schema would otherwise not allow Helm's special 'global' values key."
+            "description": "Global values shared between all subcharts and the platform.",
+            "additionalProperties": true,
+            "properties": {
+                "podSecurityStandards": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            }
         },
         "groupID": {
             "type": "integer"
+        },
+        "helm": {
+            "type": "object",
+            "additionalProperties": true
         },
         "image": {
             "type": "object",
@@ -171,6 +184,9 @@
                     }
                 }
             }
+        },
+        "managementCluster": {
+            "type": "string"
         },
         "name": {
             "type": "string"
