@@ -21,7 +21,7 @@
     // live on merge, no regeneration needed.
     'github>giantswarm/net-exporter:renovate-custom.json5',
   ],
-  // Our own bots commit onto Renovate branches. The giantswarm-release
+  // Our automation commits onto Renovate branches. The giantswarm-release
   // GitHub App pushes what the generated workflows produce
   // (zz_generated.helm-docs-regen.yaml, the update-chart and
   // sync-from-upstream flows); taylorbot <dev@giantswarm.io> did so before
