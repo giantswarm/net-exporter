@@ -5,7 +5,7 @@
 # workflow in .circleci/config.yml merges into this file at pipeline runtime.
 version: 2.1
 orbs:
-  architect: giantswarm/architect@10.16.7
+  architect: giantswarm/architect@10.17.4
 
 workflows:
   build:
