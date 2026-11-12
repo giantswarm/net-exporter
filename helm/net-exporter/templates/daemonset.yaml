@@ -6,8 +6,10 @@ metadata:
   labels:
     {{- include "labels.common" . | nindent 4 }}
 spec:
+  {{- with .Values.daemonset.updateStrategy }}
   updateStrategy:
-    type: RollingUpdate
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       {{- include "labels.selector" . | nindent 6 }}

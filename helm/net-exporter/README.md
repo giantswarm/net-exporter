@@ -27,6 +27,7 @@ Helm chart for net-exporter.
 | kubectl.image.name | string | `"giantswarm/docker-kubectl"` |  |
 | kubectl.image.tag | string | `"1.36.0"` |  |
 | daemonset.priorityClassName | string | `"system-node-critical"` |  |
+| daemonset.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":"10%"},"type":"RollingUpdate"}` | Update strategy of the DaemonSet. |
 | resources.requests.cpu | string | `"30m"` |  |
 | resources.requests.memory | string | `"60Mi"` |  |
 | verticalPodAutoscaler.enabled | bool | `true` |  |
