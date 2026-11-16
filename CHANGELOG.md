@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.25.0] - 2026-11-16
+
 ### Added
 
 - Add the `daemonset.updateStrategy` value to configure the update strategy of the DaemonSet.
@@ -339,7 +341,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.24.2...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.25.0...HEAD
+[1.25.0]: https://github.com/giantswarm/net-exporter/compare/v1.24.2...v1.25.0
 [1.24.2]: https://github.com/giantswarm/net-exporter/compare/v1.24.1...v1.24.2
 [1.24.1]: https://github.com/giantswarm/net-exporter/compare/v1.24.0...v1.24.1
 [1.24.0]: https://github.com/giantswarm/net-exporter/compare/v1.23.1...v1.24.0
