@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Stop restarting all DaemonSet pods on every upgrade, only when the pod template changes.
+
 ## [1.25.0] - 2026-11-16
 
 ### Added
