@@ -17,8 +17,6 @@ spec:
     metadata:
       labels:
         {{- include "labels.common" . | nindent 8 }}
-      annotations:
-        releaseRevision: {{ $.Release.Revision | quote }}
     spec:
       initContainers:
       - name: label-kube-system-namespace
