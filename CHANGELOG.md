@@ -7,6 +7,14 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Narrow the CiliumNetworkPolicy to least privilege and make its rules overridable from values.
+
+### Removed
+
+- Remove the unused `controlPlaneSubnets` value.
+
 ## [1.25.1] - 2026-11-23
 
 ### Changed

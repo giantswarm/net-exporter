@@ -34,11 +34,12 @@ Helm chart for net-exporter.
 | verticalPodAutoscaler.minAllowed.cpu | string | `"30m"` |  |
 | verticalPodAutoscaler.minAllowed.memory | string | `"60Mi"` |  |
 | verticalPodAutoscaler.maxAllowed.memory | string | `"150Mi"` |  |
-| controlPlaneSubnets | list | `[]` |  |
 | NetExporter.Hosts | string | `""` |  |
 | NetExporter.NTPServers | string | `""` |  |
 | NetExporter.DNSCheck.TCP.Disabled | bool | `false` |  |
 | ciliumNetworkPolicy.enabled | bool | `false` |  |
+| networkPolicy.cilium.egress | list | `[]` | Replaces the default CiliumNetworkPolicy egress rules when set. |
+| networkPolicy.cilium.ingress | list | `[]` | Replaces the default CiliumNetworkPolicy ingress rules when set. |
 | serviceMonitor.enabled | bool | `true` |  |
 | serviceMonitor.interval | duration | `"60s"` | Prometheus scrape interval. |
 | serviceMonitor.scrapeTimeout | duration | `"45s"` | Prometheus scrape timeout. |
