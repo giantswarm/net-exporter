@@ -38,8 +38,8 @@ Helm chart for net-exporter.
 | NetExporter.NTPServers | string | `""` |  |
 | NetExporter.DNSCheck.TCP.Disabled | bool | `false` |  |
 | ciliumNetworkPolicy.enabled | bool | `false` |  |
-| networkPolicy.cilium.egress | list | `[]` | Replaces the default CiliumNetworkPolicy egress rules when set. |
-| networkPolicy.cilium.ingress | list | `[]` | Replaces the default CiliumNetworkPolicy ingress rules when set. |
+| ciliumNetworkPolicy.egress | list | `[]` | Replaces the default CiliumNetworkPolicy egress rules when set. |
+| ciliumNetworkPolicy.ingress | list | `[]` | Replaces the default CiliumNetworkPolicy ingress rules when set. |
 | serviceMonitor.enabled | bool | `true` |  |
 | serviceMonitor.interval | duration | `"60s"` | Prometheus scrape interval. |
 | serviceMonitor.scrapeTimeout | duration | `"45s"` | Prometheus scrape timeout. |

@@ -7,6 +7,10 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+### Changed
+
+- Move the CiliumNetworkPolicy rule overrides from `networkPolicy.cilium` to `ciliumNetworkPolicy`.
+
 ## [1.26.0] - 2026-11-25
 
 ### Changed
