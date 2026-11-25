@@ -42,6 +42,7 @@ type Config struct {
 	Logger    micrologger.Logger
 
 	Namespace string
+	PodIP     string
 	Port      string
 	Service   string
 }
@@ -53,6 +54,7 @@ type Collector struct {
 	logger    micrologger.Logger
 
 	namespace string
+	podIP     string
 	port      string
 	service   string
 
@@ -77,6 +79,9 @@ func New(config Config) (*Collector, error) {
 
 	if config.Namespace == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Namespace must not be empty", config)
+	}
+	if config.PodIP == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.PodIP must not be empty", config)
 	}
 	if config.Port == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Port must not be empty", config)
@@ -118,6 +123,7 @@ func New(config Config) (*Collector, error) {
 		logger:    config.Logger,
 
 		namespace: config.Namespace,
+		podIP:     config.PodIP,
 		port:      config.Port,
 		service:   config.Service,
 
@@ -172,12 +178,7 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	hosts := []string{}
 	hosts = append(hosts, fmt.Sprintf("%v:%v", service.Spec.ClusterIP, c.port))
 
-	neighbours, err := c.getNeighbours(numNeighbours, allAddresses)
-	if err != nil {
-		c.logger.Log("level", "error", "message", "could not get neighbours", "service", c.service, "stack", microerror.JSON(err))
-		c.errorCount.Inc()
-		return
-	}
+	neighbours := c.getNeighbours(numNeighbours, allAddresses)
 	for _, neighbour := range neighbours {
 		hosts = append(hosts, fmt.Sprintf("%v:%v", neighbour, c.port))
 	}
@@ -252,25 +253,13 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	}
 }
 
-func (c *Collector) getNeighbours(n int, addresses []string) ([]string, error) {
-	// Find our IP - note: this does not open a connection, due to UDP.
-	conn, err := net.Dial("udp", "8.8.8.8:80")
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	defer func() {
-		if err := conn.Close(); err != nil {
-			c.logger.Log("level", "error", "message", "failed to close connection", "stack", microerror.JSON(err))
-		}
-	}()
-	ip := conn.LocalAddr().(*net.UDPAddr).IP.String()
+func (c *Collector) getNeighbours(n int, addresses []string) []string {
+	// Calculate n neighbours, given our pod IP and all other net-exporter IPs.
+	neighbours := c.calculateNeighbours(n, c.podIP, addresses)
 
-	// Calculate n neighbours, given our local IP and all other net-exporter IPs.
-	neighbours := c.calculateNeighbours(n, ip, addresses)
+	c.logger.Log("level", "info", "message", "calculated neighbours", "ip", c.podIP, "neighbours", strings.Join(neighbours, ", "))
 
-	c.logger.Log("level", "info", "message", "calculated neighbours", "ip", ip, "neighbours", strings.Join(neighbours, ", "))
-
-	return neighbours, nil
+	return neighbours
 }
 
 func (c *Collector) calculateNeighbours(n int, ip string, addresses []string) []string {
