@@ -57,10 +57,6 @@ verticalPodAutoscaler:
   maxAllowed:
     memory: 150Mi
 
-# Control-plane subnets used to generate network policies
-# for managed applications.
-controlPlaneSubnets: []
-
 NetExporter:
   Hosts: ""
   NTPServers: ""
@@ -70,6 +66,13 @@ NetExporter:
 
 ciliumNetworkPolicy:
   enabled: false
+
+networkPolicy:
+  cilium:
+    # -- Replaces the default CiliumNetworkPolicy egress rules when set.
+    egress: []
+    # -- Replaces the default CiliumNetworkPolicy ingress rules when set.
+    ingress: []
 
 serviceMonitor:
   enabled: true

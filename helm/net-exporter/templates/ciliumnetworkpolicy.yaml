@@ -11,27 +11,43 @@ spec:
     matchLabels:
       {{- include "labels.selector" . | nindent 6 }}
   egress:
+  {{- with .Values.networkPolicy.cilium.egress }}
+    {{- toYaml . | nindent 4 }}
+  {{- else }}
     - toEntities:
-      - kube-apiserver
-      - world
+        - kube-apiserver
+    # NTP checks against public pools.
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "123"
+              protocol: UDP
+    # Latency checks to neighbour net-exporter pods.
     - toEndpoints:
-      - matchLabels:
-          app.kubernetes.io/name: net-exporter
-          io.kubernetes.pod.namespace: kube-system
+        - matchLabels:
+            app.kubernetes.io/name: net-exporter
+            io.kubernetes.pod.namespace: {{ .Release.Namespace }}
       toPorts:
-      - ports:
-        - port: {{ .Values.port | quote }}
-          protocol: TCP
+        - ports:
+            - port: {{ .Values.port | quote }}
+              protocol: TCP
+  {{- end }}
   ingress:
+  {{- with .Values.networkPolicy.cilium.ingress }}
+    {{- toYaml . | nindent 4 }}
+  {{- else }}
     - fromEndpoints:
-      - matchLabels:
-          app.kubernetes.io/name: alloy
-          io.kubernetes.pod.namespace: kube-system
-      - matchLabels:
-          app.kubernetes.io/name: net-exporter
-          io.kubernetes.pod.namespace: kube-system
+        - matchLabels:
+            app.kubernetes.io/name: alloy
+            app.kubernetes.io/instance: alloy-metrics
+            io.kubernetes.pod.namespace: kube-system
+        - matchLabels:
+            app.kubernetes.io/name: net-exporter
+            io.kubernetes.pod.namespace: {{ .Release.Namespace }}
       toPorts:
-      - ports:
-        - port: {{ .Values.port | quote }}
-          protocol: TCP
+        - ports:
+            - port: {{ .Values.port | quote }}
+              protocol: TCP
+  {{- end }}
 {{ end }}

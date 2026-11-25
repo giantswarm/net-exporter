@@ -127,9 +127,6 @@
         "clusterID": {
             "type": "string"
         },
-        "controlPlaneSubnets": {
-            "type": "array"
-        },
         "daemonset": {
             "type": "object",
             "additionalProperties": false,
@@ -240,6 +237,26 @@
         },
         "name": {
             "type": "string"
+        },
+        "networkPolicy": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "cilium": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "egress": {
+                            "type": "array",
+                            "description": "Replaces the default CiliumNetworkPolicy egress rules when set."
+                        },
+                        "ingress": {
+                            "type": "array",
+                            "description": "Replaces the default CiliumNetworkPolicy ingress rules when set."
+                        }
+                    }
+                }
+            }
         },
         "podSecurityContext": {
             "type": "object",
