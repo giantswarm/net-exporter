@@ -7,6 +7,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 
 ## [Unreleased]
 
+## [1.26.0] - 2026-11-25
+
 ### Changed
 
 - Narrow the CiliumNetworkPolicy to least privilege and make its rules overridable from values.
@@ -356,7 +358,8 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 - Tolerations changed to tolerate all taints.
 - Change prioty class to `giantswarm-critical`.
 
-[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.25.1...HEAD
+[Unreleased]: https://github.com/giantswarm/net-exporter/compare/v1.26.0...HEAD
+[1.26.0]: https://github.com/giantswarm/net-exporter/compare/v1.25.1...v1.26.0
 [1.25.1]: https://github.com/giantswarm/net-exporter/compare/v1.25.0...v1.25.1
 [1.25.0]: https://github.com/giantswarm/net-exporter/compare/v1.24.2...v1.25.0
 [1.24.2]: https://github.com/giantswarm/net-exporter/compare/v1.24.1...v1.24.2
