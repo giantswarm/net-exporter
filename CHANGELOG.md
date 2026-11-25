@@ -10,6 +10,7 @@ and this project's packages adheres to [Semantic Versioning](http://semver.org/s
 ### Changed
 
 - Narrow the CiliumNetworkPolicy to least privilege and make its rules overridable from values.
+- Get the pod IP from the Downward API instead of a UDP dial to `8.8.8.8`.
 
 ### Removed
 

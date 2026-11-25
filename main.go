@@ -32,6 +32,7 @@ var (
 	dnsNamespace       string
 	namespace          string
 	ntpServers         string
+	podIP              string
 	port               string
 	service            string
 	timeout            time.Duration
@@ -44,6 +45,7 @@ func init() {
 	flag.StringVar(&dnsNamespace, "dns-namespace", "kube-system", "Namespace of DNS service")
 	flag.StringVar(&namespace, "namespace", "monitoring", "Namespace of net-exporter service")
 	flag.StringVar(&ntpServers, "ntp-servers", "0.flatcar.pool.ntp.org,1.flatcar.pool.ntp.org", "NTP servers to use for time synchronization")
+	flag.StringVar(&podIP, "pod-ip", os.Getenv("POD_IP"), "IP of the net-exporter pod, defaults to the POD_IP environment variable")
 	flag.StringVar(&port, "port", "8000", "Port of net-exporter service")
 	flag.StringVar(&service, "service", "net-exporter", "Name of net-exporter service")
 	flag.DurationVar(&timeout, "timeout", 5*time.Second, "Timeout of the dialer")
@@ -124,6 +126,7 @@ func main() {
 			Logger:    logger,
 
 			Namespace: namespace,
+			PodIP:     podIP,
 			Port:      port,
 			Service:   service,
 		}

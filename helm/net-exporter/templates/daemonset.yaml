@@ -57,6 +57,11 @@ spec:
           {{- if (.Values.NetExporter.DNSCheck.TCP.Disabled) }}
           - "-disable-dns-tcp-check={{ .Values.NetExporter.DNSCheck.TCP.Disabled }}"
           {{- end }}
+        env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
         ports:
           - containerPort: 8000
             name: metrics
