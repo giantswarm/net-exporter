@@ -89,8 +89,16 @@
             "type": "object",
             "additionalProperties": true,
             "properties": {
+                "egress": {
+                    "type": "array",
+                    "description": "Replaces the default CiliumNetworkPolicy egress rules when set."
+                },
                 "enabled": {
                     "type": "boolean"
+                },
+                "ingress": {
+                    "type": "array",
+                    "description": "Replaces the default CiliumNetworkPolicy ingress rules when set."
                 }
             }
         },
@@ -237,26 +245,6 @@
         },
         "name": {
             "type": "string"
-        },
-        "networkPolicy": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "cilium": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                        "egress": {
-                            "type": "array",
-                            "description": "Replaces the default CiliumNetworkPolicy egress rules when set."
-                        },
-                        "ingress": {
-                            "type": "array",
-                            "description": "Replaces the default CiliumNetworkPolicy ingress rules when set."
-                        }
-                    }
-                }
-            }
         },
         "podSecurityContext": {
             "type": "object",

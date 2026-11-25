@@ -11,7 +11,7 @@ spec:
     matchLabels:
       {{- include "labels.selector" . | nindent 6 }}
   egress:
-  {{- with .Values.networkPolicy.cilium.egress }}
+  {{- with .Values.ciliumNetworkPolicy.egress }}
     {{- toYaml . | nindent 4 }}
   {{- else }}
     - toEntities:
@@ -34,7 +34,7 @@ spec:
               protocol: TCP
   {{- end }}
   ingress:
-  {{- with .Values.networkPolicy.cilium.ingress }}
+  {{- with .Values.ciliumNetworkPolicy.ingress }}
     {{- toYaml . | nindent 4 }}
   {{- else }}
     - fromEndpoints:
